@@ -13,25 +13,28 @@ else()
 endif()
 
 
-set(CMAKE_MOUDLE_PATH
-/pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2/Modules)
+set(CMAKE_MOUDLE_PATH /pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2/Modules)
 set(Geant4_DIR /pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2)
-set(cadmesh_DIR /pnfs/opt/cadmesh/forgeant4.9.6/lib/cmake/cadmesh-0.9)
+set(cadmesh_DIR $ENV{CADMESH_PATH}/lib/cmake/cadmesh-0.9)
 set(assimp_DIR /pnfs/opt/assimp/lib/cmake/assimp-3.0)
 find_package(cadmesh)
 
 include(${Geant4_USE_FILE})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR}
-${cadmesh_INCLUDE})
+${cadmesh_INCLUDE} ${ASSIMP_INCLUDE_DIRS})
 
 
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
 
-message("include :  ${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${cadmesh_INCLUDE}")
-message("Option : ${CMAKE_CXX_FLAGS}")
+find_library(CADMESH_LIBRARIES cadmesh PATHS $ENV{CADMESH_PATH}/lib)
+find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+message ( ${Geant4_LIBRARIES}) 
+message ( ${CADMESH_LIBRARIES}) 
+message ( ${ASSIMP_LIBRARIES})
 
 add_executable(GEMapp EXCLUDE_FROM_ALL GEMapp.cc ${sources})
-target_link_libraries(GEMapp ${Geant4_LIBRARIES})
+target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${CADMESH_LIBRARIES} ${ASSIMP_LIBRARY} )
 
 
