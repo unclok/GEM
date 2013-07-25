@@ -13,7 +13,8 @@ else()
 endif()
 
 
-set(CMAKE_MOUDLE_PATH /pnfs/opt/cemachines/geant4.9.6/Modules)
+set(CMAKE_MOUDLE_PATH
+/pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2/Modules)
 set(Geant4_DIR /pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2)
 set(cadmesh_DIR /pnfs/opt/cadmesh/forgeant4.9.6/lib/cmake/cadmesh-0.9)
 set(assimp_DIR /pnfs/opt/assimp/lib/cmake/assimp-3.0)
