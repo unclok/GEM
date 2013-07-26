@@ -42,9 +42,9 @@ class GEMElectricFieldMessenger;
 class GEMElectricField : public G4ElectricField
 {
   // Storage space for the table
-  vector< vector< vector< double > > > xField;
-  vector< vector< vector< double > > > yField;
-  vector< vector< vector< double > > > zField;
+	double GEMPosition[3][161][161][25];
+	double GEMElec[3][161][161][25];
+
   // The dimensions of the table
   int nx,ny,nz; 
   // The physical extent of the defined region

@@ -59,7 +59,7 @@ GEMPrimaryGeneratorAction::GEMPrimaryGeneratorAction()
   proton = particleTable->FindParticle(particleName="proton");
 
   // default particle kinematics
-  particleGun->SetParticlePosition(G4ThreeVector(0.,0.,-100.*um));
+  particleGun->SetParticlePosition(G4ThreeVector(0.,0.,-100.0*um));
   particleGun->SetParticleDefinition(electron);
 }
 

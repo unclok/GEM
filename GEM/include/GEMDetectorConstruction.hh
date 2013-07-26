@@ -39,7 +39,7 @@
 #include "G4PropagatorInField.hh"
 #include "G4TransportationManager.hh"
 #include "G4ChordFinder.hh"
-#include "G4ClassicalRK4.hh"
+#include "G4SimpleHeum.hh"
 
 class G4VPhysicalVolume;
 class G4Material;

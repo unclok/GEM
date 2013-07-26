@@ -46,7 +46,7 @@
 /vis/scene/add/trajectories smooth
 /vis/modeling/trajectories/create/drawByCharge
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 1
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 0.00001
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
 #
 # Draw hits at end of event:
@@ -78,23 +78,26 @@
 /vis/scene/endOfEventAction accumulate
 #/mydet/armAngle 60. deg
 #/mydet/fieldValue 2. tesla
-/mydet/momentum 200. keV
+/mydet/momentum 500. keV
 /gun/position 0. 75 -70 um
+/run/setCut 0.01 um
 /run/beamOn 1
 #
 /vis/scene/endOfEventAction accumulate
 #/mydet/armAngle 30. deg
-/mydet/momentum 200. keV
+/mydet/momentum 500. keV
 #/mydet/sigmaMomentum 0. 
 #/mydet/sigmaAngle 0.
 /gun/position 0. 0. -70 um
+/run/setCut 0.01 um
 /run/beamOn 1
 #
 # This time, set visualization to accumulate many events into one picture
 #
 /vis/scene/endOfEventAction accumulate
 #/mydet/sigmaAngle 2. deg
-/mydet/momentum 200. keV
+/mydet/momentum 500. keV
 /gun/position 0. 243 -70 um
+/run/setCut 0.01 um
 /run/beamOn 1
 #

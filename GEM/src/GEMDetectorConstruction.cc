@@ -82,7 +82,7 @@ kaptonVisAtt(0), copperVisAtt(0),
 {
   messenger = new GEMDetectorConstMessenger(this);
   electricField = new GEMElectricField();
-//  fieldMgr = new G4FieldManager();
+  fieldMgr = new G4FieldManager();
   armRotation = new G4RotationMatrix();
   armRotation->rotateY(armAngle);
 }
@@ -108,6 +108,11 @@ GEMDetectorConstruction::~GEMDetectorConstruction()
 //  delete HadCalorimeterCellVisAtt;
   delete kaptonVisAtt;
   delete copperVisAtt;
+//  delete pEquation;
+//  delete pStepper;
+//  delete pIntgrDriver;
+//  delete pChordFinder;
+//  delete propInField;
 }
 
 G4VPhysicalVolume* GEMDetectorConstruction::Construct()
@@ -168,17 +173,21 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 
   if(!fieldIsInitialized)
   {
-      pEquation = new G4EqMagElectricField(electricField);
-      pStepper = new G4ClassicalRK4 (pEquation);
+  	pEquation = new G4EqMagElectricField(electricField);
+  	pStepper = new G4SimpleHeum(pEquation, 6);
       fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-      pIntgrDriver = new G4MagInt_Driver(0.000001*mm,pStepper,pStepper->GetNumberOfVariables() );
-      pChordFinder = new G4ChordFinder(pIntgrDriver);
+	G4double minEps = 1.0*um;
+	G4double maxEps = 10.0*um;
+
+	fieldMgr->SetMinimumEpsilonStep(minEps);
+	fieldMgr->SetMaximumEpsilonStep(maxEps);
+	fieldMgr->SetDeltaOneStep(0.5*um);
+	G4cout << "EpsilonStep : set min= " << minEps << " max= " << maxEps << endl;
+  	pIntgrDriver = new G4MagInt_Driver(0.000001*m,pStepper,pStepper->GetNumberOfVariables() );
+  	pChordFinder = new G4ChordFinder(pIntgrDriver);
 	fieldMgr->SetChordFinder(pChordFinder);
     fieldMgr->SetDetectorField(electricField);
 	G4cout << "Field Exist : " << fieldMgr->DoesFieldExist() << endl;
-//    fieldMgr->CreateChordFinder(electricField);
-//    fieldMgr->SetFieldChangesEnergy(true) << endl;
-//	fieldMgr->DoesFieldChangeEnergy() << endl;
 	G4cout << "--------------------GEM Field Initialized------------------" << endl;
     fieldIsInitialized = true;
 
@@ -192,6 +201,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
         G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
       propInField->SetMinimumEpsilonStep(1e-11);
       propInField->SetMaximumEpsilonStep(1e-10);
+	propInField->SetLargestAcceptableStep(10.0*um);
 
   }
 
@@ -360,7 +370,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
     = new G4Box("GEMBox",400.*um,400.*um,60*um);
   G4LogicalVolume* GEMLogical
     = new G4LogicalVolume(GEMSolid,argonGas,"GEMLogical",fieldMgr,0,0);
-//	GEMLogical->SetFieldManager(fieldMgr, true);
+	GEMLogical->SetFieldManager(fieldMgr, true);
   new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,
                     "GEMPhysical",worldLogical,0,0);
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

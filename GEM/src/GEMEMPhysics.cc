@@ -58,104 +58,63 @@ GEMEMPhysics::~GEMEMPhysics()
 #include "G4NeutrinoE.hh"
 #include "G4AntiNeutrinoE.hh"
 
-#include "G4UniversalFluctuation.hh"
-
-#include "G4VProcess.hh"
 #include "G4ProcessManager.hh"
-
-#include "G4UAtomicDeexcitation.hh"
 
 void GEMEMPhysics::ConstructProcess()
 {
    G4ProcessManager * pManager = 0;
-	double highEnergyLimit = 1.0*GeV;
 
    //Gamma
    pManager = G4Gamma::Gamma()->GetProcessManager();
-      G4GammaConversion* conv = new G4GammaConversion();
-      G4PenelopeGammaConversionModel* convModel = new G4PenelopeGammaConversionModel();
-      convModel->SetHighEnergyLimit(highEnergyLimit);
-      conv->AddEmModel(0, convModel);
-   pManager->AddDiscreteProcess(conv);
-      G4ComptonScattering* compt = new G4ComptonScattering();
-      G4PenelopeComptonModel* comptModel = new G4PenelopeComptonModel();
-      comptModel->SetHighEnergyLimit(highEnergyLimit);
-      compt->AddEmModel(0, comptModel);
-   pManager->AddDiscreteProcess(compt);
-      G4PhotoElectricEffect* phot = new G4PhotoElectricEffect();
-      G4PenelopePhotoElectricModel* photModel = new G4PenelopePhotoElectricModel();
-      photModel->SetHighEnergyLimit(highEnergyLimit);
-      phot->AddEmModel(0, photModel);
-   pManager->AddDiscreteProcess(phot);
+   pManager->AddDiscreteProcess(new G4GammaConversion());
+   pManager->AddDiscreteProcess(new G4ComptonScattering());
+   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
 
    //Electorn
    pManager = G4Electron::Electron()->GetProcessManager();
    G4VProcess* theeminusMultipleScattering = new G4eMultipleScattering();
-      G4eIonisation* eIoni = new G4eIonisation();
-      G4PenelopeIonisationModel* eIoniModel = new G4PenelopeIonisationModel();
-      eIoniModel->SetHighEnergyLimit(highEnergyLimit); 
-      eIoni->AddEmModel(0, eIoniModel, new G4UniversalFluctuation() );
-      G4eBremsstrahlung* eBrem = new G4eBremsstrahlung();
-      G4PenelopeBremsstrahlungModel* eBremModel = new G4PenelopeBremsstrahlungModel();
-      eBremModel->SetHighEnergyLimit(highEnergyLimit);
-      eBrem->AddEmModel(0, eBremModel);
+   G4VProcess* theeminusIonisation         = new G4eIonisation();
+   G4VProcess* theeminusBremsstrahlung     = new G4eBremsstrahlung();
    // 
    //  add process
    pManager->AddProcess(theeminusMultipleScattering);
-   pManager->AddProcess(eIoni);
-   pManager->AddProcess(eBrem);
+   pManager->AddProcess(theeminusIonisation);
+   pManager->AddProcess(theeminusBremsstrahlung);
    //
    // set ordering for AlongStepDoIt
    pManager->SetProcessOrdering(theeminusMultipleScattering, idxAlongStep,1);
-   pManager->SetProcessOrdering(eIoni,         idxAlongStep,2);
-   pManager->SetProcessOrdering(eBrem,     idxAlongStep,3);
+   pManager->SetProcessOrdering(theeminusIonisation,         idxAlongStep,2);
+   pManager->SetProcessOrdering(theeminusBremsstrahlung,     idxAlongStep,3);
    //
    // set ordering for PostStepDoIt
    pManager->SetProcessOrdering(theeminusMultipleScattering, idxPostStep,1);
-   pManager->SetProcessOrdering(eIoni,         idxPostStep,2);
-   pManager->SetProcessOrdering(eBrem,     idxPostStep,3);
+   pManager->SetProcessOrdering(theeminusIonisation,         idxPostStep,2);
+   pManager->SetProcessOrdering(theeminusBremsstrahlung,     idxPostStep,3);
 
    //Positron
    pManager = G4Positron::Positron()->GetProcessManager();
    G4VProcess* theeplusMultipleScattering = new G4eMultipleScattering();
-      G4eIonisation* pIoni = new G4eIonisation();
-      G4PenelopeIonisationModel* pIoniModel = new G4PenelopeIonisationModel();
-      eIoniModel->SetHighEnergyLimit(highEnergyLimit); 
-      eIoni->AddEmModel(0, pIoniModel, new G4UniversalFluctuation() );
-      G4eBremsstrahlung* pBrem = new G4eBremsstrahlung();
-      G4PenelopeBremsstrahlungModel* pBremModel = new G4PenelopeBremsstrahlungModel();
-      eBremModel->SetHighEnergyLimit(highEnergyLimit);
-      eBrem->AddEmModel(0, pBremModel);
-      G4eplusAnnihilation* eAnni = new G4eplusAnnihilation();
-      G4PenelopeAnnihilationModel* eAnniModel = new G4PenelopeAnnihilationModel();
-      eAnniModel->SetHighEnergyLimit(highEnergyLimit); 
-      eAnni->AddEmModel(0, eAnniModel);
+   G4VProcess* theeplusIonisation         = new G4eIonisation();
+   G4VProcess* theeplusBremsstrahlung     = new G4eBremsstrahlung();
+   G4VProcess* theeplusAnnihilation       = new G4eplusAnnihilation();
 
    pManager->AddProcess(theeplusMultipleScattering);
-   pManager->AddProcess(pIoni);
-   pManager->AddProcess(pBrem);
-   pManager->AddProcess(eAnni);
+   pManager->AddProcess(theeplusIonisation);
+   pManager->AddProcess(theeplusBremsstrahlung);
+   pManager->AddProcess(theeplusAnnihilation);
    //
    // set ordering for AtRestDoIt
-   pManager->SetProcessOrderingToFirst(eAnni, idxAtRest);
+   pManager->SetProcessOrderingToFirst(theeplusAnnihilation, idxAtRest);
    //
    // set ordering for AlongStepDoIt
    pManager->SetProcessOrdering(theeplusMultipleScattering, idxAlongStep,1);
-   pManager->SetProcessOrdering(eIoni,         idxAlongStep,2);
-   pManager->SetProcessOrdering(eBrem,     idxAlongStep,3);
+   pManager->SetProcessOrdering(theeplusIonisation,         idxAlongStep,2);
+   pManager->SetProcessOrdering(theeplusBremsstrahlung,     idxAlongStep,3);
    //
    // set ordering for PostStepDoIt
    pManager->SetProcessOrdering(theeplusMultipleScattering, idxPostStep,1);
-   pManager->SetProcessOrdering(eIoni,         idxPostStep,2);
-   pManager->SetProcessOrdering(eBrem,     idxPostStep,3);
-   pManager->SetProcessOrdering(eAnni,       idxPostStep,4);
-
-  // Deexcitation
-  //
-  G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
-  de->SetFluo(true);
-  de->SetAuger(false);
-  de->SetPIXE(false);
-  G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+   pManager->SetProcessOrdering(theeplusIonisation,         idxPostStep,2);
+   pManager->SetProcessOrdering(theeplusBremsstrahlung,     idxPostStep,3);
+   pManager->SetProcessOrdering(theeplusAnnihilation,       idxPostStep,4);
 
 }

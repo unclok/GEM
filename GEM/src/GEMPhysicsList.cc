@@ -71,14 +71,14 @@ GEMPhysicsList::GEMPhysicsList():  G4VModularPhysicsList()
   G4cout << "" << G4endl;
 
   // default cut value  (1.0mm)
-  defaultCutValue = 1.*um;
+  defaultCutValue = 1*um;
   SetVerboseLevel(1);
 
   // General Physics ( Create ALL Particle and apply Decay )
   RegisterPhysics( new GEMGeneralPhysics("general") );
 
   // EM Physics ( Apply related Processes to gamma and e-/+)
-  RegisterPhysics( new GEMEMPhysics("penelope EM"));
+  RegisterPhysics( new GEMEMPhysics("Standard EM"));
 
   // Muon Physics ( Apply related processes to mu and tau
   RegisterPhysics(  new GEMMuonPhysics("muon"));

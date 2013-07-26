@@ -34,6 +34,8 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "G4UserLimits.hh"
+#include "G4ThreeVector.hh"
 
 GEMElectricField::GEMElectricField()
 {
@@ -41,7 +43,6 @@ GEMElectricField::GEMElectricField()
 //  By = 1.0*tesla;
 
 	ifstream infile;
-	double GEMElec[6][648025];
 	double temp[6];
 	double blank[3];
         infile.open("/home/unclok/example/model/Field_map.txt");
@@ -50,31 +51,32 @@ GEMElectricField::GEMElectricField()
                 getline(infile, str);
         }
 
-        for(int i=0;i<648025;i++){
-                getline(infile, str);
-                sscanf(str.c_str(),"%lf %lf %lf %lf %lf %lf %lf %lf %lf",&temp[0],&temp[1],&temp[2],&temp[3],&temp[4],&temp[5],&blank[0],&blank[1],&blank[2]);
-		for(G4int j=0;j<3;j++){
-			GEMElec[j][i]=temp[j]*um;
-			if(i==0)min[j]=GEMElec[j][i];
-		}
-		for(G4int j=3;j<6;j++){
-			GEMElec[j][i]=temp[j]*coulomb/m2;
+        for(int i=0;i<161;i++){
+		for(int j=0;j<161;j++){
+			for(int k=0;k<25;k++){
+     	         	  getline(infile, str);
+     	         	  sscanf(str.c_str(),"%lf %lf %lf %lf %lf %lf %lf %lf %lf",&temp[0],&temp[1],&temp[2],&temp[3],&temp[4],&temp[5],&blank[0],&blank[1],&blank[2]);
+				for(int p=0;p<3;p++){
+					GEMPosition[p][i][j][k]=temp[p]*um;
+					GEMElec[p][i][j][k]=temp[p]*coulomb/m2;
+				}
+			}
 		}
         }
         infile.close();
 
-  min[0] = temp[0]*um;
-  min[1] = temp[1]*um;
-  min[2] = temp[2]*um;
+  max[0] = temp[0]*um;
+  max[1] = temp[1]*um;
+  max[2] = temp[2]*um;
 
   G4cout << "\n ---> ... done reading " << endl;
 
   // G4cout << " Read values of field from file " << filename << endl; 
   G4cout << " ---> assumed the order:  x, y, z, Dx, Dy, Dz "
          << "\n ---> Min values x,y,z: " 
-         << min[0]/cm << " " << min[1]/cm << " " << min[2]/cm << " um "
+         << min[0]/um << " " << min[1]/um << " " << min[2]/um << " um "
          << "\n ---> Max values x,y,z: "
-         << max[0]/cm << " " << max[1]/cm << " " << max[2]/cm << " um "
+         << max[0]/um << " " << max[1]/um << " " << max[2]/um << " um "
          << endl;
 
   // Should really check that the limits are not the wrong way around.
@@ -94,6 +96,7 @@ GEMElectricField::GEMElectricField()
          << dx/um << " " << dy/um << " " << dz/um << " um in z "
          << "\n-----------------------------------------------------------" << endl;
 
+	G4double uStepMax = 1.0*um;
 }
 
 GEMElectricField::~GEMElectricField()
@@ -113,6 +116,14 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
 	double maxy=max[1];
 	double maxz=max[2];
 
+	// Initialize Field
+	Bfield[0] = 0.0;
+	Bfield[1] = 0.0;
+	Bfield[2] = 0.0;
+	Bfield[3] = 0.0;
+	Bfield[4] = 0.0;
+	Bfield[5] = 0.0;
+
   // Check that the point is within the defined region 
   if ( x>=minx && x<=maxx &&
        y>=miny && y<=maxy && 
@@ -131,7 +142,7 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
     // Need addresses of these to pass to modf below.
     // modf uses its second argument as an OUTPUT argument.
     double xdindex, ydindex, zdindex;
-    
+   
     // Position of the point within the cuboid defined by the
     // nearest surrounding tabulated points
     double xlocal = ( std::modf(xfraction*(nx-1), &xdindex));
@@ -155,44 +166,64 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
     valx0z1= table[xindex  ][0][zindex+1]; mulx0z1= (1-xlocal) * zlocal;
     valx1z1= table[xindex+1][0][zindex+1]; mulx1z1=  xlocal    * zlocal;
 #endif
-
+//	G4cout << "----------------------GetFieldValue Working----------------------" << endl;
+	Bfield[3] = 0.0;
+	Bfield[4] = 0.0;
+	Bfield[4] = 0.0;
         // Full 3-dimensional version
     Bfield[3] =
-      xField[xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
-      xField[xindex  ][yindex  ][zindex+1] * (1-xlocal) * (1-ylocal) *    zlocal  +
-      xField[xindex  ][yindex+1][zindex  ] * (1-xlocal) *    ylocal  * (1-zlocal) +
-      xField[xindex  ][yindex+1][zindex+1] * (1-xlocal) *    ylocal  *    zlocal  +
-      xField[xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
-      xField[xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
-      xField[xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
-      xField[xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
+      GEMElec[0][xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
+      GEMElec[0][xindex  ][yindex  ][zindex+1] * (1-xlocal) * (1-ylocal) *    zlocal  +
+      GEMElec[0][xindex  ][yindex+1][zindex  ] * (1-xlocal) *    ylocal  * (1-zlocal) +
+      GEMElec[0][xindex  ][yindex+1][zindex+1] * (1-xlocal) *    ylocal  *    zlocal  +
+      GEMElec[0][xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
+      GEMElec[0][xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
+      GEMElec[0][xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
+      GEMElec[0][xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
     Bfield[4] =
-      yField[xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
-      yField[xindex  ][yindex  ][zindex+1] * (1-xlocal) * (1-ylocal) *    zlocal  +
-      yField[xindex  ][yindex+1][zindex  ] * (1-xlocal) *    ylocal  * (1-zlocal) +
-      yField[xindex  ][yindex+1][zindex+1] * (1-xlocal) *    ylocal  *    zlocal  +
-      yField[xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
-      yField[xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
-      yField[xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
-      yField[xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
+      GEMElec[1][xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
+      GEMElec[1][xindex  ][yindex  ][zindex+1] * (1-xlocal) * (1-ylocal) *    zlocal  +
+      GEMElec[1][xindex  ][yindex+1][zindex  ] * (1-xlocal) *    ylocal  * (1-zlocal) +
+      GEMElec[1][xindex  ][yindex+1][zindex+1] * (1-xlocal) *    ylocal  *    zlocal  +
+      GEMElec[1][xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
+      GEMElec[1][xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
+      GEMElec[1][xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
+      GEMElec[1][xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
     Bfield[5] =
-      zField[xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
-      zField[xindex  ][yindex  ][zindex+1] * (1-xlocal) * (1-ylocal) *    zlocal  +
-      zField[xindex  ][yindex+1][zindex  ] * (1-xlocal) *    ylocal  * (1-zlocal) +
-      zField[xindex  ][yindex+1][zindex+1] * (1-xlocal) *    ylocal  *    zlocal  +
-      zField[xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
-      zField[xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
-      zField[xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
-      zField[xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
+      GEMElec[2][xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
+      GEMElec[2][xindex  ][yindex  ][zindex+1] * (1-xlocal) * (1-ylocal) *    zlocal  +
+      GEMElec[2][xindex  ][yindex+1][zindex  ] * (1-xlocal) *    ylocal  * (1-zlocal) +
+      GEMElec[2][xindex  ][yindex+1][zindex+1] * (1-xlocal) *    ylocal  *    zlocal  +
+      GEMElec[2][xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
+      GEMElec[2][xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
+      GEMElec[2][xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
+      GEMElec[2][xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
 
+//	G4cout << "-----------------------Acceptable!!---------------------" << endl;
   } else {
+	Bfield[0] = 0.0;
+	Bfield[1] = 0.0;
+	Bfield[2] = 0.0;
     Bfield[3] = 0.0;
     Bfield[4] = 0.0;
     Bfield[5] = 0.0;
   }
-	G4cout << "-------------------------GetFieldValue Check---------------------" << endl;
+/*	G4cout << "-------------------------GetFieldValue Check---------------------" << endl;
+	G4cout << "x : " << x << endl;
+	G4cout << "y : " << y << endl;
+	G4cout << "z : " << z << endl;
+	G4cout << "minx : " << minx << endl;
+	G4cout << "miny : " << miny << endl;
+	G4cout << "minz : " << minz << endl;
+	G4cout << "maxx : " << maxx << endl;
+	G4cout << "maxy : " << maxy << endl;
+	G4cout << "maxz : " << maxz << endl;
+	G4cout << "Hx : " << Bfield[0] << endl;
+	G4cout << "Hy : " << Bfield[1] << endl;
+	G4cout << "Hz : " << Bfield[2] << endl;
 	G4cout << "Dx : " << Bfield[3] << endl;
 	G4cout << "Dy : " << Bfield[4] << endl;
 	G4cout << "Dz : " << Bfield[5] << endl;
+*/
 }
 
