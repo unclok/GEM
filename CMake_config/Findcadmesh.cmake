@@ -13,7 +13,7 @@ message( STATUS cadmesh_INCLUDE_DIR ${cadmesh_INCLUDE_DIR})
 IF(DEFINED ENV{ASSIMP_PATH})
     find_package(assimp)
     set(cadmesh_LIBRARIES ${cadmesh_LIBRARIES} ${ASSIMP_LIBRARIES})
-    message( assimp LIBRARIES : ${ASSIMP_LIBRARIES})
+    #message( assimp LIBRARIES : ${ASSIMP_LIBRARIES})
     add_definitions(${CMAKE_CXX_FLAGS} " -DNOVCGLIB")
 ENDIF()
 

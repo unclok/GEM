@@ -14,7 +14,6 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../CMake_config")
 set(Geant4_DIR /pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2)
-set(assimp_DIR /pnfs/opt/assimp/lib/cmake/assimp-3.0)
 find_package(cadmesh)
 
 include(${Geant4_USE_FILE})
@@ -23,7 +22,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR}
 ${cadmesh_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIRS})
 
 
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
+
+
 
 #find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
