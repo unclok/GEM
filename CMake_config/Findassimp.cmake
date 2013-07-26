@@ -38,8 +38,11 @@ if( WIN32 )
 endif()
 set( ASSIMP_LINK_FLAGS "" )
 set( ASSIMP_LIBRARY_DIRS "${ASSIMP_ROOT_DIR}/lib")
-set( ASSIMP_INCLUDE_DIRS "${ASSIMP_ROOT_DIR}/include")
-set( ASSIMP_LIBRARIES assimp${ASSIMP_LIBRARY_SUFFIX})
+
+
+find_library(ASSIMP_LIBRARIES NAMES assimp HINTS $ENV{ASSIMP_PATHS} $ENV{ASSIMP_PATH}/lib)
+find_path( ASSIMP_INCLUDE_DIRS NAMES assimp/scene.h assimp/Importer.hpp assimp/postprocess.h HINTS $ENV{ASSIMP_PATH} $ENV{ASSIMP_PATH}/include)
+
 
 # the boost version assimp was compiled with
 set( ASSIMP_Boost_VERSION ".")
