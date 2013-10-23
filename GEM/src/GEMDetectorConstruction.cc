@@ -106,7 +106,7 @@ GEMDetectorConstruction::~GEMDetectorConstruction()
   delete electricVisAtt;
 //  delete armVisAtt;
 //  delete hodoscopeVisAtt;
-  delete chamberVisAtt;
+//  delete chamberVisAtt;
 //  delete wirePlaneVisAtt;
 //  delete EMcalorimeterVisAtt;
 //  delete cellVisAtt;
@@ -182,14 +182,14 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   	pEquation = new G4EqMagElectricField(electricField);
   	pStepper = new G4SimpleHeum(pEquation, 8);
       fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-	G4double minEps = .001*um;
-	G4double maxEps = .01*um;
+	G4double minEps = .00001*um;
+	G4double maxEps = .0001*um;
 
 	fieldMgr->SetMinimumEpsilonStep(minEps);
 	fieldMgr->SetMaximumEpsilonStep(maxEps);
-	fieldMgr->SetDeltaOneStep(0.05*um);
+	fieldMgr->SetDeltaOneStep(0.005*um);
 	G4cout << "EpsilonStep : set min= " << minEps << " max= " << maxEps << endl;
-  	pIntgrDriver = new G4MagInt_Driver(0.01*um,pStepper,pStepper->GetNumberOfVariables() );
+  	pIntgrDriver = new G4MagInt_Driver(0.001*um,pStepper,pStepper->GetNumberOfVariables() );
   	pChordFinder = new G4ChordFinder(pIntgrDriver);
     fieldMgr->SetDetectorField(electricField);
 	fieldMgr->SetChordFinder(pChordFinder);
@@ -205,9 +205,9 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 
       propInField =
         G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
-      propInField->SetMinimumEpsilonStep(1e-11);
-      propInField->SetMaximumEpsilonStep(1e-10);
-	propInField->SetLargestAcceptableStep(0.1*um);
+      propInField->SetMinimumEpsilonStep(1e-3);
+      propInField->SetMaximumEpsilonStep(1e-4);
+	propInField->SetLargestAcceptableStep(0.001*um);
 
   }
 

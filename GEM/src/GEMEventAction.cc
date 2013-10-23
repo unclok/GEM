@@ -60,7 +60,7 @@ GEMEventAction::GEMEventAction()
   HHC1ID = SDman->GetCollectionID(colName="hodoscope1/hodoscopeColl");
 //  HHC2ID = SDman->GetCollectionID(colName="hodoscope2/hodoscopeColl");
   DHC1ID = SDman->GetCollectionID(colName="chamber1/driftChamberColl");
-//  DHC2ID = SDman->GetCollectionID(colName="chamber2/driftChamberColl");
+  DHC2ID = SDman->GetCollectionID(colName="chamber2/driftChamberColl");
 //  ECHCID = SDman->GetCollectionID(colName="EMcalorimeter/EMcalorimeterColl");
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //  HCHCID = SDman->GetCollectionID(colName="HadCalorimeter/HadCalorimeterColl");
@@ -131,7 +131,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
 //  GEMHodoscopeHitsCollection* HHC1 = 0;
 //  GEMHodoscopeHitsCollection* HHC2 = 0;
   GEMDriftChamberHitsCollection* DHC1 = 0;
-//  GEMDriftChamberHitsCollection* DHC2 = 0;
+  GEMDriftChamberHitsCollection* DHC2 = 0;
 //  GEMEmCalorimeterHitsCollection* ECHC = 0;
 //  GEMHadCalorimeterHitsCollection* HCHC = 0;
   if(HCE)
@@ -139,7 +139,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
 //    HHC1 = (GEMHodoscopeHitsCollection*)(HCE->GetHC(HHC1ID));
 //    HHC2 = (GEMHodoscopeHitsCollection*)(HCE->GetHC(HHC2ID));
     DHC1 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC1ID));
-//    DHC2 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC2ID));
+    DHC2 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC2ID));
 //    ECHC = (GEMEmCalorimeterHitsCollection*)(HCE->GetHC(ECHCID));
 //    HCHC = (GEMHadCalorimeterHitsCollection*)(HCE->GetHC(HCHCID));
   }
@@ -158,7 +158,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       if (dc1XY) dc1XY->fill(localPos.x(), localPos.y());
     }
   }
-/*  if (DHC2 && dc2Hits)
+  if (DHC2 && dc2Hits)
   {
     int n_hit = DHC2->entries();
     dc2Hits->fill(n_hit);
@@ -169,13 +169,13 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       if (dc2XY) dc2XY->fill(localPos.x(), localPos.y());
     }
   }
-*/
+
   // Fill the tuple
 
   if (tuple)
   {
 	if (DHC1) tuple->fill(0,DHC1->entries());
-//	if (DHC2) tuple->fill(1,DHC2->entries());
+	if (DHC2) tuple->fill(1,DHC2->entries());
 /*	if(ECHC)
     {
       int iHit = 0;
@@ -265,7 +265,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       }
     }
   }
-/*  if(DHC2)
+  if(DHC2)
   {
     int n_hit = DHC2->entries();
     G4cout << "Drift Chamber 2 has " << n_hit << " hits." << G4endl;
@@ -278,7 +278,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       }
     }
   }
-  if(ECHC)
+/*  if(ECHC)
   {
     int iHit = 0;
     double totalE = 0.;
