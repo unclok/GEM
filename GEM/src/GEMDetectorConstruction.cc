@@ -377,10 +377,13 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   G4LogicalVolume* GEMLogical
     = new G4LogicalVolume(GEMSolid,argonGas,"GEMLogical",fieldMgr,0,0);
 	GEMLogical->SetFieldManager(fieldMgr, true);
+  G4LogicalVolume* GEMLogical2
+    = new G4LogicalVolume(GEMSolid,argonGas,"GEMLogical",fieldMgr,0,0);
+	GEMLogical->SetFieldManager(fieldMgr, true);
   new G4PVPlacement(0,G4ThreeVector(0.,0.,-35.*um),GEMLogical,
-                    "GEMPhysical",worldLogical,0,0);
+                    "GEMPhysical1",worldLogical,0,0);
   new G4PVPlacement(0,G4ThreeVector(0.,0.,35.*um),GEMLogical,
-                    "GEMPhysical",worldLogical,0,0);
+                    "GEMPhysical2",worldLogical,0,0);
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   // sensitive detectors -----------------------------------------------------

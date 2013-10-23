@@ -30,10 +30,10 @@
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 90. 45.
+/vis/viewer/set/viewpointThetaPhi 45. 45.
 #
 # Specify zoom value:
-/vis/viewer/zoom 2.0
+/vis/viewer/zoom 0.6 
 #
 # Specify style (surface or wireframe):
 /vis/viewer/set/style wireframe
@@ -70,7 +70,7 @@
 #/vis/scene/endOfEventAction accumulate
 #
 # Re-establish auto refreshing and verbosity:
-/vis/viewer/set/autoRefresh false
+/vis/viewer/set/autoRefresh true 
 /vis/verbose warnings
 #
 # For file-based drivers, use this to create an empty detector view:
@@ -80,28 +80,28 @@
 #/mydet/armAngle 60. deg
 #/mydet/fieldValue 2. tesla
 /gun/particle mu-
-/mydet/momentum 500. keV
-/gun/position 0. 75 -70 um
-/run/setCut 0.01 um
+/mydet/momentum 10. eV
+/gun/position -10. 10. -70 um
+/run/setCut 0.0001 um
 /run/beamOn 1
 #
-/vis/scene/endOfEventAction accumulate
+#/vis/scene/endOfEventAction accumulate
 #/mydet/armAngle 30. deg
-/gun/particle mu-
-/mydet/momentum 500. keV
+#/gun/particle mu-
+#/mydet/momentum 500. keV
 #/mydet/sigmaMomentum 0. 
 #/mydet/sigmaAngle 0.
-/gun/position 0. 0. -70 um
-/run/setCut 0.01 um
-/run/beamOn 1
+#/gun/position 0. 0. -70 um
+#/run/setCut 0.01 um
+#/run/beamOn 1
 #
 # This time, set visualization to accumulate many events into one picture
 #
-/vis/scene/endOfEventAction accumulate
+#/vis/scene/endOfEventAction accumulate
 #/mydet/sigmaAngle 2. deg
-/gun/particle mu-
-/mydet/momentum 500. keV
-/gun/position 0. 243 -70 um
-/run/setCut 0.01 um
-/run/beamOn 1
+#/gun/particle mu-
+#/mydet/momentum 500. keV
+#/gun/position 0. 243 -70 um
+#/run/setCut 0.01 um
+#/run/beamOn 1
 #
