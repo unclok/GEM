@@ -13,16 +13,18 @@ else()
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../CMake_config")
-set(Geant4_DIR /pnfs/opt/cemachines/geant4.9.6/lib64/Geant4-9.6.2)
-find_package(cadmesh)
+set(Geant4_DIR /pnfs/opt/SLC5.9/geant4.9.5/lib64/Geant4-9.5.1)
+#find_package(cadmesh)
 
 include(${Geant4_USE_FILE})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR}
-${cadmesh_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIRS})
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR}
+#${cadmesh_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
 
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 
 
@@ -30,6 +32,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
 add_executable(GEMapp EXCLUDE_FROM_ALL GEMapp.cc ${sources})
-target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
+#target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
+target_link_libraries(GEMapp ${Geant4_LIBRARIES} )
 
 

@@ -38,31 +38,31 @@ GEMDetectorConstMessenger::GEMDetectorConstMessenger(GEMDetectorConstruction* mp
   mydetDirectory = new G4UIdirectory("/mydet/");
   mydetDirectory->SetGuidance("GEM detector setup control commands.");
 
-  armCmd = new G4UIcmdWithADoubleAndUnit("/mydet/armAngle",this);
-  armCmd->SetGuidance("Rotation angle of the second arm.");
-  armCmd->SetParameterName("angle",true);
-  armCmd->SetRange("angle>=0. && angle<180.");
-  armCmd->SetDefaultValue(30.);
-  armCmd->SetDefaultUnit("deg");
+//  armCmd = new G4UIcmdWithADoubleAndUnit("/mydet/armAngle",this);
+//  armCmd->SetGuidance("Rotation angle of the second arm.");
+//  armCmd->SetParameterName("angle",true);
+//  armCmd->SetRange("angle>=0. && angle<180.");
+//  armCmd->SetDefaultValue(30.);
+//  armCmd->SetDefaultUnit("deg");
 }
 
 GEMDetectorConstMessenger::~GEMDetectorConstMessenger()
 {
-  delete armCmd;
+//  delete armCmd;
   delete mydetDirectory;
 }
 
 void GEMDetectorConstMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
 {
-  if( command==armCmd )
-  { target->SetArmAngle(armCmd->GetNewDoubleValue(newValue)); }
+//  if( command==armCmd )
+//  { target->SetArmAngle(armCmd->GetNewDoubleValue(newValue)); }
 }
 
 G4String GEMDetectorConstMessenger::GetCurrentValue(G4UIcommand * command)
 {
   G4String cv;
-  if( command==armCmd )
-  { cv = armCmd->ConvertToString(target->GetArmAngle(),"deg"); }
+//  if( command==armCmd )
+//  { cv = armCmd->ConvertToString(target->GetArmAngle(),"deg"); }
 
   return cv;
 }

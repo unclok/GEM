@@ -53,9 +53,9 @@ GEMPrimaryGeneratorAction::GEMPrimaryGeneratorAction()
   G4String particleName;
   positron = particleTable->FindParticle(particleName="e+");
   electron = particleTable->FindParticle(particleName="e-");
-  muon = particleTable->FindParticle(particleName="mu+");
-  pion = particleTable->FindParticle(particleName="pi+");
-  kaon = particleTable->FindParticle(particleName="kaon+");
+  muon = particleTable->FindParticle(particleName="mu-");
+  pion = particleTable->FindParticle(particleName="pi-");
+  kaon = particleTable->FindParticle(particleName="kaon-");
   proton = particleTable->FindParticle(particleName="proton");
 
   // default particle kinematics
@@ -80,7 +80,7 @@ void GEMPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     switch(i)
     {
       case 0:
-        particle = positron;
+        particle = electron;
         break;
       case 1:
         particle = muon;

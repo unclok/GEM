@@ -33,7 +33,7 @@
 /vis/viewer/set/viewpointThetaPhi 90. 45.
 #
 # Specify zoom value:
-/vis/viewer/zoom 1.6
+/vis/viewer/zoom 2.0
 #
 # Specify style (surface or wireframe):
 /vis/viewer/set/style wireframe
@@ -46,8 +46,9 @@
 /vis/scene/add/trajectories smooth
 /vis/modeling/trajectories/create/drawByCharge
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
-/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 0.00001
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 0.001
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
+#/tracking/storeTrajectory 0
 #
 # Draw hits at end of event:
 #/vis/scene/add/hits
@@ -69,7 +70,7 @@
 #/vis/scene/endOfEventAction accumulate
 #
 # Re-establish auto refreshing and verbosity:
-/vis/viewer/set/autoRefresh true
+/vis/viewer/set/autoRefresh false
 /vis/verbose warnings
 #
 # For file-based drivers, use this to create an empty detector view:
@@ -78,6 +79,7 @@
 /vis/scene/endOfEventAction accumulate
 #/mydet/armAngle 60. deg
 #/mydet/fieldValue 2. tesla
+/gun/particle mu-
 /mydet/momentum 500. keV
 /gun/position 0. 75 -70 um
 /run/setCut 0.01 um
@@ -85,6 +87,7 @@
 #
 /vis/scene/endOfEventAction accumulate
 #/mydet/armAngle 30. deg
+/gun/particle mu-
 /mydet/momentum 500. keV
 #/mydet/sigmaMomentum 0. 
 #/mydet/sigmaAngle 0.
@@ -96,6 +99,7 @@
 #
 /vis/scene/endOfEventAction accumulate
 #/mydet/sigmaAngle 2. deg
+/gun/particle mu-
 /mydet/momentum 500. keV
 /gun/position 0. 243 -70 um
 /run/setCut 0.01 um

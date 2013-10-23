@@ -41,6 +41,9 @@
 #include "G4VSolid.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
+#include "G4Cons.hh"
+#include "G4UnionSolid.hh"
+#include "G4SubtractionSolid.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -66,31 +69,34 @@
 #include "G4PVReplica.hh"
 #include "GEMHadCalorimeter.hh"
 
-#include "CADMesh.hh"
+//#include "CADMesh.hh"
 
 GEMDetectorConstruction::GEMDetectorConstruction()
  : air(0), 
 argonGas(0), scintillator(0), CsI(0), lead(0), Kapton(0),
    worldVisAtt(0), electricVisAtt(0),
-   armVisAtt(0), hodoscopeVisAtt(0), chamberVisAtt(0),
-   wirePlaneVisAtt(0), 
+//   armVisAtt(0), hodoscopeVisAtt(0), 
+chamberVisAtt(0),
+//   wirePlaneVisAtt(0), 
 //EMcalorimeterVisAtt(0), cellVisAtt(0),
 //   HadCalorimeterVisAtt(0), HadCalorimeterCellVisAtt(0), 
-kaptonVisAtt(0), copperVisAtt(0),
-   armAngle(30.*deg)//, secondArmPhys(0)
+kaptonVisAtt(0), copperVisAtt(0)//,
+//   armAngle(30.*deg)//, secondArmPhys(0)
 
 {
   messenger = new GEMDetectorConstMessenger(this);
   electricField = new GEMElectricField();
+//  globalfieldMgr = GetGlobalFieldManager(); 
   fieldMgr = new G4FieldManager();
-  armRotation = new G4RotationMatrix();
-  armRotation->rotateY(armAngle);
+//  armRotation = new G4RotationMatrix();
+//  armRotation->rotateY(armAngle);
 }
 
 GEMDetectorConstruction::~GEMDetectorConstruction()
 {
-  delete armRotation;
+//  delete armRotation;
   delete electricField;
+//  delete globalfieldMgr;
   delete fieldMgr;
   delete messenger;
 
@@ -98,28 +104,28 @@ GEMDetectorConstruction::~GEMDetectorConstruction()
 
   delete worldVisAtt;
   delete electricVisAtt;
-  delete armVisAtt;
-  delete hodoscopeVisAtt;
+//  delete armVisAtt;
+//  delete hodoscopeVisAtt;
   delete chamberVisAtt;
-  delete wirePlaneVisAtt;
+//  delete wirePlaneVisAtt;
 //  delete EMcalorimeterVisAtt;
 //  delete cellVisAtt;
 //  delete HadCalorimeterVisAtt;
 //  delete HadCalorimeterCellVisAtt;
   delete kaptonVisAtt;
   delete copperVisAtt;
+//  delete propInField;
+//  delete pChordFinder;
+//  delete pIntgrDriver;
 //  delete pEquation;
 //  delete pStepper;
-//  delete pIntgrDriver;
-//  delete pChordFinder;
-//  delete propInField;
 }
 
 G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 {
   // All managed (deleted) by SDManager
 
-  G4VSensitiveDetector* hodoscope1;
+//  G4VSensitiveDetector* hodoscope1;
 //  G4VSensitiveDetector* hodoscope2;
   G4VSensitiveDetector* chamber1;
 //  G4VSensitiveDetector* chamber2;
@@ -149,12 +155,12 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 //  Load external 3d files;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   offset = G4ThreeVector(0*um, 0, 0);
-  CADMesh * kapton_mesh = new CADMesh("/home/unclok/example/model/Kapton_Kapton.stl", "STL", um, offset, false);
+//  CADMesh * kapton_mesh = new CADMesh("/home/unclok/example/model/Kapton_Kapton.stl", "STL", um, offset, false);
 //  CADMesh * kaptonreverse_mesh = new CADMesh("/home/unclok/example/model/Kapton_Kapton.stl", "STL", mm, offset, true);
-  CADMesh * copper1_mesh = new CADMesh("/home/unclok/example/model/Copper_Copper_1.stl", "STL", um, offset, false);
-  CADMesh * copper2_mesh = new CADMesh("/home/unclok/example/model/Copper_Copper_2.stl", "STL", um, offset, false);
-  CADMesh * argon1_mesh = new CADMesh("/home/unclok/example/model/Argon_Argon_1.stl", "STL", um, offset, false);
-  CADMesh * argon2_mesh = new CADMesh("/home/unclok/example/model/Argon_Argon_2.stl", "STL", um, offset, false);
+//  CADMesh * copper1_mesh = new CADMesh("/home/unclok/example/model/Copper_Copper_1.stl", "STL", um, offset, false);
+//  CADMesh * copper2_mesh = new CADMesh("/home/unclok/example/model/Copper_Copper_2.stl", "STL", um, offset, false);
+//  CADMesh * argon1_mesh = new CADMesh("/home/unclok/example/model/Argon_Argon_1.stl", "STL", um, offset, false);
+//  CADMesh * argon2_mesh = new CADMesh("/home/unclok/example/model/Argon_Argon_2.stl", "STL", um, offset, false);
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //  G4VSensitiveDetector* HadCalorimeter;
@@ -174,19 +180,19 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   if(!fieldIsInitialized)
   {
   	pEquation = new G4EqMagElectricField(electricField);
-  	pStepper = new G4SimpleHeum(pEquation, 6);
+  	pStepper = new G4SimpleHeum(pEquation, 8);
       fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-	G4double minEps = 1.0*um;
-	G4double maxEps = 10.0*um;
+	G4double minEps = .001*um;
+	G4double maxEps = .01*um;
 
 	fieldMgr->SetMinimumEpsilonStep(minEps);
 	fieldMgr->SetMaximumEpsilonStep(maxEps);
-	fieldMgr->SetDeltaOneStep(0.5*um);
+	fieldMgr->SetDeltaOneStep(0.05*um);
 	G4cout << "EpsilonStep : set min= " << minEps << " max= " << maxEps << endl;
-  	pIntgrDriver = new G4MagInt_Driver(0.000001*m,pStepper,pStepper->GetNumberOfVariables() );
+  	pIntgrDriver = new G4MagInt_Driver(0.01*um,pStepper,pStepper->GetNumberOfVariables() );
   	pChordFinder = new G4ChordFinder(pIntgrDriver);
-	fieldMgr->SetChordFinder(pChordFinder);
     fieldMgr->SetDetectorField(electricField);
+	fieldMgr->SetChordFinder(pChordFinder);
 	G4cout << "Field Exist : " << fieldMgr->DoesFieldExist() << endl;
 	G4cout << "--------------------GEM Field Initialized------------------" << endl;
     fieldIsInitialized = true;
@@ -201,15 +207,15 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
         G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
       propInField->SetMinimumEpsilonStep(1e-11);
       propInField->SetMaximumEpsilonStep(1e-10);
-	propInField->SetLargestAcceptableStep(10.0*um);
+	propInField->SetLargestAcceptableStep(0.1*um);
 
   }
 
   // geometries --------------------------------------------------------------
   // experimental hall (world volume)
-  G4VSolid* worldSolid = new G4Box("worldBox",400.*um,400.*um,1.*mm);
+  G4VSolid* worldSolid = new G4Box("worldBox",50.*um,50.*um,100.*um);
   G4LogicalVolume* worldLogical
-    = new G4LogicalVolume(worldSolid,air,"worldLogical",0,0,0);
+    = new G4LogicalVolume(worldSolid,argonGas,"worldLogical",0,0,0);
   G4VPhysicalVolume* worldPhysical
     = new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0,0,0);
 /*
@@ -234,13 +240,13 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   G4UserLimits* userLimits = new G4UserLimits(5.0*cm);
   magneticLogical->SetUserLimits(userLimits);
 */
-  // first arm
+/*  // first arm
   G4VSolid* firstArmSolid = new G4Box("firstArmBox",400.*um,400.*um, 700.*um);
   G4LogicalVolume* firstArmLogical
     = new G4LogicalVolume(firstArmSolid,argonGas,"firstArmLogical",0,0,0);
   new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),firstArmLogical,
                     "firstArmPhysical",worldLogical,0,0);
-/*
+*//*
   // second arm
   G4VSolid* secondArmSolid = new G4Box("secondArmBox",2.*m,2.*m,3.5*m);
   G4LogicalVolume* secondArmLogical
@@ -251,7 +257,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
     = new G4PVPlacement(armRotation,G4ThreeVector(x,0.,z),secondArmLogical,
                         "secondArmPhys",worldLogical,0,0);
 */
-  // hodoscopes in first arm
+/*  // hodoscopes in first arm
   G4VSolid* hodoscope1Solid = new G4Box("hodoscope1Box",400.*um,1.*um,1.*um);
   G4LogicalVolume* hodoscope1Logical
     = new G4LogicalVolume(hodoscope1Solid,scintillator,"hodoscope1Logical",0,0,0);
@@ -279,7 +285,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
     = new G4LogicalVolume(wirePlane1Solid,argonGas,"wirePlane1Logical",0,0,0);
   new G4PVPlacement(0,G4ThreeVector(0.,0.*um,0.),wirePlane1Logical,
                     "wirePlane1Physical",chamber1Logical,0,0);
-/*
+*//*
   // hodoscopes in second arm
   G4VSolid* hodoscope2Solid = new G4Box("hodoscope2Box",5.*cm,20.*cm,0.5*cm);
   G4LogicalVolume* hodoscope2Logical
@@ -367,18 +373,20 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 */
   // GEM Mother volume
   G4VSolid* GEMSolid
-    = new G4Box("GEMBox",400.*um,400.*um,60*um);
+    = new G4Box("GEMBox",50.*um,50.*um,25.*um);
   G4LogicalVolume* GEMLogical
     = new G4LogicalVolume(GEMSolid,argonGas,"GEMLogical",fieldMgr,0,0);
 	GEMLogical->SetFieldManager(fieldMgr, true);
-  new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,
+  new G4PVPlacement(0,G4ThreeVector(0.,0.,-35.*um),GEMLogical,
+                    "GEMPhysical",worldLogical,0,0);
+  new G4PVPlacement(0,G4ThreeVector(0.,0.,35.*um),GEMLogical,
                     "GEMPhysical",worldLogical,0,0);
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   // sensitive detectors -----------------------------------------------------
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   G4String SDname;
-
+/*
   hodoscope1 = new GEMHodoscope(SDname="/hodoscope1");
   SDman->AddNewDetector(hodoscope1);
   hodoscope1Logical->SetSensitiveDetector(hodoscope1);
@@ -389,7 +397,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   chamber1 = new GEMDriftChamber(SDname="/chamber1");
   SDman->AddNewDetector(chamber1);
   wirePlane1Logical->SetSensitiveDetector(chamber1);
-/*  chamber2 = new GEMDriftChamber(SDname="/chamber2");
+*//*  chamber2 = new GEMDriftChamber(SDname="/chamber2");
   SDman->AddNewDetector(chamber2);
   wirePlane2Logical->SetSensitiveDetector(chamber2);
 
@@ -401,30 +409,41 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   SDman->AddNewDetector(HadCalorimeter);
   HadCalScintiLogical->SetSensitiveDetector(HadCalorimeter);
 */
-  kapton_solid = kapton_mesh->TessellatedMesh();
+  G4VSolid* gem_box_surf = new G4Box("gem_box_surf",50.*um,50.*um,5.*um);
+  G4VSolid* gem_hole_surf = new G4Tubs("gem_hole_surf",0.*um,35.*um,5.*um,0.,360.*deg);
+  argon2_solid = new G4UnionSolid("argon2_solid",gem_hole_surf,gem_hole_surf,0,G4ThreeVector(0.*um,0.*um,40.*um));
+
+  G4VSolid* kapton_box = new G4Box("kapton_box",50.*um,50.*um,15.*um);
+  G4VSolid* kapton_hole1 = new G4Cons("kapton_hole1",0.*um,35.*um,0.*um,15.*um,7.5*um,0.,360.*deg);
+  G4VSolid* kapton_hole2 = new G4Cons("kapton_hole2",0.*um,15.*um,0.*um,35.*um,7.5*um,0.,360.*deg);
+  argon1_solid = new G4UnionSolid("argon1_solid",kapton_hole1,kapton_hole2,0,G4ThreeVector(0.*um,0.*um,15.*um));
+
+  kapton_solid = new G4Box("kapton_box",50.*um,50.*um,15.*um);
   kapton_logical = new G4LogicalVolume(kapton_solid, Kapton, "kapton_logical", 0, 0, 0);
   kapton_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.*um), kapton_logical,
                                          "kapton_physical", GEMLogical, false, 0);
-//  kaptonreverse_solid = kaptonreverse_mesh->TessellatedMesh();
-//  kaptonreverse_logical = new G4LogicalVolume(kaptonreverse_solid, Kapton, "kapton_logical", 0, 0, 0);
-//  kaptonreverse_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-25.*mm), kaptonreverse_logical,
-//                                         "kaptonreverse_physical", worldLogical, false, 0);
-  copper1_solid = copper1_mesh->TessellatedMesh();
-  copper1_logical = new G4LogicalVolume(copper1_solid, lead, "copper1_logical", 0, 0, 0);
-  copper1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0*um), copper1_logical,
+
+  copper1_solid =  new G4Box("gem_box_surf",50.*um,50.*um,5.*um);
+  copper1_logical = new G4LogicalVolume(gem_box_surf, lead, "copper1_logical", 0, 0, 0);
+  copper1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,20*um), copper1_logical,
                                          "copper1_physical", GEMLogical, false, 0);
-  copper2_solid = copper2_mesh->TessellatedMesh();
+
+  copper2_solid = new G4Box("gem_box_surf",50.*um,50.*um,5.*um);
   copper2_logical = new G4LogicalVolume(copper2_solid, lead, "copper2_logical", 0, 0, 0);
-  copper2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0*um), copper2_logical,
+  copper2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-20*um), copper2_logical,
                                          "copper2_physical", GEMLogical, false, 0);
-  argon1_solid = argon1_mesh->TessellatedMesh();
-  argon1_logical = new G4LogicalVolume(argon1_solid, argonGas, "argon1_logical", 0, 0, 0);
-  argon1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0*um), argon1_logical,
+
+  argon1_logical = new G4LogicalVolume(argon1_solid, argonGas, "surf_hole_logical", 0, 0, 0);
+  argon1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-7.5*um), argon1_logical,
                                          "argon1_physical", GEMLogical, false, 0);
-  argon2_solid = argon2_mesh->TessellatedMesh();
+
   argon2_logical = new G4LogicalVolume(argon2_solid, argonGas, "argon2_logical", 0, 0, 0);
-  argon2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0*um), argon2_logical,
+  argon2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-20.*um), argon2_logical,
                                          "argon2_physical", GEMLogical, false, 0);
+
+  chamber1 = new GEMDriftChamber(SDname="/chamber1");
+  SDman->AddNewDetector(chamber1);
+  GEMLogical->SetSensitiveDetector(chamber1);
 
   // visualization attributes ------------------------------------------------
 
@@ -434,7 +453,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 
   electricVisAtt = new G4VisAttributes(G4Colour(0.9,0.9,0.9));   // LightGray
 //  magneticLogical->SetVisAttributes(magneticVisAtt);
-
+/*
   armVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
   armVisAtt->SetVisibility(false);
   firstArmLogical->SetVisAttributes(armVisAtt);
@@ -443,16 +462,16 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   hodoscopeVisAtt = new G4VisAttributes(G4Colour(0.8888,0.0,0.0));
   hodoscope1Logical->SetVisAttributes(hodoscopeVisAtt);
 //  hodoscope2Logical->SetVisAttributes(hodoscopeVisAtt);
-
+*/
   chamberVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-  chamber1Logical->SetVisAttributes(chamberVisAtt);
+  GEMLogical->SetVisAttributes(chamberVisAtt);
 //  chamber2Logical->SetVisAttributes(chamberVisAtt);
-
+/*
   wirePlaneVisAtt = new G4VisAttributes(G4Colour(0.0,0.8888,0.0));
   wirePlaneVisAtt->SetVisibility(false);
   wirePlane1Logical->SetVisAttributes(wirePlaneVisAtt);
 //  wirePlane2Logical->SetVisAttributes(wirePlaneVisAtt);
-/*
+*//*
   EMcalorimeterVisAtt = new G4VisAttributes(G4Colour(0.8888,0.8888,0.0));
   EMcalorimeterVisAtt->SetVisibility(false);
   EMcalorimeterLogical->SetVisAttributes(EMcalorimeterVisAtt);
@@ -587,11 +606,11 @@ void GEMDetectorConstruction::SetArmAngle(G4double val)
     return;
   }
 */
-  armAngle = val;
-  *armRotation = G4RotationMatrix();  // make it unit vector
-  armRotation->rotateY(armAngle);
-  G4double x = -5.*m * std::sin(armAngle);
-  G4double z = 5.*m * std::cos(armAngle);
+//  armAngle = val;
+//  *armRotation = G4RotationMatrix();  // make it unit vector
+//  armRotation->rotateY(armAngle);
+//  G4double x = -5.*m * std::sin(armAngle);
+//  G4double z = 5.*m * std::cos(armAngle);
 //  secondArmPhys->SetTranslation(G4ThreeVector(x,0.,z));
 
   // tell G4RunManager that we change the geometry

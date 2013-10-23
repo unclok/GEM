@@ -57,7 +57,7 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
   public:
     virtual G4VPhysicalVolume* Construct();
     void SetArmAngle(G4double val);
-    inline G4double GetArmAngle() { return armAngle; }
+//    inline G4double GetArmAngle() { return armAngle; }
 
   private:
     void ConstructMaterials();
@@ -67,6 +67,7 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
   private:
     GEMDetectorConstMessenger* messenger;
     GEMElectricField* electricField;
+    G4FieldManager* globalfieldMgr;
     G4FieldManager* fieldMgr;
 
     G4Material* air;
@@ -80,10 +81,10 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
 
     G4VisAttributes* worldVisAtt;
     G4VisAttributes* electricVisAtt;
-    G4VisAttributes* armVisAtt;
-    G4VisAttributes* hodoscopeVisAtt;
+//    G4VisAttributes* armVisAtt;
+//    G4VisAttributes* hodoscopeVisAtt;
     G4VisAttributes* chamberVisAtt;
-    G4VisAttributes* wirePlaneVisAtt;
+//    G4VisAttributes* wirePlaneVisAtt;
 //    G4VisAttributes* EMcalorimeterVisAtt;
 //    G4VisAttributes* cellVisAtt;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -93,8 +94,8 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
     G4VisAttributes* kaptonVisAtt;
     G4VisAttributes* copperVisAtt;
 
-    G4double armAngle;
-    G4RotationMatrix* armRotation;
+//    G4double armAngle;
+//    G4RotationMatrix* armRotation;
 //    G4VPhysicalVolume* secondArmPhys;
 
   G4MagIntegratorStepper * pStepper;

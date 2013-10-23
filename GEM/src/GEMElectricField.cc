@@ -45,21 +45,24 @@ GEMElectricField::GEMElectricField()
 	ifstream infile;
 	double temp[6];
 	double blank[3];
-        infile.open("/home/unclok/example/model/Field_map.txt");
+        infile.open("/home/unclok/example/model/GEM_70_30_100V.txt");
         string str="";
         for(int i=0;i<2;i++){
                 getline(infile, str);
         }
 
-        for(int i=0;i<161;i++){
-		for(int j=0;j<161;j++){
-			for(int k=0;k<25;k++){
+        for(int i=0;i<41;i++){
+		for(int j=0;j<41;j++){
+			for(int k=0;k<41;k++){
      	         	  getline(infile, str);
      	         	  sscanf(str.c_str(),"%lf %lf %lf %lf %lf %lf %lf %lf %lf",&temp[0],&temp[1],&temp[2],&temp[3],&temp[4],&temp[5],&blank[0],&blank[1],&blank[2]);
+				if(k>5 && k<35)
 				for(int p=0;p<3;p++){
 					GEMPosition[p][i][j][k]=temp[p]*um;
-					GEMElec[p][i][j][k]=temp[p]*coulomb/m2;
+					GEMElec[p][i][j][k]=temp[p+3]*volt/m;
+//					std::cout<<GEMElec[p][i][j][k]<<" ";
 				}
+//				std::cout<<k<<std::endl;
 			}
 		}
         }
@@ -72,7 +75,7 @@ GEMElectricField::GEMElectricField()
   G4cout << "\n ---> ... done reading " << endl;
 
   // G4cout << " Read values of field from file " << filename << endl; 
-  G4cout << " ---> assumed the order:  x, y, z, Dx, Dy, Dz "
+  G4cout << " ---> assumed the order:  x, y, z, Ex, Ey, Ez "
          << "\n ---> Min values x,y,z: " 
          << min[0]/um << " " << min[1]/um << " " << min[2]/um << " um "
          << "\n ---> Max values x,y,z: "

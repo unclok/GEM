@@ -71,7 +71,7 @@ GEMPhysicsList::GEMPhysicsList():  G4VModularPhysicsList()
   G4cout << "" << G4endl;
 
   // default cut value  (1.0mm)
-  defaultCutValue = 1*um;
+  defaultCutValue = 0.0001*um;
   SetVerboseLevel(1);
 
   // General Physics ( Create ALL Particle and apply Decay )
