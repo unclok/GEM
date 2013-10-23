@@ -128,7 +128,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 //  G4VSensitiveDetector* hodoscope1;
 //  G4VSensitiveDetector* hodoscope2;
   G4VSensitiveDetector* chamber1;
-//  G4VSensitiveDetector* chamber2;
+  G4VSensitiveDetector* chamber2;
 //  G4VSensitiveDetector* EMcalorimeter;
 
   G4ThreeVector offset;
@@ -446,8 +446,13 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 
   chamber1 = new GEMDriftChamber(SDname="/chamber1");
   SDman->AddNewDetector(chamber1);
-  GEMLogical->SetSensitiveDetector(chamber1);
+  argon1_logical->SetSensitiveDetector(chamber1);
 
+  chamber2 = new GEMDriftChamber(SDname="/chamber2");
+  SDman->AddNewDetector(chamber2);
+  argon2_logical->SetSensitiveDetector(chamber2);
+
+  // visualization attributes ------------------------------------------------
   // visualization attributes ------------------------------------------------
 
   worldVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
@@ -467,8 +472,8 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 //  hodoscope2Logical->SetVisAttributes(hodoscopeVisAtt);
 */
   chamberVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-  GEMLogical->SetVisAttributes(chamberVisAtt);
-//  chamber2Logical->SetVisAttributes(chamberVisAtt);
+  argon1_logical->SetVisAttributes(chamberVisAtt);
+  argon2_logical->SetVisAttributes(chamberVisAtt);
 /*
   wirePlaneVisAtt = new G4VisAttributes(G4Colour(0.0,0.8888,0.0));
   wirePlaneVisAtt->SetVisibility(false);
