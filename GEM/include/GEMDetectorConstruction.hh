@@ -39,7 +39,8 @@
 #include "G4PropagatorInField.hh"
 #include "G4TransportationManager.hh"
 #include "G4ChordFinder.hh"
-#include "G4SimpleHeum.hh"
+//#include "G4SimpleHeum.hh"
+#include "G4ClassicalRK4.hh"
 
 class G4VPhysicalVolume;
 class G4Material;
@@ -78,12 +79,13 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
     G4Material* lead;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     G4Material* Kapton;
+    G4Material* galactic;
 
     G4VisAttributes* worldVisAtt;
     G4VisAttributes* electricVisAtt;
 //    G4VisAttributes* armVisAtt;
-//    G4VisAttributes* hodoscopeVisAtt;
-    G4VisAttributes* chamberVisAtt;
+    G4VisAttributes* hodoscopeVisAtt;
+//    G4VisAttributes* chamberVisAtt;
 //    G4VisAttributes* wirePlaneVisAtt;
 //    G4VisAttributes* EMcalorimeterVisAtt;
 //    G4VisAttributes* cellVisAtt;

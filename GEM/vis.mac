@@ -30,10 +30,10 @@
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 45. 45.
+/vis/viewer/set/viewpointThetaPhi 90. 45.
 #
 # Specify zoom value:
-/vis/viewer/zoom 0.6 
+/vis/viewer/zoom 2.0
 #
 # Specify style (surface or wireframe):
 /vis/viewer/set/style wireframe
@@ -70,7 +70,7 @@
 #/vis/scene/endOfEventAction accumulate
 #
 # Re-establish auto refreshing and verbosity:
-/vis/viewer/set/autoRefresh true 
+/vis/viewer/set/autoRefresh false
 /vis/verbose warnings
 #
 # For file-based drivers, use this to create an empty detector view:
@@ -79,10 +79,11 @@
 /vis/scene/endOfEventAction accumulate
 #/mydet/armAngle 60. deg
 #/mydet/fieldValue 2. tesla
-/gun/particle mu-
-/mydet/momentum 10. eV
-/gun/position -10. 10. -70 um
-/run/setCut 0.0001 um
+/gun/particle e-
+/gun/momentum 0. 0. 1. keV
+#/mydet/momentum 1. keV
+/gun/position 0. 0. -35. um
+/run/setCut 0.01 um
 /run/beamOn 1
 #
 #/vis/scene/endOfEventAction accumulate

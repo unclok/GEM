@@ -34,6 +34,7 @@
 #include "G4Step.hh"
 #include "G4SDManager.hh"
 #include "G4ios.hh"
+#include "G4ParticleChange.hh"
 
 GEMHodoscope::GEMHodoscope(G4String name)
 :G4VSensitiveDetector(name)
@@ -54,7 +55,6 @@ void GEMHodoscope::Initialize(G4HCofThisEvent*HCE)
   HCE->AddHitsCollection(HCID,hitsCollection);
 }
 
-
 G4bool GEMHodoscope::ProcessHits(G4Step*aStep,G4TouchableHistory* /*ROhist*/)
 {
   G4double edep = aStep->GetTotalEnergyDeposit();
@@ -65,6 +65,8 @@ G4bool GEMHodoscope::ProcessHits(G4Step*aStep,G4TouchableHistory* /*ROhist*/)
     = (G4TouchableHistory*)(preStepPoint->GetTouchable());
   G4int copyNo = theTouchable->GetVolume()->GetCopyNo();
   G4double hitTime = preStepPoint->GetGlobalTime();
+  G4double hitenergy = preStepPoint->GetTotalEnergy();
+
 
   // check if this finger already has a hit
   G4int ix = -1;
@@ -77,14 +79,14 @@ G4bool GEMHodoscope::ProcessHits(G4Step*aStep,G4TouchableHistory* /*ROhist*/)
     }
   }
   // if it has, then take the earlier time
-  if(ix>=0)
-  {
-    if((*hitsCollection)[ix]->GetTime()>hitTime)
-    { (*hitsCollection)[ix]->SetTime(hitTime); }
-  }
-  else
+//  if(ix>=0)
+//  {
+//    if((*hitsCollection)[ix]->GetTime()>hitTime)
+//    { (*hitsCollection)[ix]->SetTime(hitTime); }
+//  }
+//  else
   // if not, create a new hit and set it to the collection
-  {
+//  {
     GEMHodoscopeHit* aHit = new GEMHodoscopeHit(copyNo,hitTime);
     G4VPhysicalVolume* thePhysical = theTouchable->GetVolume();
     aHit->SetLogV(thePhysical->GetLogicalVolume());
@@ -93,11 +95,12 @@ G4bool GEMHodoscope::ProcessHits(G4Step*aStep,G4TouchableHistory* /*ROhist*/)
     aHit->SetRot(aTrans.NetRotation());
     aHit->SetPos(aTrans.NetTranslation());
     hitsCollection->insert( aHit );
-  }
+//  }
+    G4cout << hitenergy << G4endl;
+    G4cout << GeV << G4endl;
 
   return true;
 }
 
 void GEMHodoscope::EndOfEvent(G4HCofThisEvent* /*HCE*/)
 {;}
-

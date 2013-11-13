@@ -73,10 +73,11 @@
 
 GEMDetectorConstruction::GEMDetectorConstruction()
  : air(0), 
-argonGas(0), scintillator(0), CsI(0), lead(0), Kapton(0),
+argonGas(0), scintillator(0), CsI(0), lead(0), Kapton(0), galactic(0),
    worldVisAtt(0), electricVisAtt(0),
-//   armVisAtt(0), hodoscopeVisAtt(0), 
-chamberVisAtt(0),
+//   armVisAtt(0), 
+hodoscopeVisAtt(0), 
+//chamberVisAtt(0),
 //   wirePlaneVisAtt(0), 
 //EMcalorimeterVisAtt(0), cellVisAtt(0),
 //   HadCalorimeterVisAtt(0), HadCalorimeterCellVisAtt(0), 
@@ -97,7 +98,7 @@ GEMDetectorConstruction::~GEMDetectorConstruction()
 //  delete armRotation;
   delete electricField;
 //  delete globalfieldMgr;
-  delete fieldMgr;
+//  delete fieldMgr;
   delete messenger;
 
   DestroyMaterials();
@@ -105,7 +106,7 @@ GEMDetectorConstruction::~GEMDetectorConstruction()
   delete worldVisAtt;
   delete electricVisAtt;
 //  delete armVisAtt;
-//  delete hodoscopeVisAtt;
+  delete hodoscopeVisAtt;
 //  delete chamberVisAtt;
 //  delete wirePlaneVisAtt;
 //  delete EMcalorimeterVisAtt;
@@ -125,10 +126,10 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 {
   // All managed (deleted) by SDManager
 
-//  G4VSensitiveDetector* hodoscope1;
-//  G4VSensitiveDetector* hodoscope2;
-  G4VSensitiveDetector* chamber1;
-  G4VSensitiveDetector* chamber2;
+  G4VSensitiveDetector* hodoscope1;
+  G4VSensitiveDetector* hodoscope2;
+//  G4VSensitiveDetector* chamber1;
+//  G4VSensitiveDetector* chamber2;
 //  G4VSensitiveDetector* EMcalorimeter;
 
   G4ThreeVector offset;
@@ -150,6 +151,10 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   G4VSolid * argon2_solid;
   G4LogicalVolume * argon2_logical;
   G4VPhysicalVolume * argon2_physical;
+  G4LogicalVolume * hit_counter1;
+  G4VPhysicalVolume * hc_physical1;
+  G4LogicalVolume * hit_counter2;
+  G4VPhysicalVolume * hc_physical2;
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //  Load external 3d files;
@@ -180,16 +185,16 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   if(!fieldIsInitialized)
   {
   	pEquation = new G4EqMagElectricField(electricField);
-  	pStepper = new G4SimpleHeum(pEquation, 8);
+  	pStepper = new G4ClassicalRK4(pEquation, 8);
       fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-	G4double minEps = .00001*um;
-	G4double maxEps = .0001*um;
+	G4double minEps = 0.01*um;
+	G4double maxEps = 0.1*um;
 
 	fieldMgr->SetMinimumEpsilonStep(minEps);
 	fieldMgr->SetMaximumEpsilonStep(maxEps);
-	fieldMgr->SetDeltaOneStep(0.005*um);
+	fieldMgr->SetDeltaOneStep(0.1*um);
 	G4cout << "EpsilonStep : set min= " << minEps << " max= " << maxEps << endl;
-  	pIntgrDriver = new G4MagInt_Driver(0.001*um,pStepper,pStepper->GetNumberOfVariables() );
+  	pIntgrDriver = new G4MagInt_Driver(minEps,pStepper,pStepper->GetNumberOfVariables() );
   	pChordFinder = new G4ChordFinder(pIntgrDriver);
     fieldMgr->SetDetectorField(electricField);
 	fieldMgr->SetChordFinder(pChordFinder);
@@ -198,22 +203,22 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
     fieldIsInitialized = true;
 
       // FOLLOWING PARAMETERS TUNED FROM RAY-TRACING SIMULATIONS OF THE AIFIRA NANOBEAM LINE
-
-      fieldMgr->GetChordFinder()->SetDeltaChord(1e-9*m);
-      fieldMgr->SetDeltaIntersection(1e-9*m);
-      fieldMgr->SetDeltaOneStep(1e-9*m);
+//
+      fieldMgr->GetChordFinder()->SetDeltaChord(0.1*um);
+//      fieldMgr->SetDeltaIntersection(1e-9*m);
+//      fieldMgr->SetDeltaOneStep(1e-9*m);
 
       propInField =
         G4TransportationManager::GetTransportationManager()->GetPropagatorInField();
-      propInField->SetMinimumEpsilonStep(1e-3);
-      propInField->SetMaximumEpsilonStep(1e-4);
-	propInField->SetLargestAcceptableStep(0.001*um);
+      propInField->SetMinimumEpsilonStep(minEps);
+      propInField->SetMaximumEpsilonStep(maxEps);
+	propInField->SetLargestAcceptableStep(1.*um);
 
   }
 
   // geometries --------------------------------------------------------------
   // experimental hall (world volume)
-  G4VSolid* worldSolid = new G4Box("worldBox",50.*um,50.*um,100.*um);
+  G4VSolid* worldSolid = new G4Box("worldBox",50.*um,50.*um,1000.*um);
   G4LogicalVolume* worldLogical
     = new G4LogicalVolume(worldSolid,argonGas,"worldLogical",0,0,0);
   G4VPhysicalVolume* worldPhysical
@@ -373,17 +378,15 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 */
   // GEM Mother volume
   G4VSolid* GEMSolid
-    = new G4Box("GEMBox",50.*um,50.*um,25.*um);
+    = new G4Box("GEMBox",50.*um,50.*um,1000.*um);
   G4LogicalVolume* GEMLogical
-    = new G4LogicalVolume(GEMSolid,argonGas,"GEMLogical",fieldMgr,0,0);
+    = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",fieldMgr,0,0);
 	GEMLogical->SetFieldManager(fieldMgr, true);
-  G4LogicalVolume* GEMLogical2
-    = new G4LogicalVolume(GEMSolid,argonGas,"GEMLogical",fieldMgr,0,0);
-	GEMLogical->SetFieldManager(fieldMgr, true);
-  new G4PVPlacement(0,G4ThreeVector(0.,0.,-35.*um),GEMLogical,
-                    "GEMPhysical1",worldLogical,0,0);
-  new G4PVPlacement(0,G4ThreeVector(0.,0.,35.*um),GEMLogical,
-                    "GEMPhysical2",worldLogical,0,0);
+
+  new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,
+                    "GEMPhysical",worldLogical,0,0);
+//  new G4PVPlacement(0,G4ThreeVector(0.,0.,40.*um),GEMLogical,
+//                    "GEMPhysical2",worldLogical,0,0);
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   // sensitive detectors -----------------------------------------------------
@@ -412,45 +415,54 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   SDman->AddNewDetector(HadCalorimeter);
   HadCalScintiLogical->SetSensitiveDetector(HadCalorimeter);
 */
-  G4VSolid* gem_box_surf = new G4Box("gem_box_surf",50.*um,50.*um,5.*um);
-  G4VSolid* gem_hole_surf = new G4Tubs("gem_hole_surf",0.*um,35.*um,5.*um,0.,360.*deg);
-  argon2_solid = new G4UnionSolid("argon2_solid",gem_hole_surf,gem_hole_surf,0,G4ThreeVector(0.*um,0.*um,40.*um));
+  G4VSolid* gem_box_surf = new G4Box("gem_box_surf",50.*um,50.*um,2.5*um);
+  G4VSolid* gem_hole_surf = new G4Tubs("gem_hole_surf",0.*um,35.*um,2.5*um,0.,360.*deg);
+  argon2_solid = new G4UnionSolid("argon2_solid",gem_hole_surf,gem_hole_surf,0,G4ThreeVector(0.*um,0.*um,55.*um));
 
-  G4VSolid* kapton_box = new G4Box("kapton_box",50.*um,50.*um,15.*um);
-  G4VSolid* kapton_hole1 = new G4Cons("kapton_hole1",0.*um,35.*um,0.*um,15.*um,7.5*um,0.,360.*deg);
-  G4VSolid* kapton_hole2 = new G4Cons("kapton_hole2",0.*um,15.*um,0.*um,35.*um,7.5*um,0.,360.*deg);
-  argon1_solid = new G4UnionSolid("argon1_solid",kapton_hole1,kapton_hole2,0,G4ThreeVector(0.*um,0.*um,15.*um));
+  G4VSolid* hit_counter_solid = new G4Box("hit_counter1",50.*um,50.*um,0.1*um);
+  hit_counter1 = new G4LogicalVolume(hit_counter_solid, argonGas, "hit_counter1", 0, 0, 0);
+  hc_physical1 = new G4PVPlacement(0, G4ThreeVector(0.,0.,-30.05*um), hit_counter1,
+					"hit_counter1_physical", GEMLogical, false, 0);
 
-  kapton_solid = new G4Box("kapton_box",50.*um,50.*um,15.*um);
+  hit_counter2 = new G4LogicalVolume(hit_counter_solid, argonGas, "hit_counter2", 0, 0, 0);
+//  hc_physical2 = new G4PVPlacement(0, G4ThreeVector(0.,0.,49.95*um), hit_counter2,
+  hc_physical2 = new G4PVPlacement(0, G4ThreeVector(0.,0.,59.5*um), hit_counter2,
+					"hit_counter2_physical", GEMLogical, false, 0);
+
+  G4VSolid* kapton_hole1 = new G4Cons("kapton_hole1",0.*um,35.*um,0.*um,15.*um,12.5*um,0.,360.*deg);
+  G4VSolid* kapton_hole2 = new G4Cons("kapton_hole2",0.*um,15.*um,0.*um,35.*um,12.5*um,0.,360.*deg);
+  argon1_solid = new G4UnionSolid("argon1_solid",kapton_hole1,kapton_hole2,0,G4ThreeVector(0.*um,0.*um,25.*um));
+
+  kapton_solid = new G4Box("kapton_box",50.*um,50.*um,25.*um);
   kapton_logical = new G4LogicalVolume(kapton_solid, Kapton, "kapton_logical", 0, 0, 0);
   kapton_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.*um), kapton_logical,
                                          "kapton_physical", GEMLogical, false, 0);
 
-  copper1_solid =  new G4Box("gem_box_surf",50.*um,50.*um,5.*um);
+  copper1_solid =  new G4Box("gem_box_surf",50.*um,50.*um,2.5*um);
   copper1_logical = new G4LogicalVolume(gem_box_surf, lead, "copper1_logical", 0, 0, 0);
-  copper1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,20*um), copper1_logical,
+  copper1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,27.5*um), copper1_logical,
                                          "copper1_physical", GEMLogical, false, 0);
 
-  copper2_solid = new G4Box("gem_box_surf",50.*um,50.*um,5.*um);
-  copper2_logical = new G4LogicalVolume(copper2_solid, lead, "copper2_logical", 0, 0, 0);
-  copper2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-20*um), copper2_logical,
+  copper2_solid = new G4Box("gem_box_surf",50.*um,50.*um,2.5*um);
+  copper2_logical = new G4LogicalVolume(copper2_solid, argonGas, "copper2_logical", 0, 0, 0);
+  copper2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-27.5*um), copper2_logical,
                                          "copper2_physical", GEMLogical, false, 0);
 
   argon1_logical = new G4LogicalVolume(argon1_solid, argonGas, "surf_hole_logical", 0, 0, 0);
-  argon1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-7.5*um), argon1_logical,
+  argon1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-12.5*um), argon1_logical,
                                          "argon1_physical", GEMLogical, false, 0);
 
   argon2_logical = new G4LogicalVolume(argon2_solid, argonGas, "argon2_logical", 0, 0, 0);
-  argon2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-20.*um), argon2_logical,
+  argon2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-27.5*um), argon2_logical,
                                          "argon2_physical", GEMLogical, false, 0);
 
-  chamber1 = new GEMDriftChamber(SDname="/chamber1");
-  SDman->AddNewDetector(chamber1);
-  argon1_logical->SetSensitiveDetector(chamber1);
+  hodoscope1 = new GEMHodoscope(SDname="/hodoscope1");
+  SDman->AddNewDetector(hodoscope1);
+  hit_counter1->SetSensitiveDetector(hodoscope1);
 
-  chamber2 = new GEMDriftChamber(SDname="/chamber2");
-  SDman->AddNewDetector(chamber2);
-  argon2_logical->SetSensitiveDetector(chamber2);
+  hodoscope2 = new GEMHodoscope(SDname="/hodoscope2");
+  SDman->AddNewDetector(hodoscope2);
+  hit_counter2->SetSensitiveDetector(hodoscope2);
 
   // visualization attributes ------------------------------------------------
   // visualization attributes ------------------------------------------------
@@ -466,14 +478,14 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   armVisAtt->SetVisibility(false);
   firstArmLogical->SetVisAttributes(armVisAtt);
 //  secondArmLogical->SetVisAttributes(armVisAtt);
-
-  hodoscopeVisAtt = new G4VisAttributes(G4Colour(0.8888,0.0,0.0));
-  hodoscope1Logical->SetVisAttributes(hodoscopeVisAtt);
-//  hodoscope2Logical->SetVisAttributes(hodoscopeVisAtt);
 */
-  chamberVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
-  argon1_logical->SetVisAttributes(chamberVisAtt);
-  argon2_logical->SetVisAttributes(chamberVisAtt);
+  hodoscopeVisAtt = new G4VisAttributes(G4Colour(0.8,0.0,0.0));
+//  hodoscope1Logical->SetVisAttributes(hodoscopeVisAtt);
+//  hodoscope2Logical->SetVisAttributes(hodoscopeVisAtt);
+
+//  chamberVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,0.0));
+  hit_counter1->SetVisAttributes(hodoscopeVisAtt);
+  hit_counter2->SetVisAttributes(hodoscopeVisAtt);
 /*
   wirePlaneVisAtt = new G4VisAttributes(G4Colour(0.0,0.8888,0.0));
   wirePlaneVisAtt->SetVisibility(false);
@@ -519,6 +531,8 @@ void GEMDetectorConstruction::ConstructMaterials()
   G4String name;
   G4String symbol;
   G4int nElem;
+  G4double pressure;
+  G4double temperature;
 
   // Argon gas
   a = 39.95*g/mole;
@@ -544,6 +558,14 @@ void GEMDetectorConstruction::ConstructMaterials()
   air = new G4Material(name="Air", density, nElem=2);
   air->AddElement(elN, weightRatio=.7);
   air->AddElement(elO, weightRatio=.3);
+
+  // vacuum
+  density     = universe_mean_density;                //from PhysicalConstants.h
+  pressure    = 1.e-19*pascal;
+  temperature = 0.1*kelvin;
+  galactic = new G4Material(name="Galactic", z=1., a=1.01*g/mole, density,
+                   kStateGas,temperature,pressure);
+
 
   // Scintillator
   density = 1.032*g/cm3;

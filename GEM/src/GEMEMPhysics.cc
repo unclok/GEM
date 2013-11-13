@@ -51,6 +51,10 @@ GEMEMPhysics::~GEMEMPhysics()
 #include "G4ParticleTable.hh"
 
 #include "G4Gamma.hh"
+#include "G4ComptonScattering.hh"
+#include "G4eIonisation.hh"
+#include "G4eBremsstrahlung.hh"
+#include "G4eMultipleScattering.hh"
 
 #include "G4Electron.hh"
 #include "G4Positron.hh"
@@ -60,11 +64,23 @@ GEMEMPhysics::~GEMEMPhysics()
 
 #include "G4ProcessManager.hh"
 
+ #include "G4PenelopeAnnihilationModel.hh"
+ #include "G4PenelopeBremsstrahlungAngular.hh"
+ #include "G4PenelopeBremsstrahlungFS.hh"
+ #include "G4PenelopeBremsstrahlungModel.hh"
+ #include "G4PenelopeComptonModel.hh"
+ #include "G4PenelopeCrossSection.hh"
+ #include "G4PenelopeGammaConversionModel.hh"
+ #include "G4PenelopePhotoElectricModel.hh"
+ #include "G4PenelopeRayleighModel.hh"
+ #include "G4PenelopeIonisationModel.hh"
+
 void GEMEMPhysics::ConstructProcess()
 {
    G4ProcessManager * pManager = 0;
 
    //Gamma
+   pManager = G4Gamma::Gamma()->GetProcessManager();
    pManager = G4Gamma::Gamma()->GetProcessManager();
    pManager->AddDiscreteProcess(new G4GammaConversion());
    pManager->AddDiscreteProcess(new G4ComptonScattering());
@@ -72,9 +88,12 @@ void GEMEMPhysics::ConstructProcess()
 
    //Electorn
    pManager = G4Electron::Electron()->GetProcessManager();
+//   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
    G4VProcess* theeminusMultipleScattering = new G4eMultipleScattering();
-   G4VProcess* theeminusIonisation         = new G4eIonisation();
-   G4VProcess* theeminusBremsstrahlung     = new G4eBremsstrahlung();
+   G4eIonisation* theeminusIonisation         = new G4eIonisation();
+   G4eBremsstrahlung* theeminusBremsstrahlung     = new G4eBremsstrahlung();
+   theeminusIonisation->SetEmModel(new G4PenelopeIonisationModel());
+   theeminusBremsstrahlung->SetEmModel(new G4PenelopeBremsstrahlungModel());
    // 
    //  add process
    pManager->AddProcess(theeminusMultipleScattering);
@@ -93,6 +112,7 @@ void GEMEMPhysics::ConstructProcess()
 
    //Positron
    pManager = G4Positron::Positron()->GetProcessManager();
+//   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
    G4VProcess* theeplusMultipleScattering = new G4eMultipleScattering();
    G4VProcess* theeplusIonisation         = new G4eIonisation();
    G4VProcess* theeplusBremsstrahlung     = new G4eBremsstrahlung();

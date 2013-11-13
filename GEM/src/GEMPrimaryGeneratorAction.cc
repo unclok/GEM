@@ -38,10 +38,10 @@
 
 GEMPrimaryGeneratorAction::GEMPrimaryGeneratorAction()
 {
-  momentum = 100.*MeV;
-  sigmaMomentum = 5.*MeV;
-  sigmaAngle = 2.*deg;
-  randomizePrimary = true;
+  momentum = 1.*keV;
+  sigmaMomentum = 50.*eV;
+  sigmaAngle = .1*deg;
+  randomizePrimary = false;
 
   G4int n_particle = 1;
   particleGun  = new G4ParticleGun(n_particle);
@@ -59,7 +59,7 @@ GEMPrimaryGeneratorAction::GEMPrimaryGeneratorAction()
   proton = particleTable->FindParticle(particleName="proton");
 
   // default particle kinematics
-  particleGun->SetParticlePosition(G4ThreeVector(0.,0.,-100.0*um));
+  particleGun->SetParticlePosition(G4ThreeVector(0.,0.,-300.*um));
   particleGun->SetParticleDefinition(electron);
 }
 

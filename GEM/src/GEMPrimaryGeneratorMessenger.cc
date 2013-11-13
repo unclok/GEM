@@ -39,15 +39,15 @@ GEMPrimaryGeneratorMessenger::GEMPrimaryGeneratorMessenger(GEMPrimaryGeneratorAc
   momentumCmd->SetGuidance("Mean momentum of primaries");
   momentumCmd->SetParameterName("p",true);
   momentumCmd->SetRange("p>=0.");
-  momentumCmd->SetDefaultValue(1.);
-  momentumCmd->SetDefaultUnit("MeV");
+  momentumCmd->SetDefaultValue(100.);
+  momentumCmd->SetDefaultUnit("eV");
 
   sigmaMomCmd = new G4UIcmdWithADoubleAndUnit("/mydet/sigmaMomentum",this);
   sigmaMomCmd->SetGuidance("Sigma momentum of primaries");
   sigmaMomCmd->SetParameterName("p",true);
   sigmaMomCmd->SetRange("p>=0.");
-  sigmaMomCmd->SetDefaultValue(1.);
-  sigmaMomCmd->SetDefaultUnit("MeV");
+  sigmaMomCmd->SetDefaultValue(100.);
+  sigmaMomCmd->SetDefaultUnit("eV");
 
   sigmaAngCmd = new G4UIcmdWithADoubleAndUnit("/mydet/sigmaAngle",this);
   sigmaAngCmd->SetGuidance("sigma angle divergence of primaries");

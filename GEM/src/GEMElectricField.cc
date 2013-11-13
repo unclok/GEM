@@ -45,7 +45,7 @@ GEMElectricField::GEMElectricField()
 	ifstream infile;
 	double temp[6];
 	double blank[3];
-        infile.open("/home/unclok/example/model/GEM_70_30_100V.txt");
+        infile.open("/home/unclok/example/model/GEM_70_30_400V_extension.txt");
         string str="";
         for(int i=0;i<2;i++){
                 getline(infile, str);
@@ -53,14 +53,14 @@ GEMElectricField::GEMElectricField()
 
         for(int i=0;i<41;i++){
 		for(int j=0;j<41;j++){
-			for(int k=0;k<41;k++){
+			for(int k=0;k<801;k++){
      	         	  getline(infile, str);
      	         	  sscanf(str.c_str(),"%lf %lf %lf %lf %lf %lf %lf %lf %lf",&temp[0],&temp[1],&temp[2],&temp[3],&temp[4],&temp[5],&blank[0],&blank[1],&blank[2]);
-				if(k>5 && k<35)
+//				if(k>5 && k<35)
 				for(int p=0;p<3;p++){
 					GEMPosition[p][i][j][k]=temp[p]*um;
 					GEMElec[p][i][j][k]=temp[p+3]*volt/m;
-//					std::cout<<GEMElec[p][i][j][k]<<" ";
+//					std::cout<<GEMPosition[p][i][j][k]<<std::endl;
 				}
 //				std::cout<<k<<std::endl;
 			}
@@ -68,9 +68,15 @@ GEMElectricField::GEMElectricField()
         }
         infile.close();
 
+  min[0] = GEMPosition[0][0][0][0];
+  min[1] = GEMPosition[1][0][0][0];
+  min[2] = GEMPosition[2][0][0][0];
   max[0] = temp[0]*um;
   max[1] = temp[1]*um;
   max[2] = temp[2]*um;
+
+  std::cout<<max[0]<<" "<<max[1]<<" "<<max[2]<<" "<<min[0]<<" "<<min[1]<<" "<<min[2]<<std::endl;
+  std::cout<<"volt/m :"<<volt/m<<std::endl;
 
   G4cout << "\n ---> ... done reading " << endl;
 
@@ -99,7 +105,7 @@ GEMElectricField::GEMElectricField()
          << dx/um << " " << dy/um << " " << dz/um << " um in z "
          << "\n-----------------------------------------------------------" << endl;
 
-	G4double uStepMax = 1.0*um;
+//	G4double uStepMax = 1.0*um;
 }
 
 GEMElectricField::~GEMElectricField()
@@ -172,7 +178,7 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
 //	G4cout << "----------------------GetFieldValue Working----------------------" << endl;
 	Bfield[3] = 0.0;
 	Bfield[4] = 0.0;
-	Bfield[4] = 0.0;
+	Bfield[5] = 0.0;
         // Full 3-dimensional version
     Bfield[3] =
       GEMElec[0][xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
@@ -200,7 +206,7 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
       GEMElec[2][xindex+1][yindex  ][zindex  ] *    xlocal  * (1-ylocal) * (1-zlocal) +
       GEMElec[2][xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
       GEMElec[2][xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
-      GEMElec[2][xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
+      GEMElec[2][xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal; 
 
 //	G4cout << "-----------------------Acceptable!!---------------------" << endl;
   } else {
@@ -226,7 +232,7 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
 	G4cout << "Hz : " << Bfield[2] << endl;
 	G4cout << "Dx : " << Bfield[3] << endl;
 	G4cout << "Dy : " << Bfield[4] << endl;
-	G4cout << "Dz : " << Bfield[5] << endl;
+	G4cout << "Dz : " << Bfield[5]/volt*m << endl;
 */
 }
 

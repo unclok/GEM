@@ -58,9 +58,9 @@ GEMEventAction::GEMEventAction()
   G4String colName;
   G4SDManager* SDman = G4SDManager::GetSDMpointer();
   HHC1ID = SDman->GetCollectionID(colName="hodoscope1/hodoscopeColl");
-//  HHC2ID = SDman->GetCollectionID(colName="hodoscope2/hodoscopeColl");
-  DHC1ID = SDman->GetCollectionID(colName="chamber1/driftChamberColl");
-  DHC2ID = SDman->GetCollectionID(colName="chamber2/driftChamberColl");
+  HHC2ID = SDman->GetCollectionID(colName="hodoscope2/hodoscopeColl");
+//  DHC1ID = SDman->GetCollectionID(colName="chamber1/driftChamberColl");
+//  DHC2ID = SDman->GetCollectionID(colName="chamber2/driftChamberColl");
 //  ECHCID = SDman->GetCollectionID(colName="EMcalorimeter/EMcalorimeterColl");
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 //  HCHCID = SDman->GetCollectionID(colName="HadCalorimeter/HadCalorimeterColl");
@@ -128,25 +128,25 @@ void GEMEventAction::BeginOfEventAction(const G4Event*)
 void GEMEventAction::EndOfEventAction(const G4Event* evt)
 {
   G4HCofThisEvent * HCE = evt->GetHCofThisEvent();
-//  GEMHodoscopeHitsCollection* HHC1 = 0;
-//  GEMHodoscopeHitsCollection* HHC2 = 0;
-  GEMDriftChamberHitsCollection* DHC1 = 0;
-  GEMDriftChamberHitsCollection* DHC2 = 0;
+  GEMHodoscopeHitsCollection* HHC1 = 0;
+  GEMHodoscopeHitsCollection* HHC2 = 0;
+//  GEMDriftChamberHitsCollection* DHC1 = 0;
+//  GEMDriftChamberHitsCollection* DHC2 = 0;
 //  GEMEmCalorimeterHitsCollection* ECHC = 0;
 //  GEMHadCalorimeterHitsCollection* HCHC = 0;
   if(HCE)
   {
-//    HHC1 = (GEMHodoscopeHitsCollection*)(HCE->GetHC(HHC1ID));
-//    HHC2 = (GEMHodoscopeHitsCollection*)(HCE->GetHC(HHC2ID));
-    DHC1 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC1ID));
-    DHC2 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC2ID));
+    HHC1 = (GEMHodoscopeHitsCollection*)(HCE->GetHC(HHC1ID));
+    HHC2 = (GEMHodoscopeHitsCollection*)(HCE->GetHC(HHC2ID));
+//    DHC1 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC1ID));
+//    DHC2 = (GEMDriftChamberHitsCollection*)(HCE->GetHC(DHC2ID));
 //    ECHC = (GEMEmCalorimeterHitsCollection*)(HCE->GetHC(ECHCID));
 //    HCHC = (GEMHadCalorimeterHitsCollection*)(HCE->GetHC(HCHCID));
   }
 
 #ifdef G4ANALYSIS_USE
   // Fill some histograms
-
+/*
   if (DHC1 && dc1Hits)
   {
     int n_hit = DHC1->entries();
@@ -169,13 +169,13 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       if (dc2XY) dc2XY->fill(localPos.x(), localPos.y());
     }
   }
-
+*/
   // Fill the tuple
 
   if (tuple)
   {
-	if (DHC1) tuple->fill(0,DHC1->entries());
-	if (DHC2) tuple->fill(1,DHC2->entries());
+//	if (DHC1) tuple->fill(0,DHC1->entries());
+//	if (DHC2) tuple->fill(1,DHC2->entries());
 /*	if(ECHC)
     {
       int iHit = 0;
@@ -190,7 +190,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
           totalE += eDep;
         }
       }
-      tuple->fill(2,totalE);
+*/      tuple->fill(2,totalE);
 
 	  if (HHC1 && HHC2 && HHC1->entries()==1 && HHC2->entries()==1)
 	  {
@@ -198,7 +198,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
 		 if (evstof) evstof->fill(tof,totalE);
 	  }
     }
-    if(HCHC)
+/*    if(HCHC)
     {
       int iHit = 0;
       double totalE = 0.;
@@ -214,8 +214,8 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       }
       tuple->fill(3,totalE);
     }
-*///	if (HHC1 && HHC1->entries()==1) tuple->fill(4,(*HHC1)[0]->GetTime());
-//	if (HHC2 && HHC2->entries()==1) tuple->fill(5,(*HHC2)[0]->GetTime());
+*/	if (HHC1 && HHC1->entries()==1) tuple->fill(4,(*HHC1)[0]->GetTime());
+	if (HHC2 && HHC2->entries()==1) tuple->fill(5,(*HHC2)[0]->GetTime());
 	tuple->addRow();
   }
   if (plotter) plotter->refresh();
@@ -231,7 +231,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
          << ">>> Event " << evt->GetEventID() << " >>> Simulation truth : "
          << primary->GetG4code()->GetParticleName()
          << " " << primary->GetMomentum() << G4endl;
-/*
+
   if(HHC1)
   {
     int n_hit = HHC1->entries();
@@ -242,7 +242,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       aHit->Print();
     }
   }
-*//*  if(HHC2)
+  if(HHC2)
   {
     int n_hit = HHC2->entries();
     G4cout << "Hodoscope 2 has " << n_hit << " hits." << G4endl;
@@ -252,7 +252,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       aHit->Print();
     }
   }
-*/  if(DHC1)
+/*  if(DHC1)
   {
     int n_hit = DHC1->entries();
     G4cout << "Drift Chamber 1 has " << n_hit << " hits." << G4endl;
@@ -278,7 +278,7 @@ void GEMEventAction::EndOfEventAction(const G4Event* evt)
       }
     }
   }
-/*  if(ECHC)
+  if(ECHC)
   {
     int iHit = 0;
     double totalE = 0.;
