@@ -31,16 +31,11 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/model)")
 
 file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/model)
-file(DOWNLOAD
-http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_10_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_10_400V_extension.txt)
-file(DOWNLOAD
-http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_30_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_30_400V_extension.txt)
-file(DOWNLOAD
-http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_40_400V_extension.txt)
-file(DOWNLOAD
-http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_50_400V_extension.txt)
-file(DOWNLOAD
-http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_70_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_10_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_10_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_30_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_30_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_40_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_50_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_70_400V_extension.txt)
 
 #find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
