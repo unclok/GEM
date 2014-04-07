@@ -78,9 +78,16 @@
 #
 /vis/scene/endOfEventAction accumulate
 /gun/particle e-
+<<<<<<< HEAD
 #/gun/momentum 0. 0. 1. eV
 /gun/position 0. 0. -8. um
 /mydet/energy 1. eV
 /gun/position 1. 1. -200. um
+=======
+/gun/momentum 0. 0. 1. eV
+#/mydet/momentum 1. eV
+/gun/position 1. 1. -200. um
+/run/setCut 0.01 um
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 /run/beamOn 1
 #

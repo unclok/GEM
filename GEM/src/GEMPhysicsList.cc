@@ -40,7 +40,10 @@
 #include "G4ProcessVector.hh"
 #include "G4ParticleTypes.hh"
 #include "G4ParticleTable.hh"
+<<<<<<< HEAD
 #include "G4EmStandardPhysics.hh"
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
@@ -56,8 +59,11 @@
 //#include "HadronPhysicsQGSP_BERT.hh"
 //#include "HadronPhysicsQGSP_BIC.hh"
 
+<<<<<<< HEAD
 #include "GEMDetectorConstruction.hh"
 
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 GEMPhysicsList::GEMPhysicsList():  G4VModularPhysicsList()
 {
 
@@ -74,9 +80,14 @@ GEMPhysicsList::GEMPhysicsList():  G4VModularPhysicsList()
   G4cout << "" << G4endl;
 
   // default cut value  (1.0mm)
+<<<<<<< HEAD
   defaultCutValue = 1.0*um;
   SetVerboseLevel(1);
 //  fEm = new G4EmStandardPhysics(1);
+=======
+  defaultCutValue = 0.0001*um;
+  SetVerboseLevel(1);
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
   // General Physics ( Create ALL Particle and apply Decay )
   RegisterPhysics( new GEMGeneralPhysics("general") );
@@ -101,6 +112,7 @@ GEMPhysicsList::GEMPhysicsList():  G4VModularPhysicsList()
 GEMPhysicsList::~GEMPhysicsList()
 {
 }
+<<<<<<< HEAD
 /*
 void GEMPhysicsList::ConstructProcess()
 {
@@ -109,10 +121,14 @@ void GEMPhysicsList::ConstructProcess()
   fEm->ConstructProcess();
 }
 */
+=======
+
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 void GEMPhysicsList::SetCuts()
 {
   //  " G4VUserPhysicsList::SetCutsWithDefault" method sets
   //   the default cut value for all particle types
+<<<<<<< HEAD
 //  SetCutsWithDefault();
   G4ProductionCuts* cuts;
 
@@ -121,6 +137,9 @@ void GEMPhysicsList::SetCuts()
   cuts->SetProductionCut(1e-6*um,G4ProductionCuts::GetIndex("gamma"));
   cuts->SetProductionCut(1e-6*um,G4ProductionCuts::GetIndex("e-"));
   cuts->SetProductionCut(1e-6*um,G4ProductionCuts::GetIndex("e+"));
+=======
+  SetCutsWithDefault();
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 
 

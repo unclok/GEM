@@ -26,9 +26,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+<<<<<<< HEAD
 INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
 ${CMAKE_CURRENT_SOURCE_DIR}/../model
 \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/model)")
+=======
+
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 #find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)

@@ -34,12 +34,18 @@
 #include "globals.hh"
 #include "G4ios.hh"
 #include <iomanip>
+<<<<<<< HEAD
 #include "G4DecayPhysics.hh"
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 GEMGeneralPhysics::GEMGeneralPhysics(const G4String& name)
                      :  G4VPhysicsConstructor(name)
 {
+<<<<<<< HEAD
     factorydecay = new G4DecayPhysics();
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 
 GEMGeneralPhysics::~GEMGeneralPhysics()
@@ -56,7 +62,11 @@ GEMGeneralPhysics::~GEMGeneralPhysics()
 void GEMGeneralPhysics::ConstructParticle()
 {
    // In Alphabetical Order 
+<<<<<<< HEAD
 /*   
+=======
+   
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
    //  Construct all barions
    G4BaryonConstructor* baryonConstructor = new G4BaryonConstructor();
    baryonConstructor -> ConstructParticle();
@@ -86,8 +96,12 @@ void GEMGeneralPhysics::ConstructParticle()
    G4ShortLivedConstructor* shortLivedConstructor = new G4ShortLivedConstructor();
    shortLivedConstructor -> ConstructParticle();
    delete shortLivedConstructor;
+<<<<<<< HEAD
 */
    factorydecay->ConstructParticle();
+=======
+
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 
 #include "G4Decay.hh"
@@ -96,8 +110,12 @@ void GEMGeneralPhysics::ConstructParticle()
 
 void GEMGeneralPhysics::ConstructProcess()
 {
+<<<<<<< HEAD
    factorydecay->ConstructProcess();
 /*  // Add Decay Process
+=======
+  // Add Decay Process
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
    G4Decay* theDecayProcess = new G4Decay();  
   theParticleIterator->reset();
   while( (*theParticleIterator)() ){
@@ -110,6 +128,10 @@ void GEMGeneralPhysics::ConstructProcess()
       pmanager ->SetProcessOrdering(theDecayProcess, idxAtRest);
     }
   }
+<<<<<<< HEAD
 */}
+=======
+}
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 

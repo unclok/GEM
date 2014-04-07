@@ -42,8 +42,11 @@ public:
   // SetCuts()
   virtual void SetCuts();
 
+<<<<<<< HEAD
 // G4VPhysicsConstructor*	fEm;
 //  void ConstructProcess();
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 };
 

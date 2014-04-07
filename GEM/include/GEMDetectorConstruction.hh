@@ -34,7 +34,10 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4RotationMatrix.hh"
 #include "G4FieldManager.hh"
+<<<<<<< HEAD
 #include "G4ElectricField.hh"
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 #include "G4EqMagElectricField.hh"
 #include "G4PropagatorInField.hh"
@@ -49,7 +52,10 @@ class G4VSensitiveDetector;
 class G4VisAttributes;
 class GEMDetectorConstMessenger;
 class GEMElectricField;
+<<<<<<< HEAD
 class G4ElectricField;
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 class GEMDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -59,6 +65,11 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
 
   public:
     virtual G4VPhysicalVolume* Construct();
+<<<<<<< HEAD
+=======
+    void SetArmAngle(G4double val);
+//    inline G4double GetArmAngle() { return armAngle; }
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
   private:
     void ConstructMaterials();
@@ -67,16 +78,24 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
 
   private:
     GEMDetectorConstMessenger* messenger;
+<<<<<<< HEAD
 //    GEMElectricField* electricField;
     G4ElectricField* electricField;
+=======
+    GEMElectricField* electricField;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
     G4FieldManager* globalfieldMgr;
     G4FieldManager* fieldMgr;
 
     G4Material* air;
+<<<<<<< HEAD
     G4Material* h2Gas;
     G4Material* argonGas;
     G4Material* arco2Gas;
     G4Material* xenonGas;
+=======
+    G4Material* argonGas;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
     G4Material* scintillator;
     G4Material* CsI;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -87,10 +106,29 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
 
     G4VisAttributes* worldVisAtt;
     G4VisAttributes* electricVisAtt;
+<<<<<<< HEAD
     G4VisAttributes* hodoscopeVisAtt;
     G4VisAttributes* kaptonVisAtt;
     G4VisAttributes* copperVisAtt;
     G4VisAttributes* argonVisAtt;
+=======
+//    G4VisAttributes* armVisAtt;
+    G4VisAttributes* hodoscopeVisAtt;
+//    G4VisAttributes* chamberVisAtt;
+//    G4VisAttributes* wirePlaneVisAtt;
+//    G4VisAttributes* EMcalorimeterVisAtt;
+//    G4VisAttributes* cellVisAtt;
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//    G4VisAttributes* HadCalorimeterVisAtt;
+//    G4VisAttributes* HadCalorimeterCellVisAtt;
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    G4VisAttributes* kaptonVisAtt;
+    G4VisAttributes* copperVisAtt;
+
+//    G4double armAngle;
+//    G4RotationMatrix* armRotation;
+//    G4VPhysicalVolume* secondArmPhys;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
   G4MagIntegratorStepper * pStepper;
   G4EqMagElectricField * pEquation;

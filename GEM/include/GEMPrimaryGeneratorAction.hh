@@ -31,7 +31,10 @@
 #define GEMPrimaryGeneratorAction_h 1
 
 #include "G4VUserPrimaryGeneratorAction.hh"
+<<<<<<< HEAD
 #include "G4ThreeVector.hh"
+=======
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 #include "globals.hh"
 
 class G4ParticleGun;
@@ -50,6 +53,7 @@ class GEMPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun* particleGun;
     GEMPrimaryGeneratorMessenger* gunMessenger;
+<<<<<<< HEAD
     G4double energy;
     G4ThreeVector direction;
 
@@ -58,6 +62,28 @@ class GEMPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     inline G4double GetEnergy() const { return energy; }
     inline void SetDirection(G4ThreeVector val) { direction = val; }
     inline G4ThreeVector GetDirection() const { return direction; }
+=======
+    G4ParticleDefinition* positron;
+    G4ParticleDefinition* electron;
+    G4ParticleDefinition* muon;
+    G4ParticleDefinition* pion;
+    G4ParticleDefinition* kaon;
+    G4ParticleDefinition* proton;
+    G4double momentum;
+    G4double sigmaMomentum;
+    G4double sigmaAngle;
+    G4bool randomizePrimary;
+
+  public:
+    inline void SetMomentum(G4double val) { momentum = val; }
+    inline G4double GetMomentum() const { return momentum; }
+    inline void SetSigmaMomentum(G4double val) { sigmaMomentum = val; }
+    inline G4double GetSigmaMomentum() const { return sigmaMomentum; }
+    inline void SetSigmaAngle(G4double val) { sigmaAngle = val; }
+    inline G4double GetSigmaAngle() const { return sigmaAngle; }
+    inline void SetRandomize(G4bool val) { randomizePrimary = val; }
+    inline G4bool GetRandomize() const { return randomizePrimary; }
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 };
 
 #endif

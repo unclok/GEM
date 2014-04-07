@@ -31,7 +31,11 @@
 
 class GEMPrimaryGeneratorAction;
 class G4UIcmdWithADoubleAndUnit;
+<<<<<<< HEAD
 class G4UIcmdWith3Vector;
+=======
+class G4UIcmdWithABool;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -50,8 +54,15 @@ class GEMPrimaryGeneratorMessenger: public G4UImessenger
     GEMPrimaryGeneratorAction * target;
 
   private: //commands
+<<<<<<< HEAD
     G4UIcmdWithADoubleAndUnit*  energyCmd;
     G4UIcmdWith3Vector*		directionCmd;
+=======
+    G4UIcmdWithADoubleAndUnit*  momentumCmd;
+    G4UIcmdWithADoubleAndUnit*  sigmaMomCmd;
+    G4UIcmdWithADoubleAndUnit*  sigmaAngCmd;
+    G4UIcmdWithABool*           randomCmd;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 };
 

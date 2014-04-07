@@ -30,7 +30,11 @@
 #define GEMElectricFieldMessenger_h 1
 
 class GEMElectricField;
+<<<<<<< HEAD
 class G4UIcmdWithAnInteger;
+=======
+class G4UIcmdWithADoubleAndUnit;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -48,7 +52,11 @@ class GEMElectricFieldMessenger: public G4UImessenger
   private:
     GEMElectricField * target;
 
+<<<<<<< HEAD
     G4UIcmdWithAnInteger*  fieldCmd;
+=======
+    G4UIcmdWithADoubleAndUnit*  fieldCmd;
+>>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 };
 
