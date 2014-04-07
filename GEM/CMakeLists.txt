@@ -26,13 +26,21 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
-<<<<<<< HEAD
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
-${CMAKE_CURRENT_SOURCE_DIR}/../model
-\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/model)")
-=======
+#INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
+#${CMAKE_CURRENT_SOURCE_DIR}/../model
+#\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/model)")
 
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
+file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/model)
+file(DOWNLOAD
+http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_10_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_10_400V_extension.txt)
+file(DOWNLOAD
+http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_30_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_30_400V_extension.txt)
+file(DOWNLOAD
+http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_40_400V_extension.txt)
+file(DOWNLOAD
+http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_50_400V_extension.txt)
+file(DOWNLOAD
+http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_70_400V_extension.txt)
 
 #find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
