@@ -61,15 +61,11 @@ class GEMElectricField : public G4ElectricField
 
   private:
     GEMElectricFieldMessenger* messenger;
-<<<<<<< HEAD
     G4int fEfield;
 
   public:
     inline void SetField(G4int val) { fEfield=val; }
     inline G4int GetField() const { return fEfield; }
-=======
-   
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 };
 
 #endif

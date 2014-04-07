@@ -28,11 +28,7 @@
 //
 
 #include "GEMElectricField.hh"
-<<<<<<< HEAD
 #include "GEMElectricFieldMessenger.hh"
-=======
-//#include "GEMElectricFieldMessenger.hh"
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 //#include "G4SystemOfUnits.hh"
 #include "globals.hh"
 #include <string>
@@ -43,7 +39,6 @@
 
 GEMElectricField::GEMElectricField()
 {
-<<<<<<< HEAD
   messenger = new GEMElectricFieldMessenger(this);
 //  By = 1.0*tesla;
 	ifstream infile;
@@ -58,15 +53,6 @@ GEMElectricField::GEMElectricField()
 		G4cout<<"You can only use 10, 30, 40, 50, 70 for field"<<G4endl;
 		infile.open("../model/GEM_70_40_400V_extension.txt");
 	}
-=======
-//  messenger = new GEMElectricFieldMessenger(this);
-//  By = 1.0*tesla;
-
-	ifstream infile;
-	double temp[6];
-	double blank[3];
-        infile.open("/home/unclok/example/model/GEM_70_30_400V_extension.txt");
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
         string str="";
         for(int i=0;i<2;i++){
                 getline(infile, str);
@@ -130,12 +116,8 @@ GEMElectricField::GEMElectricField()
 }
 
 GEMElectricField::~GEMElectricField()
-<<<<<<< HEAD
 {
 // delete messenger; 
-=======
-{// delete messenger; 
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 
 void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const

@@ -40,10 +40,7 @@ class GEMGeneralPhysics : public G4VPhysicsConstructor
   public:
     GEMGeneralPhysics(const G4String& name = "general");
     virtual ~GEMGeneralPhysics();
-<<<<<<< HEAD
     G4VPhysicsConstructor *factorydecay;
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
   public:
     // This method will be invoked in the Construct() method.

@@ -28,28 +28,16 @@
 //
 #include "GEMElectricFieldMessenger.hh"
 #include "GEMElectricField.hh"
-<<<<<<< HEAD
 #include "G4UIcmdWithAnInteger.hh"
-=======
-#include "G4UIcmdWithADoubleAndUnit.hh"
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 #include "G4ios.hh"
 
 GEMElectricFieldMessenger::GEMElectricFieldMessenger(GEMElectricField * mpga)
 :target(mpga)
 {
-<<<<<<< HEAD
   fieldCmd = new G4UIcmdWithAnInteger("/mydet/field",this);
   fieldCmd->SetGuidance("Field available : 10, 30, 40, 50, 70");
   fieldCmd->SetParameterName("field",true);
   fieldCmd->SetDefaultValue(40);
-=======
-  fieldCmd = new G4UIcmdWithADoubleAndUnit("/mydet/fieldValue",this);
-  fieldCmd->SetGuidance("Field strength");
-  fieldCmd->SetParameterName("field",true);
-  fieldCmd->SetDefaultValue(1.);
-  fieldCmd->SetDefaultUnit("C/m2");
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 
 GEMElectricFieldMessenger::~GEMElectricFieldMessenger()
@@ -59,22 +47,16 @@ GEMElectricFieldMessenger::~GEMElectricFieldMessenger()
 
 void GEMElectricFieldMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
 {
-<<<<<<< HEAD
   if( command==fieldCmd )
   { target->SetField(fieldCmd->GetNewIntValue(newValue)); }
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 
 G4String GEMElectricFieldMessenger::GetCurrentValue(G4UIcommand * command)
 {
-<<<<<<< HEAD
   G4String cv;
   if( command==fieldCmd )
   { cv = fieldCmd->ConvertToString(target->GetField()); }
 
   return cv;
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
 

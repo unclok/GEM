@@ -64,11 +64,8 @@ GEMEMPhysics::~GEMEMPhysics()
 
 #include "G4ProcessManager.hh"
 
-<<<<<<< HEAD
 #include "G4EmStandardPhysics.hh"
 
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
  #include "G4PenelopeAnnihilationModel.hh"
  #include "G4PenelopeBremsstrahlungAngular.hh"
  #include "G4PenelopeBremsstrahlungFS.hh"
@@ -80,7 +77,6 @@ GEMEMPhysics::~GEMEMPhysics()
  #include "G4PenelopeRayleighModel.hh"
  #include "G4PenelopeIonisationModel.hh"
 
-<<<<<<< HEAD
 #include "G4LivermorePhotoElectricModel.hh"
 #include "G4LivermoreComptonModel.hh"
 #include "G4LivermoreGammaConversionModel.hh"
@@ -94,15 +90,10 @@ void GEMEMPhysics::ConstructProcess()
    emOptions.SetFluo(true);
    emOptions.SetAuger(true);
    emOptions.SetPIXE(true);
-=======
-void GEMEMPhysics::ConstructProcess()
-{
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
    G4ProcessManager * pManager = 0;
 
    //Gamma
    pManager = G4Gamma::Gamma()->GetProcessManager();
-<<<<<<< HEAD
    G4GammaConversion* gammaGammaconversion = new G4GammaConversion();
    G4ComptonScattering* gammaComptonscattering = new G4ComptonScattering();
    G4PhotoElectricEffect* gammaPhotoelectric = new G4PhotoElectricEffect();
@@ -113,12 +104,6 @@ void GEMEMPhysics::ConstructProcess()
    gammaGammaconversion->SetEmModel(new G4LivermoreGammaConversionModel());
    gammaGammaconversion->SetEmModel(new G4LivermoreComptonModel());
    gammaGammaconversion->SetEmModel(new G4LivermorePhotoElectricModel());
-=======
-   pManager = G4Gamma::Gamma()->GetProcessManager();
-   pManager->AddDiscreteProcess(new G4GammaConversion());
-   pManager->AddDiscreteProcess(new G4ComptonScattering());
-   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
    //Electorn
    pManager = G4Electron::Electron()->GetProcessManager();
@@ -126,15 +111,10 @@ void GEMEMPhysics::ConstructProcess()
    G4VProcess* theeminusMultipleScattering = new G4eMultipleScattering();
    G4eIonisation* theeminusIonisation         = new G4eIonisation();
    G4eBremsstrahlung* theeminusBremsstrahlung     = new G4eBremsstrahlung();
-<<<<<<< HEAD
    //
    //  set Electromagnetic Model
    theeminusIonisation->SetEmModel(new G4LivermoreIonisationModel());
    theeminusBremsstrahlung->SetEmModel(new G4LivermoreBremsstrahlungModel());
-=======
-   theeminusIonisation->SetEmModel(new G4PenelopeIonisationModel());
-   theeminusBremsstrahlung->SetEmModel(new G4PenelopeBremsstrahlungModel());
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
    // 
    //  add process
    pManager->AddProcess(theeminusMultipleScattering);
@@ -150,25 +130,17 @@ void GEMEMPhysics::ConstructProcess()
    pManager->SetProcessOrdering(theeminusMultipleScattering, idxPostStep,1);
    pManager->SetProcessOrdering(theeminusIonisation,         idxPostStep,2);
    pManager->SetProcessOrdering(theeminusBremsstrahlung,     idxPostStep,3);
-<<<<<<< HEAD
    
    G4cout<<"GetProcessActivation():"<<pManager->GetProcessActivation(theeminusIonisation)<<G4endl;
    G4cout<<"GetProcessList():"<<pManager->GetProcessList()<<G4endl;
    G4cout<<"GetVerboseLevel():"<<pManager->GetVerboseLevel()<<G4endl;
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
    //Positron
    pManager = G4Positron::Positron()->GetProcessManager();
 //   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
    G4VProcess* theeplusMultipleScattering = new G4eMultipleScattering();
-<<<<<<< HEAD
    G4eIonisation* theeplusIonisation         = new G4eIonisation();
    G4eBremsstrahlung* theeplusBremsstrahlung     = new G4eBremsstrahlung();
-=======
-   G4VProcess* theeplusIonisation         = new G4eIonisation();
-   G4VProcess* theeplusBremsstrahlung     = new G4eBremsstrahlung();
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
    G4VProcess* theeplusAnnihilation       = new G4eplusAnnihilation();
 
    pManager->AddProcess(theeplusMultipleScattering);
@@ -190,8 +162,5 @@ void GEMEMPhysics::ConstructProcess()
    pManager->SetProcessOrdering(theeplusBremsstrahlung,     idxPostStep,3);
    pManager->SetProcessOrdering(theeplusAnnihilation,       idxPostStep,4);
 
-<<<<<<< HEAD
 //   AddTransportation();
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 }
