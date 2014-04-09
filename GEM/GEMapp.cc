@@ -36,26 +36,17 @@
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
-<<<<<<< HEAD
 //#include "G4ScoringManager.hh"
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
 #include "GEMDetectorConstruction.hh"
 #include "GEMPhysicsList.hh"
 #include "GEMPrimaryGeneratorAction.hh"
-<<<<<<< HEAD
 #include "GEMRunAction.hh"
 
 #include "GEMEventAction.hh"
 
 #include "G4PhysListFactory.hh"
 
-=======
-
-#include "GEMEventAction.hh"
-
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
@@ -69,12 +60,9 @@ int main(int argc,char** argv)
   // RunManager construction
   G4RunManager* runManager = new G4RunManager;
 
-<<<<<<< HEAD
 //  G4ScoringManager* scManager = G4ScoringManager::GetScoringManager();
 //  scManager->SetVerboseLevel(1);
 
-=======
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 #ifdef G4VIS_USE
   // Visualization manager construction
   G4VisManager* visManager = new G4VisExecutive;
@@ -83,14 +71,10 @@ int main(int argc,char** argv)
 
   // mandatory user initialization classes
   runManager->SetUserInitialization(new GEMDetectorConstruction);
-<<<<<<< HEAD
 //  runManager->SetUserInitialization(new GEMPhysicsList);
   G4PhysListFactory factory;
   G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
   runManager->SetUserInitialization(physlist);
-=======
-  runManager->SetUserInitialization(new GEMPhysicsList);
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
   // initialize Geant4 kernel
   runManager->Initialize();
@@ -99,12 +83,8 @@ int main(int argc,char** argv)
   runManager->SetUserAction(new GEMPrimaryGeneratorAction);
 
   // optional user action classes
-<<<<<<< HEAD
   //runManager->SetUserAction(new GEMEventAction);
   runManager->SetUserAction(new GEMRunAction);
-=======
-  runManager->SetUserAction(new GEMEventAction);
->>>>>>> 4b15fd3620995b195aef0bb7f2adaa3f4806acb8
 
   if(argc>1)
   // execute an argument macro file if exist
