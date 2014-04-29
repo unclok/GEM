@@ -57,7 +57,6 @@ void GEMGeneralPhysics::ConstructParticle()
 {
    // In Alphabetical Order 
 /*   
-   
    //  Construct all barions
    G4BaryonConstructor* baryonConstructor = new G4BaryonConstructor();
    baryonConstructor -> ConstructParticle();

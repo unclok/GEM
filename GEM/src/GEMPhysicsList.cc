@@ -41,6 +41,8 @@
 #include "G4ParticleTypes.hh"
 #include "G4ParticleTable.hh"
 #include "G4EmStandardPhysics.hh"
+#include "G4EmLivermorePhysics.hh"
+#include "G4EmPenelopePhysics.hh"
 
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
@@ -82,7 +84,8 @@ GEMPhysicsList::GEMPhysicsList():  G4VModularPhysicsList()
   RegisterPhysics( new GEMGeneralPhysics("general") );
 
   // EM Physics ( Apply related Processes to gamma and e-/+)
-  RegisterPhysics( new GEMEMPhysics("Standard EM"));
+  RegisterPhysics( new GEMEMPhysics("LowEnergy EM"));
+//  RegisterPhysics( new G4EmPenelopePhysics());
 
   // Muon Physics ( Apply related processes to mu and tau
   RegisterPhysics(  new GEMMuonPhysics("muon"));
@@ -118,9 +121,9 @@ void GEMPhysicsList::SetCuts()
 
   cuts = new G4ProductionCuts;
     G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(1*eV, 100*GeV);
-  cuts->SetProductionCut(1e-6*um,G4ProductionCuts::GetIndex("gamma"));
-  cuts->SetProductionCut(1e-6*um,G4ProductionCuts::GetIndex("e-"));
-  cuts->SetProductionCut(1e-6*um,G4ProductionCuts::GetIndex("e+"));
+  cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("gamma"));
+  cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("e-"));
+  cuts->SetProductionCut(1*um,G4ProductionCuts::GetIndex("e+"));
 }
 
 

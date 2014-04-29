@@ -51,8 +51,10 @@ GEMElectricField::GEMElectricField()
 	else if(fEfield=70)infile.open("model/GEM_70_70_400V_extension.txt");
 	else{
 		G4cout<<"You can only use 10, 30, 40, 50, 70 for field"<<G4endl;
-		infile.open("../model/GEM_70_40_400V_extension.txt");
+		infile.open("model/GEM_70_40_400V_extension.txt");
 	}
+	G4cout << system("pwd") << G4endl;
+	if(infile==false)G4cout << "file not found\n" << G4endl;
         string str="";
         for(int i=0;i<2;i++){
                 getline(infile, str);
@@ -67,7 +69,8 @@ GEMElectricField::GEMElectricField()
 				for(int p=0;p<3;p++){
 					GEMPosition[p][i][j][k]=temp[p]*um;
 					GEMElec[p][i][j][k]=temp[p+3]*volt/m;
-//					std::cout<<GEMPosition[p][i][j][k]<<std::endl;
+//					if(p==1)GEMElec[p][i][j][k]+10000*volt/m;
+					if(i==40 && j==40 && k==800)std::cout<<GEMPosition[p][i][j][k]<<std::endl;
 				}
 //				std::cout<<k<<std::endl;
 			}
@@ -117,7 +120,7 @@ GEMElectricField::GEMElectricField()
 
 GEMElectricField::~GEMElectricField()
 {
-// delete messenger; 
+ delete messenger; 
 }
 
 void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
@@ -225,7 +228,7 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
     Bfield[4] = 0.0;
     Bfield[5] = 0.0;
   }
-/*	G4cout << "-------------------------GetFieldValue Check---------------------" << endl;
+	G4cout << "-------------------------GetFieldValue Check---------------------" << endl;
 	G4cout << "x : " << x << endl;
 	G4cout << "y : " << y << endl;
 	G4cout << "z : " << z << endl;
@@ -240,7 +243,7 @@ void GEMElectricField::GetFieldValue(const double point[4],double *Bfield) const
 	G4cout << "Hz : " << Bfield[2] << endl;
 	G4cout << "Dx : " << Bfield[3] << endl;
 	G4cout << "Dy : " << Bfield[4] << endl;
-	G4cout << "Dz : " << Bfield[5]/volt*m << endl;
-*/
+	G4cout << "Dz : " << Bfield[5] << endl;
+
 }
 

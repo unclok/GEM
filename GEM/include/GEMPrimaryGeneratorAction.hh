@@ -55,9 +55,11 @@ class GEMPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
   public:
     inline void SetEnergy(G4double val) { energy = val; }
-    inline G4double GetEnergy() const { return energy; }
+    inline G4double GetEnergy() const { G4cout << energy << G4endl;
+					return energy; }
     inline void SetDirection(G4ThreeVector val) { direction = val; }
-    inline G4ThreeVector GetDirection() const { return direction; }
+    inline G4ThreeVector GetDirection() const { G4cout << direction << G4endl;
+						return direction;  }
 };
 
 #endif

@@ -29,6 +29,7 @@
 #include "GEMElectricFieldMessenger.hh"
 #include "GEMElectricField.hh"
 #include "G4UIcmdWithAnInteger.hh"
+#include "G4UIcmdWithABool.hh"
 #include "G4ios.hh"
 
 GEMElectricFieldMessenger::GEMElectricFieldMessenger(GEMElectricField * mpga)
@@ -38,6 +39,11 @@ GEMElectricFieldMessenger::GEMElectricFieldMessenger(GEMElectricField * mpga)
   fieldCmd->SetGuidance("Field available : 10, 30, 40, 50, 70");
   fieldCmd->SetParameterName("field",true);
   fieldCmd->SetDefaultValue(40);
+
+  getfieldCmd = new G4UIcmdWithABool("/mydet/getfield",this);
+  getfieldCmd->SetGuidance("Get present field");
+  getfieldCmd->SetParameterName("true", true, true);
+  getfieldCmd->SetDefaultValue(true);
 }
 
 GEMElectricFieldMessenger::~GEMElectricFieldMessenger()
@@ -54,8 +60,8 @@ void GEMElectricFieldMessenger::SetNewValue(G4UIcommand * command,G4String newVa
 G4String GEMElectricFieldMessenger::GetCurrentValue(G4UIcommand * command)
 {
   G4String cv;
-  if( command==fieldCmd )
-  { cv = fieldCmd->ConvertToString(target->GetField()); }
+  if( command==getfieldCmd )
+  { cv = getfieldCmd->ConvertToString(target->GetField()); }
 
   return cv;
 }
