@@ -30,16 +30,16 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #${CMAKE_CURRENT_SOURCE_DIR}/../model
 #\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/model)")
 
-file(MAKE_DIRECTORY ${CMAKE_BUILD_DIR}/model)
-file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_10_400V_extension.txt ${CMAKE_BUILD_DIR}/model/GEM_70_10_400V_extension.txt)
-file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_30_400V_extension.txt ${CMAKE_BUILD_DIR}/model/GEM_70_30_400V_extension.txt)
-file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ${CMAKE_BUILD_DIR}/model/GEM_70_40_400V_extension.txt)
-file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ${CMAKE_BUILD_DIR}/model/GEM_70_50_400V_extension.txt)
-file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ${CMAKE_BUILD_DIR}/model/GEM_70_70_400V_extension.txt)
+file(MAKE_DIRECTORY ./model)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_10_400V_extension.txt ./model/GEM_70_10_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_30_400V_extension.txt ./model/GEM_70_30_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ./model/GEM_70_40_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ./model/GEM_70_50_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ./model/GEM_70_70_400V_extension.txt)
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
-${CMAKE_CURRENT_SOURCE_DIR}/../model
-$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/model)")
+#INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
+#${CMAKE_CURRENT_SOURCE_DIR}/../model
+#$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/model)")
 
 #file(MAKE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/model)
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_10_400V_extension.txt ${CMAKE_INSTALL_PREFIX}/model/GEM_70_10_400V_extension.txt)
