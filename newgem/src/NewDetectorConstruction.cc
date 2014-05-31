@@ -10,6 +10,9 @@
 
 #include "G4VSolid.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
+#include "G4SubtractionSolid.hh" 
+#include "G4UnionSolid.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -48,17 +51,6 @@ NewDetectorConstruction::~NewDetectorConstruction()
 
 G4VPhysicalVolume* NewDetectorConstruction::Construct()
 {
-	// All managed(deleted) by SD Manager
-	G4ThreeVector offset;
-	G4VSolid* argon_solid;
-	G4LogicalVolume* argon_logical;
-	G4VPhysicalVolume* argon_physical;
-	G4VSolid* hit_solid;
-	G4LogicalVolume* hit_counter1;
-	G4VPhysicalVolume* hc_physical1;
-	G4LogicalVolume* hit_counter2;
-	G4VPhysicalVolume* hc_physical2;
-
 	ConstructMaterials();
 
 	// Make an Electric Field
@@ -71,7 +63,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 		pEquation = new G4EqMagElectricField(electricField);
 		pStepper = new G4ClassicalRK4(pEquation, 8);
 		fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-	//	fieldMgr->SetDetectorField(electricField);
+		fieldMgr->SetDetectorField(electricField);
 
 		G4double minEps = 1.*um;
 
@@ -91,23 +83,72 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	// GEM Mother volume
 	G4VSolid* GEMSolid = new G4Box("GEMBox",50.*um,50.*um,1000.*um);
-	G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",0,0,0);
+	G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,air,"GEMLogical",0,0,0);
 
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,"GEMPhysical",worldLogical,0,0);
 
-	// GEM Box
+	// Hodoscope declaration
+	G4VSolid* hit_solid;
+	G4LogicalVolume* hit_counter1;
+	G4VPhysicalVolume* hc_physical1;
+	G4LogicalVolume* hit_counter2;
+	G4VPhysicalVolume* hc_physical2;
+
+	// Box
+	G4VSolid* argon_solid;
+	G4LogicalVolume* argon_logical;
+	G4VPhysicalVolume* argon_physical;
+
 	argon_solid = new G4Box("argon_solid",50.*um,50.*um,30.*um);
-	//argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",fieldMgr,0,0);
-	argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",0,0,0);
+	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
+	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
 	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
 
 	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
-	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
+	hit_counter1 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter1",0,0,0);
 	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-29.9*um),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
-	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
+	hit_counter2 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter2",0,0,0);
 	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,29.9*um),hit_counter2,"hit_counter2_physical",argon_logical,false,0);
 
+/*
+	// GEM Detector Geometry
+	G4VSolid* copper_hole;
+	G4VSolid* kapton_hole;
+	G4VSolid* copper_box;
+	G4VSolid* kapton_box;
+	G4VSolid* copper_solid;
+	G4VSolid* kapton_solid;
+	G4LogicalVolume* copper1_logical;
+	G4LogicalVolume* copper2_logical;
+	G4LogicalVolume* kapton_logical;
+	G4VPhysicalVolume* copper1_physical;
+	G4VPhysicalVolume* copper2_physical;
+	G4VPhysicalVolume* kapton_physical;
 
+	copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
+	kapton_box = new G4Box("kapton_box",50.*um,50.*um,25.*um);
+
+	copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
+	kapton_hole = new G4Tubs("kapton_hole",0.*um,35.*um,25.*um,0.,360.*deg);
+	
+	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
+	kapton_solid = new G4SubtractionSolid("kapton_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
+
+	copper1_logical = new G4LogicalVolume(copper_solid,galactic,"copper1_logical",fieldMgr,0,0);
+	copper2_logical = new G4LogicalVolume(copper_solid,galactic,"copper2_logical",fieldMgr,0,0);
+	kapton_logical = new G4LogicalVolume(kapton_solid,galactic,"kapton_logical",fieldMgr,0,0);
+
+	copper1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,-52.5*um),copper1_logical,"copper1_physical",GEMLogical,false,0);
+	copper2_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,52.5*um),copper2_logical,"copper2_physical",GEMLogical,false,0);
+	kapton_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.*um),kapton_logical,"kapton_physical",GEMLogical,false,0);
+
+	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
+	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
+	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-55.1*um),hit_counter1,"hit_counter1_physical",GEMLogical,false,0);
+	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
+	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,55.1*um),hit_counter2,"hit_counter2_physical",GEMLogical,false,0);
+
+*/
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
 	G4MultiFunctionalDetector* hodoscope2;
@@ -167,7 +208,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	worldVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
 	worldVisAtt->SetVisibility(true);
 	worldLogical->SetVisAttributes(worldVisAtt);
-	argonVisAtt = new G4VisAttributes(G4Colour(0.0,0.0,0.0));
+	argonVisAtt = new G4VisAttributes(G4Colour(2.0,1.0,3.0));
 	argon_logical->SetVisAttributes(argonVisAtt);
 
 	// return the world physical volume
@@ -207,6 +248,11 @@ void NewDetectorConstruction::ConstructMaterials()
 
 	G4cout << G4endl << "The materials defined are : " << G4endl << G4endl;
 	G4cout << *(G4Material::GetMaterialTable()) << G4endl;
+
+	// copper
+	a = 63.546*g/mole;
+	density = 8.96*g/cm3;
+	copper = new G4Material(name="Copper", z=29., a, density);	
 }
 
 void NewDetectorConstruction::DestroyMaterials()

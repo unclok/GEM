@@ -37,6 +37,7 @@ private:
 	G4Material* air;
 	G4Material* argonGas;
 	G4Material* galactic;
+	G4Material* copper;
 
 	G4VisAttributes* worldVisAtt;
 	G4VisAttributes* argonVisAtt;

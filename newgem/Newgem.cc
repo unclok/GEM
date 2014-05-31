@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 
 	runManager->SetUserInitialization(new NewDetectorConstruction);
 	G4PhysListFactory factory;
-	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_LIV");
+	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
 	runManager->SetUserInitialization(physlist);
 
 	// initialize Geant4 kernel
