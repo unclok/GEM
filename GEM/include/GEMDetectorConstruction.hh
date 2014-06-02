@@ -42,6 +42,7 @@
 #include "G4ChordFinder.hh"
 //#include "G4SimpleHeum.hh"
 #include "G4ClassicalRK4.hh"
+#include "G4ThreeVector.hh"
 
 class G4VPhysicalVolume;
 class G4Material;
@@ -59,14 +60,18 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
 
   public:
     virtual G4VPhysicalVolume* Construct();
+    inline void ConstructMaterials();
+    inline void DestroyMaterials();
+    inline void SetUniformField(G4ThreeVector val) { fEUfield=val; }
+    inline G4ThreeVector GetUniformField() const { G4cout << fEUfield << G4endl;
+						  return fEUfield; }
 
   private:
-    void ConstructMaterials();
-    void DestroyMaterials();
     void DumpGeometricalTree(G4VPhysicalVolume* aVolume,G4int depth=0);
 
   private:
     GEMDetectorConstMessenger* messenger;
+    G4ThreeVector fEUfield;
 //    GEMElectricField* electricField;
     G4ElectricField* electricField;
     G4FieldManager* globalfieldMgr;

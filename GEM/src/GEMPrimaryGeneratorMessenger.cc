@@ -30,6 +30,7 @@
 #include "GEMPrimaryGeneratorAction.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3Vector.hh"
+#include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithABool.hh"
 #include "G4ios.hh"
 
@@ -50,12 +51,12 @@ GEMPrimaryGeneratorMessenger::GEMPrimaryGeneratorMessenger(GEMPrimaryGeneratorAc
 
   getenergyCmd = new G4UIcmdWithABool("/mydet/getenergy",this);
   getenergyCmd->SetGuidance("Get mean energy of primaries");
-  getenergyCmd->SetParameterName("true",true, true);
+  getenergyCmd->SetParameterName("true", true, true);
   getenergyCmd->SetDefaultValue(true);
 
   getdirectionCmd = new G4UIcmdWithABool("/mydet/getdirection",this);
   getdirectionCmd->SetGuidance("Get direction of primaries.");
-  getdirectionCmd->SetParameterName("true",true, true);
+  getdirectionCmd->SetParameterName("true", true, true);
   getdirectionCmd->SetDefaultValue(true);
 }
 
