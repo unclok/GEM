@@ -59,7 +59,7 @@ void BeamEventAction::BeginOfEventAction(const G4Event* evt)
 {  
 
   G4int eventID = evt->GetEventID();
-    G4cout << "\n---> Begin of event: " << eventID << G4endl;
+    if(eventID%10==0)G4cout << "\n---> Begin of event: " << eventID << G4endl;
     //CLHEP::HepRandom::showEngineStatus();
 
 }
@@ -79,10 +79,10 @@ void BeamEventAction::EndOfEventAction(const G4Event* evt)
 	eventDrift1 = (A01DriftChamberHitsCollection*)(HCE->GetHC(driftID1));
 	A01DriftChamberHit* driftHit1;
 	for(int i=0;i<eventDrift1->entries();i++)
-	{
+	{	
 		driftHit1 = (*eventDrift1)[i];
-		G4cout<<"drift1"<<G4endl;
-		G4cout<<"particle name:"<< driftHit1->GetParticleID()<<" x:"<<driftHit1->GetLocalPos().x()<<" y:"<<driftHit1->GetLocalPos().y()<<" E:"<<driftHit1->GetEnergy()<<G4endl;
+		if(evt->GetEventID()%10==0)G4cout<<"drift1"<<G4endl;
+		if(evt->GetEventID()%10==0)G4cout<<"particle ID:"<< driftHit1->GetParticleID()<<" x:"<<driftHit1->GetLocalPos().x()<<" y:"<<driftHit1->GetLocalPos().y()<<" E:"<<driftHit1->GetEnergy()<<G4endl;
 			man->FillH2(0,driftHit1->GetLocalPos().x(),driftHit1->GetLocalPos().y(),driftHit1->GetEnergy());
 			man->FillH2(2,driftHit1->GetLocalPos().x(),driftHit1->GetLocalPos().y());
 			man->FillH1(0,driftHit1->GetParticleID());
@@ -94,8 +94,8 @@ void BeamEventAction::EndOfEventAction(const G4Event* evt)
 	for(int i=0;i<eventDrift2->entries();i++)
 	{
 		driftHit2 = (*eventDrift2)[i];
-		G4cout<<"drift2"<<G4endl;
-		G4cout<<"particle name:"<< driftHit2->GetParticleID()<<" x:"<<driftHit2->GetLocalPos().x()<<" y:"<<driftHit2->GetLocalPos().x()<<" E:"<<driftHit2->GetEnergy()<<G4endl;
+		if(evt->GetEventID()%10==0)G4cout<<"drift2"<<G4endl;
+		if(evt->GetEventID()%10==0)G4cout<<"particle name:"<< driftHit2->GetParticleID()<<" x:"<<driftHit2->GetLocalPos().x()<<" y:"<<driftHit2->GetLocalPos().x()<<" E:"<<driftHit2->GetEnergy()<<G4endl;
 			man->FillH2(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
 			man->FillH2(3,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y());
 			man->FillH1(1,driftHit2->GetParticleID());

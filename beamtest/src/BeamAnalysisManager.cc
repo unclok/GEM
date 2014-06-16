@@ -28,10 +28,6 @@ BeamAnalysisManager::BeamAnalysisManager()
 
 BeamAnalysisManager::~BeamAnalysisManager()
 {
-	delete H1List;
-	delete H2List;
-	delete NtList;
-	delete fFile;
 	fgInstance=0;
 }
 
@@ -175,19 +171,22 @@ void BeamAnalysisManager::FillNtuple(G4int id, const G4double *x)
 
 void BeamAnalysisManager::Write()
 {
-	TDirectory *h1dir = new TDirectory("h1dir","1d histogram directory");
+	TDirectory *h1dir;// = new TDirectory("h1dir","1d histogram directory");
+	h1dir=fFile->mkdir("h1dir");
 	for(G4int i=0;i<H1List->GetEntries();i++){
-		h1dir->Append(H1List->At(i));
+		h1dir->Add(H1List->At(i));
 	}
 
-	TDirectory *h2dir = new TDirectory("h2dir","2d histogram directory");
+	TDirectory *h2dir;// = new TDirectory("h2dir","2d histogram directory");
+	h2dir=fFile->mkdir("h2dir");
 	for(G4int i=0;i<H2List->GetEntries();i++){
-		h2dir->Append(H2List->At(i));
+		h2dir->Add(H2List->At(i));
 	}
 
-	TDirectory *ndir = new TDirectory("ndir","ntuple histogram directory");
+	TDirectory *ndir;// = new TDirectory("ndir","ntuple histogram directory");
+	ndir=fFile->mkdir("ndir");
 	for(G4int i=0;i<NtList->GetEntries();i++){
-		ndir->Append(NtList->At(i));
+		ndir->Add(NtList->At(i));
 	}
 
 	h1dir->Write();

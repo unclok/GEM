@@ -27,7 +27,6 @@ BeamRun::~BeamRun()
 void BeamRun::RecordEvent(const G4Event* evt)
 {
 	nEvent++;
-	G4cout<<nEvent<<G4endl;
 	G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
 	eventTotalSurfCurrent1 = (G4THitsMap<G4double>*)(HCE->GetHC(totalSurfCurrentID1));
 	eventelectronSurfCurrent1 = (G4THitsMap<G4double>*)(HCE->GetHC(electronSurfCurrentID1));
