@@ -30,6 +30,7 @@
 #include "GEMPrimaryGeneratorAction.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWith3Vector.hh"
+#include "G4UIcmdWithABool.hh"
 #include "G4ios.hh"
 
 GEMPrimaryGeneratorMessenger::GEMPrimaryGeneratorMessenger(GEMPrimaryGeneratorAction * mpga)
@@ -46,12 +47,24 @@ GEMPrimaryGeneratorMessenger::GEMPrimaryGeneratorMessenger(GEMPrimaryGeneratorAc
   directionCmd->SetGuidance("Direction of primaries.");
   directionCmd->SetParameterName("x","y","z",false,true);
   directionCmd->SetDefaultValue(G4ThreeVector(0.,0.,1.));
+
+  getenergyCmd = new G4UIcmdWithABool("/mydet/getenergy",this);
+  getenergyCmd->SetGuidance("Get mean energy of primaries");
+  getenergyCmd->SetParameterName("true",true, true);
+  getenergyCmd->SetDefaultValue(true);
+
+  getdirectionCmd = new G4UIcmdWithABool("/mydet/getdirection",this);
+  getdirectionCmd->SetGuidance("Get direction of primaries.");
+  getdirectionCmd->SetParameterName("true",true, true);
+  getdirectionCmd->SetDefaultValue(true);
 }
 
 GEMPrimaryGeneratorMessenger::~GEMPrimaryGeneratorMessenger()
 {
   delete energyCmd;
   delete directionCmd;
+  delete getenergyCmd;
+  delete getdirectionCmd;
 }
 
 void GEMPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
@@ -65,10 +78,10 @@ void GEMPrimaryGeneratorMessenger::SetNewValue(G4UIcommand * command,G4String ne
 G4String GEMPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand * command)
 {
   G4String cv;
-  if( command==energyCmd )
-  { cv = energyCmd->ConvertToString(target->GetEnergy(),"eV"); }
-  if( command==directionCmd )
-  { cv = directionCmd->ConvertToString(target->GetDirection()); }
+  if( command==getenergyCmd )
+  { cv = getenergyCmd->ConvertToString(target->GetEnergy(),"eV"); }
+  if( command==getdirectionCmd )
+  { cv = getdirectionCmd->ConvertToString(target->GetDirection()); }
 
   return cv;
 }

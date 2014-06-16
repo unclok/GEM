@@ -80,7 +80,7 @@ class GEMDetectorConstruction : public G4VUserDetectorConstruction
     G4Material* scintillator;
     G4Material* CsI;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    G4Material* lead;
+    G4Material* copper;
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     G4Material* Kapton;
     G4Material* galactic;

@@ -65,7 +65,8 @@ class GEMElectricField : public G4ElectricField
 
   public:
     inline void SetField(G4int val) { fEfield=val; }
-    inline G4int GetField() const { return fEfield; }
+    inline G4int GetField() const { 	G4cout << fEfield << G4endl;
+					return fEfield; }
 };
 
 #endif

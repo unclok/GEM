@@ -31,6 +31,7 @@
 
 class GEMElectricField;
 class G4UIcmdWithAnInteger;
+class G4UIcmdWithABool;
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
@@ -49,6 +50,7 @@ class GEMElectricFieldMessenger: public G4UImessenger
     GEMElectricField * target;
 
     G4UIcmdWithAnInteger*  fieldCmd;
+    G4UIcmdWithABool*  getfieldCmd;
 
 };
 

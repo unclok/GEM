@@ -71,10 +71,10 @@ int main(int argc,char** argv)
 
   // mandatory user initialization classes
   runManager->SetUserInitialization(new GEMDetectorConstruction);
-//  runManager->SetUserInitialization(new GEMPhysicsList);
-  G4PhysListFactory factory;
-  G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
-  runManager->SetUserInitialization(physlist);
+  runManager->SetUserInitialization(new GEMPhysicsList);
+//  G4PhysListFactory factory;
+//  G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
+//  runManager->SetUserInitialization(physlist);
 
   // initialize Geant4 kernel
   runManager->Initialize();

@@ -23,46 +23,65 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: GEMElectricFieldMessenger.cc,v 1.4 2006-06-29 16:32:59 gunter Exp $
+/// \file analysis/A01/src/A01DriftChamber.cc
+/// \brief Implementation of the A01DriftChamber class
+//
+// $Id$
 // --------------------------------------------------------------
 //
-#include "GEMElectricFieldMessenger.hh"
-#include "GEMElectricField.hh"
-#include "G4UIcmdWithAnInteger.hh"
-#include "G4UIcmdWithABool.hh"
+#include "A01DriftChamber.hh"
+#include "A01DriftChamberHit.hh"
+#include "G4HCofThisEvent.hh"
+#include "G4TouchableHistory.hh"
+#include "G4Track.hh"
+#include "G4Step.hh"
+#include "G4SDManager.hh"
+#include "G4Navigator.hh"
 #include "G4ios.hh"
 
-GEMElectricFieldMessenger::GEMElectricFieldMessenger(GEMElectricField * mpga)
-:target(mpga)
+A01DriftChamber::A01DriftChamber(G4String name)
+:G4VSensitiveDetector(name)
 {
-  fieldCmd = new G4UIcmdWithAnInteger("/mydet/field",this);
-  fieldCmd->SetGuidance("Field available : 10, 30, 40, 50, 70");
-  fieldCmd->SetParameterName("field",true);
-  fieldCmd->SetDefaultValue(40);
-
-  getfieldCmd = new G4UIcmdWithABool("/mydet/getfield",this);
-  getfieldCmd->SetGuidance("Get present field");
-  getfieldCmd->SetParameterName("true", true, true);
-  getfieldCmd->SetDefaultValue(true);
+  G4String HCname;
+  collectionName.insert(HCname="driftChamberColl");
+  fHCID = -1;
 }
 
-GEMElectricFieldMessenger::~GEMElectricFieldMessenger()
+A01DriftChamber::~A01DriftChamber(){;}
+
+void A01DriftChamber::Initialize(G4HCofThisEvent*HCE)
 {
-  delete fieldCmd;
+  fHitsCollection = new A01DriftChamberHitsCollection
+                   (SensitiveDetectorName,collectionName[0]);
+  if(fHCID<0)
+  { fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection); }
+  HCE->AddHitsCollection(fHCID,fHitsCollection);
 }
 
-void GEMElectricFieldMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
+G4bool A01DriftChamber::ProcessHits(G4Step*aStep,G4TouchableHistory* /*ROhist*/)
 {
-  if( command==fieldCmd )
-  { target->SetField(fieldCmd->GetNewIntValue(newValue)); }
+//  G4double charge = aStep->GetTrack()->GetDefinition()->GetPDGCharge();
+//  if(charge==0.) return true;
+
+  G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+  G4TouchableHistory* theTouchable
+    = (G4TouchableHistory*)(preStepPoint->GetTouchable());
+  G4VPhysicalVolume* theMotherPhysical = theTouchable->GetVolume(1); // mother
+  G4int copyNo = theMotherPhysical->GetCopyNo();
+  G4ThreeVector worldPos = preStepPoint->GetPosition();
+  G4ThreeVector localPos
+    = theTouchable->GetHistory()->GetTopTransform().TransformPoint(worldPos);
+
+  A01DriftChamberHit* aHit = new A01DriftChamberHit(copyNo);
+  aHit->SetWorldPos(worldPos);
+  aHit->SetLocalPos(localPos);
+  aHit->SetEnergy(aStep->GetTotalEnergyDeposit());
+
+  fHitsCollection->insert(aHit);
+
+  return true;
 }
 
-G4String GEMElectricFieldMessenger::GetCurrentValue(G4UIcommand * command)
-{
-  G4String cv;
-  if( command==getfieldCmd )
-  { cv = getfieldCmd->ConvertToString(target->GetField()); }
-
-  return cv;
-}
+void A01DriftChamber::EndOfEvent(G4HCofThisEvent* /*HCE*/)
+{;}
 

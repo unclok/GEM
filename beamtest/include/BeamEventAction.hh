@@ -1,4 +1,4 @@
-//
+
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -23,47 +23,38 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: GEMDetectorConstMessenger.cc,v 1.4 2006-06-29 16:32:01 gunter Exp $
-// --------------------------------------------------------------
-//
-#include "GEMDetectorConstMessenger.hh"
-#include "GEMDetectorConstruction.hh"
-#include "G4UIdirectory.hh"
-#include "G4UIcmdWithADoubleAndUnit.hh"
-#include "G4ios.hh"
+// $Id$
+// 
+/// \file BeamEventAction.hh
+/// \brief Definition of the BeamEventAction class
 
-GEMDetectorConstMessenger::GEMDetectorConstMessenger(GEMDetectorConstruction* mpga)
-:target(mpga)
+#include "G4UserEventAction.hh"
+#include "G4Event.hh"
+#include "A01DriftChamberHit.hh"
+#include "globals.hh"
+
+#ifndef BeamEventAction_h
+#define BeamEventAction_h 1
+
+class BeamEventAction : public G4UserEventAction
 {
-  mydetDirectory = new G4UIdirectory("/mydet/");
-  mydetDirectory->SetGuidance("GEM detector setup control commands.");
+  public:
+    BeamEventAction();
+    virtual ~BeamEventAction();
 
-//  armCmd = new G4UIcmdWithADoubleAndUnit("/mydet/armAngle",this);
-//  armCmd->SetGuidance("Rotation angle of the second arm.");
-//  armCmd->SetParameterName("angle",true);
-//  armCmd->SetRange("angle>=0. && angle<180.");
-//  armCmd->SetDefaultValue(30.);
-//  armCmd->SetDefaultUnit("deg");
-}
+    virtual void  BeginOfEventAction(const G4Event* event);
+    virtual void    EndOfEventAction(const G4Event* event);
+    
+  private:
+   
+	G4int driftID1;
+	A01DriftChamberHitsCollection* eventDrift1; 
+	G4int driftID2;
+	A01DriftChamberHitsCollection* eventDrift2; 
+};
 
-GEMDetectorConstMessenger::~GEMDetectorConstMessenger()
-{
-//  delete armCmd;
-  delete mydetDirectory;
-}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void GEMDetectorConstMessenger::SetNewValue(G4UIcommand * command,G4String newValue)
-{
-//  if( command==armCmd )
-//  { target->SetArmAngle(armCmd->GetNewDoubleValue(newValue)); }
-}
+#endif
 
-G4String GEMDetectorConstMessenger::GetCurrentValue(G4UIcommand * command)
-{
-  G4String cv;
-//  if( command==armCmd )
-//  { cv = armCmd->ConvertToString(target->GetArmAngle(),"deg"); }
-
-  return cv;
-}
-
+    

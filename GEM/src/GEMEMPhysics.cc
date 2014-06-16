@@ -84,6 +84,10 @@ GEMEMPhysics::~GEMEMPhysics()
 #include "G4LivermoreIonisationModel.hh"
 #include "G4EmProcessOptions.hh"
 
+#include "G4MuElecElasticModel.hh"
+#include "G4MuElecInelasticModel.hh"
+#include "G4MuElecElastic.hh"
+
 void GEMEMPhysics::ConstructProcess()
 {
    G4EmProcessOptions emOptions;
@@ -104,17 +108,21 @@ void GEMEMPhysics::ConstructProcess()
    gammaGammaconversion->SetEmModel(new G4LivermoreGammaConversionModel());
    gammaGammaconversion->SetEmModel(new G4LivermoreComptonModel());
    gammaGammaconversion->SetEmModel(new G4LivermorePhotoElectricModel());
+   gammaGammaconversion->SetEmModel(new G4MuElecInelasticModel());
 
    //Electorn
    pManager = G4Electron::Electron()->GetProcessManager();
 //   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
-   G4VProcess* theeminusMultipleScattering = new G4eMultipleScattering();
+   G4eMultipleScattering* theeminusMultipleScattering = new G4eMultipleScattering();
    G4eIonisation* theeminusIonisation         = new G4eIonisation();
    G4eBremsstrahlung* theeminusBremsstrahlung     = new G4eBremsstrahlung();
+   G4MuElecElastic* theeElastic     =new G4MuElecElastic();
    //
    //  set Electromagnetic Model
-   theeminusIonisation->SetEmModel(new G4LivermoreIonisationModel());
+//   theeminusIonisation->SetEmModel(new G4LivermoreIonisationModel());
    theeminusBremsstrahlung->SetEmModel(new G4LivermoreBremsstrahlungModel());
+   theeminusIonisation->SetEmModel(new G4MuElecInelasticModel());
+   theeElastic->SetEmModel(new G4MuElecElasticModel());
    // 
    //  add process
    pManager->AddProcess(theeminusMultipleScattering);
@@ -138,11 +146,17 @@ void GEMEMPhysics::ConstructProcess()
    //Positron
    pManager = G4Positron::Positron()->GetProcessManager();
 //   pManager->AddDiscreteProcess(new G4PhotoElectricEffect());
-   G4VProcess* theeplusMultipleScattering = new G4eMultipleScattering();
+   G4eMultipleScattering* theeplusMultipleScattering = new G4eMultipleScattering();
    G4eIonisation* theeplusIonisation         = new G4eIonisation();
    G4eBremsstrahlung* theeplusBremsstrahlung     = new G4eBremsstrahlung();
    G4VProcess* theeplusAnnihilation       = new G4eplusAnnihilation();
 
+   //  set Electromagnetic Model
+//   theeminusIonisation->SetEmModel(new G4LivermoreIonisationModel());
+//   theeplusBremsstrahlung->SetEmModel(new G4LivermoreBremsstrahlungModel());
+   theeplusIonisation->SetEmModel(new G4MuElecInelasticModel());
+//   theeplusMultipleScattering->SetEmModel(new G4MuElecElasticModel());
+   // 
    pManager->AddProcess(theeplusMultipleScattering);
    pManager->AddProcess(theeplusIonisation);
    pManager->AddProcess(theeplusBremsstrahlung);
