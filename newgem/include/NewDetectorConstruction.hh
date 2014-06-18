@@ -1,10 +1,11 @@
 #ifndef NewDetectorConstruction_h
 #define NewDetectorConstruction_h 1
 
+#include "NewDetectorConstMessenger.hh"
 #include "globals.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4FieldManager.hh"
-#include "G4ElectricField.hh"
+#include "NewElectricField.hh"
 
 #include "G4EqMagElectricField.hh"
 #include "G4PropagatorInField.hh"
@@ -26,12 +27,24 @@ public:
 	virtual ~NewDetectorConstruction();
 	virtual G4VPhysicalVolume* Construct();
 
+	inline void SetUniformField(G4double val) { fefield=val;
+							SetEfield(fefielddirection, fefield);	 }
+	inline void SetUniformFieldDirection(G4ThreeVector val) { fefielddirection=val;
+							SetEfield(fefielddirection, fefield); }
+	inline G4double GetUniformField() const { G4cout << fefield << "*kilovolt/cm" << G4endl;
+						  return fefield; }
+	inline G4ThreeVector GetUniformFieldDirection() const { G4cout << fefielddirection << fefielddirection.r() << G4endl;
+							return fefielddirection; }
+
 private:
 	void ConstructMaterials();
 	void DestroyMaterials();
 	void DumpGeometricalTree(G4VPhysicalVolume* aVolume,G4int depth=0);
+	void SetEfield(G4ThreeVector fdirection, G4double field);
 
-	G4ElectricField* electricField;
+	NewDetectorConstMessenger* messenger;
+
+	NewElectricField* electricField;
 	G4FieldManager* fieldMgr;
 
 	G4Material* air;
@@ -39,14 +52,20 @@ private:
 	G4Material* galactic;
 	G4Material* copper;
 
+	G4LogicalVolume* argon_logical;
+
 	G4VisAttributes* worldVisAtt;
 	G4VisAttributes* argonVisAtt;
+	G4VisAttributes* copperVisAtt;
 
 	G4MagIntegratorStepper* pStepper;
 	G4EqMagElectricField* pEquation;
 	G4MagInt_Driver* pIntgrDriver;
 	G4ChordFinder* pChordFinder;
 	G4PropagatorInField* propInField;
+
+	G4ThreeVector fefielddirection;
+	G4double fefield;
 };
 
 #endif

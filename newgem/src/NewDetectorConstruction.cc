@@ -1,7 +1,8 @@
 #include "NewDetectorConstruction.hh"
+#include "NewDetectorConstMessenger.hh"
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
-#include "G4UniformElectricField.hh"
+#include "NewElectricField.hh"
 
 #include "G4Material.hh"
 #include "G4Element.hh"
@@ -37,14 +38,26 @@
 #include "G4SDParticleFilter.hh"
 
 NewDetectorConstruction::NewDetectorConstruction()
+:fefield(100.),fefielddirection(1.,0.,0.)
 {
-	fieldMgr = new G4FieldManager();
+	messenger = new NewDetectorConstMessenger(this);
+	fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+	electricField = new NewElectricField(G4ThreeVector(fefield*kilovolt/cm*fefielddirection.x()/fefielddirection.r(),fefield*kilovolt/cm*fefielddirection.y()/fefielddirection.r(),fefield*kilovolt/cm*fefielddirection.z()/fefielddirection.r()));
+	pEquation = new G4EqMagElectricField(electricField);
+	pStepper = new G4ClassicalRK4(pEquation, 8);
+	pIntgrDriver = new G4MagInt_Driver(1.*um,pStepper,pStepper->GetNumberOfVariables());
+	pChordFinder = new G4ChordFinder(pIntgrDriver);
 }
 
 NewDetectorConstruction::~NewDetectorConstruction()
 {
 	DestroyMaterials();
 
+//	delete pEquation; 
+//	delete pStepper;
+//	delete pIntgrDriver;
+//	delete pChordFinder;
+	delete messenger;
 	delete worldVisAtt;
 	delete argonVisAtt;
 }
@@ -52,27 +65,6 @@ NewDetectorConstruction::~NewDetectorConstruction()
 G4VPhysicalVolume* NewDetectorConstruction::Construct()
 {
 	ConstructMaterials();
-
-	// Make an Electric Field
-	// Local Electric Field
-	static G4bool fieldIsInitialized = false;
-
-	if(!fieldIsInitialized)
-	{
-		electricField = new G4UniformElectricField(G4ThreeVector(0., 100*kilovolt/cm, 0.));
-		pEquation = new G4EqMagElectricField(electricField);
-		pStepper = new G4ClassicalRK4(pEquation, 8);
-		fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-//		fieldMgr->SetDetectorField(electricField);
-
-		G4double minEps = 1.*um;
-
-		pIntgrDriver = new G4MagInt_Driver(minEps,pStepper,pStepper->GetNumberOfVariables());
-		pChordFinder = new G4ChordFinder(pIntgrDriver);
-		fieldMgr->SetChordFinder(pChordFinder);
-
-		fieldIsInitialized = true;
-	}
 
 	// geometries
 	// experimental hall (world volume)
@@ -96,7 +88,6 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	// Box
 	G4VSolid* argon_solid;
-	G4LogicalVolume* argon_logical;
 	G4VPhysicalVolume* argon_physical;
 
 	argon_solid = new G4Box("argon_solid",5.*cm,5.*cm,5.*cm);
@@ -164,6 +155,9 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4PSNofSecondary* secondaryscorerCurrent = new G4PSNofSecondary("SecondaryCurrent");
 	secondaryscorerCurrent->SetFilter(electronFilter);
 	hodoscope3->RegisterPrimitive(secondaryscorerCurrent);
+
+	// Make an Electric Field
+	SetEfield(fefielddirection, fefield);
 
 
 	// visualization attributes
@@ -254,3 +248,28 @@ void NewDetectorConstruction::DumpGeometricalTree(G4VPhysicalVolume* aVolume,G4i
   { DumpGeometricalTree(aVolume->GetLogicalVolume()->GetDaughter(i),depth+1); }
 }
 
+void NewDetectorConstruction::SetEfield(G4ThreeVector fdirection, G4double field)
+{
+	// Local Electric Field
+//	static G4bool fieldIsInitialized = false;
+
+//	if(!fieldIsInitialized)
+//	{
+		electricField->SetFieldValue(G4ThreeVector(field*kilovolt/cm*fdirection.x()/fdirection.r(),field*kilovolt/cm*fdirection.y()/fdirection.r(),field*kilovolt/cm*fdirection.z()/fdirection.r()));
+		G4cout<<field*kilovolt/cm*fdirection.x()/fdirection.r()<<","<<field*kilovolt/cm*fdirection.y()/fdirection.r()<<","<<field*kilovolt/cm*fdirection.z()/fdirection.r()<<","<<fdirection<<G4endl;
+		//electricField->SetFieldValue(G4ThreeVector(0.,1000*kilovolt/cm,0.));
+		pEquation->SetFieldObj(electricField);
+		pStepper->SetEquationOfMotion(pEquation);
+		fieldMgr->SetDetectorField(electricField);
+
+		pIntgrDriver->RenewStepperAndAdjust(pStepper);
+		pChordFinder->SetIntegrationDriver(pIntgrDriver);
+		fieldMgr->SetChordFinder(pChordFinder);
+
+		argon_logical->SetFieldManager(fieldMgr,true);
+	
+//		fieldIsInitialized = true;
+//	}
+
+	
+}
