@@ -59,7 +59,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	if(!fieldIsInitialized)
 	{
-		electricField = new G4UniformElectricField(G4ThreeVector(0., 0., -10*kilovolt/cm));
+		electricField = new G4UniformElectricField(G4ThreeVector(0., 0., -100*kilovolt/cm));
 		pEquation = new G4EqMagElectricField(electricField);
 		pStepper = new G4ClassicalRK4(pEquation, 8);
 		fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
@@ -111,10 +111,10 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
 	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
 
-	copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
-	copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
-	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
-	//copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
+	//copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
+	//copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
+	//copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
+	copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
 	copper_logical = new G4LogicalVolume(copper_solid,copper,"copper_logical",0,0,0);
 	copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
 	copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,27.5*um),copper_logical,"copper_physical",argon_logical,false,0);

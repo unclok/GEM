@@ -41,6 +41,7 @@ private:
 
 	G4VisAttributes* worldVisAtt;
 	G4VisAttributes* argonVisAtt;
+	G4VisAttributes* copperVisAtt;
 
 	G4MagIntegratorStepper* pStepper;
 	G4EqMagElectricField* pEquation;
