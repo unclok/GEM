@@ -55,6 +55,6 @@ file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
 add_executable(Newgem EXCLUDE_FROM_ALL Newgem.cc ${sources})
 #target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
-target_link_libraries(Newgem ${Geant4_LIBRARIES} )
+target_link_libraries(Newgem ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
 

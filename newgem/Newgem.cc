@@ -5,6 +5,7 @@
 #include "NewDetectorConstruction.hh"
 #include "NewPrimaryGeneratorAction.hh"
 #include "NewRunAction.hh"
+#include "BeamEventAction.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -35,6 +36,9 @@ int main(int argc, char** argv)
 
 	// mandatory user action class
 	runManager->SetUserAction(new NewPrimaryGeneratorAction);
+
+	// optianal user action classes
+	runManager->SetUserAction(new BeamEventAction);
 
 	// optianal user action classes
 	runManager->SetUserAction(new NewRunAction);

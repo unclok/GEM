@@ -6,14 +6,8 @@
 #include "BeamAnalysisManager.hh"
 #include <cmath>
 
-NewRunAction::NewRunAction() : nRun(0)
+NewRunAction::NewRunAction() : G4UserRunAction(),nRun(0)
 {
-	// Create analysis manager
-	BeamAnalysisManager* analysisManager = BeamAnalysisManager::Instance();
-
-	analysisManager->CreateH1("h1d1","Particle amount at z=10cm", 3, 0, 3);
-	analysisManager->CreateH1("h1d2","Particle amount at z=50cm", 3, 0, 3);
-
 }
 
 NewRunAction::~NewRunAction()
@@ -37,6 +31,12 @@ void NewRunAction::BeginOfRunAction(const G4Run* aRun)
 	G4String name = "Newgem" + G4String(num) + ".root";
 	G4cout<<name<<","<<nRun<<G4endl;
 	man->OpenFile(name);
+
+	// Create analysis manager
+	BeamAnalysisManager* analysisManager = BeamAnalysisManager::Instance();
+
+	analysisManager->CreateH1("h1d1","Particle amount at z=10cm", 10, 1, 10);
+	analysisManager->CreateH1("h1d2","Particle amount at z=50cm", 10, 1, 10);
 }
 
 void NewRunAction::EndOfRunAction(const G4Run* aRun)
@@ -63,5 +63,7 @@ void NewRunAction::EndOfRunAction(const G4Run* aRun)
 	BeamAnalysisManager* man = BeamAnalysisManager::Instance();
       	
 	man->Write();
+	G4cout<<"nRun:"<<nRun<<G4endl;
 	man->CloseFile();
+	G4cout<<"nRun:"<<nRun<<G4endl;
 }

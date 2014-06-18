@@ -90,13 +90,6 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,"GEMPhysical",worldLogical,0,0);
 
-	// Hodoscope declaration
-	G4VSolid* hit_solid;
-	G4LogicalVolume* hit_counter1;
-	G4VPhysicalVolume* hc_physical1;
-	G4LogicalVolume* hit_counter2;
-	G4VPhysicalVolume* hc_physical2;
-
 	// Box
 	G4VSolid* argon_solid;
 	G4LogicalVolume* argon_logical;
@@ -110,24 +103,40 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VPhysicalVolume* copper2_physical;
 
 	argon_solid = new G4Box("argon_solid",50.*um,50.*um,30.*um);
-	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
-	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
+	argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",fieldMgr,0,0);
+	//argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",0,0,0);
 	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
 
-	//copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
-	//copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
-	//copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
-	copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
+	copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
+	copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
+	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
+	//copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
 	copper_logical = new G4LogicalVolume(copper_solid,copper,"copper_logical",0,0,0);
 	copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
 	copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
 
-	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
-	hit_counter1 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter1",0,0,0);
-	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-27.4*um),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
-	hit_counter2 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter2",0,0,0);
-	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,27.4*um),hit_counter2,"hit_counter2_physical",argon_logical,false,0);
+	// Hodoscope declaration
+	G4VSolid* hit_solid;
+	G4LogicalVolume* hit_counter1;
+	G4VPhysicalVolume* hc_physical1;
+	G4LogicalVolume* hit_counter2;
+	G4VPhysicalVolume* hc_physical2;
 
+	G4LogicalVolume* dc_logical1;
+	G4VPhysicalVolume* dc_physical1;
+	G4LogicalVolume* dc_logical2;
+	G4VPhysicalVolume* dc_physical2;
+
+	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
+	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
+	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-24.7*um),hit_counter1,"dc1_physical",argon_logical,false,0);
+	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
+	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,24.7*um),hit_counter2,"dc2_physical",argon_logical,false,0);
+
+	dc_logical1 = new G4LogicalVolume(hit_solid,galactic,"dc1",0,0,0);
+	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-24.9*um),dc_logical1,"dc1_physical",argon_logical,false,0);
+	dc_logical2 = new G4LogicalVolume(hit_solid,galactic,"dc2",0,0,0);
+	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,24.9*um),dc_logical2,"dc2_physical",argon_logical,false,0);
 /*
 	// GEM Detector Geometry
 	G4VSolid* copper_hole;
@@ -192,10 +201,10 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	drift1 = new A01DriftChamber(SDname="/drift1");
 	SDman->AddNewDetector(drift1);
-	hit_counter1->SetSensitiveDetector(drift1);
+	dc_logical1->SetSensitiveDetector(drift1);
 	drift2 = new A01DriftChamber(SDname="/drift2");
 	SDman->AddNewDetector(drift2);
-	hit_counter2->SetSensitiveDetector(drift2);
+	dc_logical2->SetSensitiveDetector(drift2);
 
 	G4PSFlatSurfaceCurrent* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",1);
 	totalSurfCurrent1->Weighted(false);
