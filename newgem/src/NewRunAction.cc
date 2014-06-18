@@ -3,14 +3,22 @@
 #include "G4Step.hh"
 #include "G4Run.hh"
 #include "NewRun.hh"
+#include "BeamAnalysisManager.hh"
 #include <cmath>
 
-NewRunAction::NewRunAction()
+NewRunAction::NewRunAction() : nRun(0)
 {
+	// Create analysis manager
+	BeamAnalysisManager* analysisManager = BeamAnalysisManager::Instance();
+
+	analysisManager->CreateH1("h1d1","Particle amount at z=10cm", 3, 0, 3);
+	analysisManager->CreateH1("h1d2","Particle amount at z=50cm", 3, 0, 3);
+
 }
 
 NewRunAction::~NewRunAction()
 {
+	delete BeamAnalysisManager::Instance();
 }
 
 G4Run* NewRunAction::GenerateRun()
@@ -20,10 +28,20 @@ G4Run* NewRunAction::GenerateRun()
 
 void NewRunAction::BeginOfRunAction(const G4Run* aRun)
 {
+	// Get analysis manager
+	BeamAnalysisManager* man = BeamAnalysisManager::Instance();
+
+	// Open an output file
+	char num[5];
+	sprintf(num,"%d",nRun);
+	G4String name = "Newgem" + G4String(num) + ".root";
+	G4cout<<name<<","<<nRun<<G4endl;
+	man->OpenFile(name);
 }
 
 void NewRunAction::EndOfRunAction(const G4Run* aRun)
 {
+	nRun++;
 	NewRun* theRun = (NewRun*)aRun;
 	G4cout << " # of total surface current of hodoscope1 :	 " << theRun->GetTotalSurfCurrent(1) << G4endl;
 	G4cout << " # of electron surface current hodoscope1 :	 " << theRun->GetElectronSurfCurrent(1) << G4endl;
@@ -40,4 +58,10 @@ void NewRunAction::EndOfRunAction(const G4Run* aRun)
 	G4cout << "\n" << G4endl;
 
 	G4cout << " gain :	 " << theRun->GetElectronSurfCurrent(2)/theRun->GetElectronSurfCurrent(1) << G4endl;
+
+	// save histograms
+	BeamAnalysisManager* man = BeamAnalysisManager::Instance();
+      	
+	man->Write();
+	man->CloseFile();
 }

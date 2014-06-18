@@ -36,6 +36,9 @@
 #include "G4VSDFilter.hh"
 #include "G4SDParticleFilter.hh"
 
+#include "G4VSensitiveDetector.hh"
+#include "A01DriftChamber.hh"
+
 NewDetectorConstruction::NewDetectorConstruction()
 {
 	fieldMgr = new G4FieldManager();
@@ -169,6 +172,9 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4MultiFunctionalDetector* hodoscope2;
 	G4MultiFunctionalDetector* hodoscope3;
 
+	G4VSensitiveDetector* drift1;
+	G4VSensitiveDetector* drift2;
+
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	G4String SDname;
 
@@ -183,6 +189,13 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	hodoscope3 = new G4MultiFunctionalDetector(SDname="/hodoscope3");
 	SDman->AddNewDetector(hodoscope3);
 	argon_logical->SetSensitiveDetector(hodoscope3);
+
+	drift1 = new A01DriftChamber(SDname="/drift1");
+	SDman->AddNewDetector(drift1);
+	hit_counter1->SetSensitiveDetector(drift1);
+	drift2 = new A01DriftChamber(SDname="/drift2");
+	SDman->AddNewDetector(drift2);
+	hit_counter2->SetSensitiveDetector(drift2);
 
 	G4PSFlatSurfaceCurrent* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",1);
 	totalSurfCurrent1->Weighted(false);

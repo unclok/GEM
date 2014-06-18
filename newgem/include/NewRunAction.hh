@@ -11,6 +11,7 @@ public:
 	virtual ~NewRunAction();
 
 private:
+	G4int nRun;
 
 public:
 	G4Run* GenerateRun();
