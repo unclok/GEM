@@ -13,14 +13,16 @@ else()
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../CMake_config")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/opt/geant4/9.6p03/lib/Geant4-9.6.3/Modules")
 #set(Geant4_DIR /pnfs/opt/SLC5.9/geant4.9.5/lib64/Geant4-9.5.1)
 #find_package(cadmesh)
 
+find_package(ROOT)
 include(${Geant4_USE_FILE})
 
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR}
 #${cadmesh_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIRS})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${ROOT_INCLUDE_DIR})
 
 
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
@@ -53,6 +55,6 @@ file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
 add_executable(Newgem EXCLUDE_FROM_ALL Newgem.cc ${sources})
 #target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
-target_link_libraries(Newgem ${Geant4_LIBRARIES} )
+target_link_libraries(Newgem ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
 

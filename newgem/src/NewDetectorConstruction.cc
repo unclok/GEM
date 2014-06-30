@@ -37,6 +37,9 @@
 #include "G4VSDFilter.hh"
 #include "G4SDParticleFilter.hh"
 
+#include "G4VSensitiveDetector.hh"
+#include "A01DriftChamber.hh"
+
 NewDetectorConstruction::NewDetectorConstruction()
 :fefield(100.),fefielddirection(1.,0.,0.)
 {
@@ -85,28 +88,39 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VPhysicalVolume* hc_physical1;
 	G4LogicalVolume* hit_counter2;
 	G4VPhysicalVolume* hc_physical2;
+	G4LogicalVolume* driftchamber1;
+	G4VPhysicalVolume* dc_physical1;
+	G4LogicalVolume* driftchamber2;
+	G4VPhysicalVolume* dc_physical2;
 
 	// Box
 	G4VSolid* argon_solid;
 	G4VPhysicalVolume* argon_physical;
 
 	argon_solid = new G4Box("argon_solid",5.*cm,5.*cm,5.*cm);
-	//argon_logical = new G4LogicalVolume(argon_solid,air,"argon_logical",fieldMgr,0,0);
-	argon_logical = new G4LogicalVolume(argon_solid,air,"argon_logical",0,0,0);
+	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
+	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
 	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
 
 	hit_solid = new G4Box("hit_counter",5.*cm,5.*cm,0.1*cm);
-	hit_counter1 = new G4LogicalVolume(hit_solid,air,"hit_counter1",0,0,0);
+	hit_counter1 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter1",0,0,0);
 	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.9*cm),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
-	hit_counter2 = new G4LogicalVolume(hit_solid,air,"hit_counter2",0,0,0);
+	hit_counter2 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter2",0,0,0);
 	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.9*cm),hit_counter2,"hit_counter2_physical",argon_logical,false,0);
 
+	driftchamber1 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber1",0,0,0);
+	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.7*cm),driftchamber1,"driftchamber1_physical",argon_logical,false,0);
+	driftchamber2 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber2",0,0,0);
+	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.7*cm),driftchamber2,"driftchamber1_physical",argon_logical,false,0);
 
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
 	G4MultiFunctionalDetector* hodoscope2;
 	G4MultiFunctionalDetector* hodoscope3;
 
+	G4VSensitiveDetector* drift1;
+	G4VSensitiveDetector* drift2;
+	
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	G4String SDname;
 
@@ -121,6 +135,13 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	hodoscope3 = new G4MultiFunctionalDetector(SDname="/hodoscope3");
 	SDman->AddNewDetector(hodoscope3);
 	argon_logical->SetSensitiveDetector(hodoscope3);
+
+	drift1 = new A01DriftChamber(SDname="/drift1");
+	SDman->AddNewDetector(drift1);
+	driftchamber1->SetSensitiveDetector(drift1);
+	drift2 = new A01DriftChamber(SDname="/drift2");
+	SDman->AddNewDetector(drift2);
+	driftchamber2->SetSensitiveDetector(drift2);
 
 	G4PSFlatSurfaceCurrent* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",1);
 	totalSurfCurrent1->Weighted(false);

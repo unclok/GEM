@@ -14,6 +14,7 @@
 #include "G4ClassicalRK4.hh"
 #include "G4ThreeVector.hh"
 
+class NewDetectorConstMessenger;
 class G4VPhysicalVolume;
 class G4Material;
 class G4VSensitiveDetector;
