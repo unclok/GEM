@@ -13,7 +13,7 @@ else()
 endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../CMake_config")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/opt/geant4/9.6p03/lib/Geant4-9.6.3/Modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${Geant4_DIR}/Modules")
 #set(Geant4_DIR /pnfs/opt/SLC5.9/geant4.9.5/lib64/Geant4-9.5.1)
 #find_package(cadmesh)
 
@@ -22,6 +22,8 @@ include(${Geant4_USE_FILE})
 
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR}
 #${cadmesh_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIRS})
+#set(Geant4_INCLUDE_DIR execute_process(COMMAND scram tool tag geant4core INCLUDE))
+#set(Geant4_LIBRARIES execute_process(COMMAND scram tool tag geant4core LIB))
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${ROOT_INCLUDE_DIR})
 
 
