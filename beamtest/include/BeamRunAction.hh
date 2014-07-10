@@ -12,6 +12,7 @@ public:
 
 private:
 	G4int nRun;
+	G4String name;
 
 public:
 	G4Run* GenerateRun();
