@@ -61,7 +61,7 @@ void NewRunAction::EndOfRunAction(const G4Run* aRun)
 	G4cout << " # of secondary hodoscope3 :	 " << theRun->GetSecondaryCurrent() << G4endl;
 	G4cout << "\n" << G4endl;
 
-	G4cout << " gain :	 " << theRun->GetElectronSurfCurrent(2)/theRun->GetElectronSurfCurrent(1) << G4endl;
+	if(theRun->GetElectronSurfCurrent(1)!=0)G4cout << " gain :	 " << theRun->GetElectronSurfCurrent(2)/theRun->GetElectronSurfCurrent(1) << G4endl;
 
 	// save histograms
 	BeamAnalysisManager* man = BeamAnalysisManager::Instance();
