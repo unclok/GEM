@@ -37,10 +37,12 @@ void NewRunAction::BeginOfRunAction(const G4Run* aRun)
 	analysisManager->CreateH1("h1d1","Particle amount at z=10cm", 3, 1, 3);
 	analysisManager->CreateH1("h1d2","Particle amount at z=50cm", 3, 1, 3);
 
-	analysisManager->CreateH2("h1","2D Energy deposit distribution at z=10cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
-	analysisManager->CreateH2("h2","2D Energy deposit distribution at z=50cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
-	analysisManager->CreateH2("h3","2D position distribution at z=10cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
-	analysisManager->CreateH2("h4","2D position distribution at z=50cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
+	analysisManager->CreateH2("h1","2D Energy deposit distribution at z=-5cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
+	analysisManager->CreateH2("h2","2D Energy deposit distribution at z=5cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
+	analysisManager->CreateH2("h3","2D position distribution at z=-5cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
+	analysisManager->CreateH2("h4","2D position distribution at z=5cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
+
+	analysisManager->CreateH2("h5","2D position distribution of particle energy", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
 }
 
 void NewRunAction::EndOfRunAction(const G4Run* aRun)

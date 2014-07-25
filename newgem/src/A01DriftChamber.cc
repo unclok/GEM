@@ -55,6 +55,7 @@ void A01DriftChamber::Initialize(G4HCofThisEvent*HCE)
                    (SensitiveDetectorName,collectionName[0]);
   if(fHCID<0)
   { fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection); }
+  //fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection);
   HCE->AddHitsCollection(fHCID,fHitsCollection);
 }
 

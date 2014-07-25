@@ -51,6 +51,8 @@ class BeamEventAction : public G4UserEventAction
 	A01DriftChamberHitsCollection* eventDrift1; 
 	G4int driftID2;
 	A01DriftChamberHitsCollection* eventDrift2; 
+	G4int sliceID;
+	A01DriftChamberHitsCollection* eventDrift3; 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

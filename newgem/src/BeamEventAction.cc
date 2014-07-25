@@ -44,6 +44,7 @@ BeamEventAction::BeamEventAction()
 	G4SDManager* SDM = G4SDManager::GetSDMpointer();
 	driftID1 = SDM->GetCollectionID("drift1/driftChamberColl");
 	driftID2 = SDM->GetCollectionID("drift2/driftChamberColl");
+	sliceID = SDM->GetCollectionID("slice/driftChamberColl");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -99,6 +100,15 @@ void BeamEventAction::EndOfEventAction(const G4Event* evt)
 			man->FillH2(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
 			man->FillH2(3,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y());
 			man->FillH1(1,driftHit2->GetParticleID());
+//		man->FillNtuple(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
+	} 
+	
+	eventDrift3 = (A01DriftChamberHitsCollection*)(HCE->GetHC(sliceID));
+	A01DriftChamberHit* sliceHit;
+	for(int i=0;i<eventDrift3->entries();i++)
+	{
+		sliceHit = (*eventDrift3)[i];
+			man->FillH2(4,sliceHit->GetLocalPos().x(),sliceHit->GetLocalPos().y(),sliceHit->GetEnergy());
 //		man->FillNtuple(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
 	} 
 }  

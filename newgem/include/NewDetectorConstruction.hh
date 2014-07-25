@@ -13,6 +13,7 @@
 #include "G4ChordFinder.hh"
 #include "G4ClassicalRK4.hh"
 #include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"
 
 class NewDetectorConstMessenger;
 class G4VPhysicalVolume;
