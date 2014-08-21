@@ -5,7 +5,9 @@
 #include "NewDetectorConstruction.hh"
 #include "NewPrimaryGeneratorAction.hh"
 #include "NewRunAction.hh"
+#include "NewPhysicsList.hh"
 #include "BeamEventAction.hh"
+#include "Randomize.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -25,11 +27,27 @@ int main(int argc, char** argv)
 	G4VisManager* visManager = new G4VisExecutive;
 	visManager->Initialize();
 #endif
+	//choose the Random engine
+	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
+	//set random seed with system time
+	G4long seed = time(NULL);
+	CLHEP::HepRandom::setTheSeed(seed);
 
 	runManager->SetUserInitialization(new NewDetectorConstruction);
-	G4PhysListFactory factory;
-	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
-	runManager->SetUserInitialization(physlist);
+	//G4PhysListFactory factory;
+	//G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
+	//physlist->SetCutsForRegion(10*eV,"DefaultRegionForTheWorld");
+	//physlist->SetParticleCuts(10*eV,G4Gamma::Gamma());
+	//physlist->SetParticleCuts(10*eV,G4Electron::Electron());
+	//physlist->SetParticleCuts(10*eV,G4Positron::Positron());
+	//physlist->SetCutValue(10*eV,"gamma");
+	//physlist->SetCutValue(10*eV,"e-");
+	//physlist->SetCutValue(10*eV,"e+");
+	//physlist->SetApplyCuts(true,"gamma");
+	//physlist->SetApplyCuts(true,"e-");
+	//physlist->SetApplyCuts(true,"e+");
+	//physlist->DumpList();
+	runManager->SetUserInitialization(new NewPhysicsList);
 
 	// initialize Geant4 kernel
 	runManager->Initialize();

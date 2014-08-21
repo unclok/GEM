@@ -1,5 +1,6 @@
 #include "G4UserRunAction.hh"
 #include "G4Run.hh"
+#include "G4THitsMap.hh"
 
 #ifndef NewRunAction_h
 #define NewRunAction_h 1

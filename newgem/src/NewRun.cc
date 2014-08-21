@@ -3,6 +3,7 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Event.hh"
 #include "G4THitsMap.hh"
+#include "BeamAnalysisManager.hh"
 
 NewRun::NewRun() : nEvent(0)
 {
@@ -17,6 +18,8 @@ NewRun::NewRun() : nEvent(0)
 
 	currentID = SDM->GetCollectionID("hodoscope3/Current");
 	secondaryCurrentID = SDM->GetCollectionID("hodoscope3/SecondaryCurrent");
+
+//	secondaryID = SDM->GetCollectionID("hodoscope3/SecondaryInitEnergy");
 }
 
 NewRun::~NewRun()
@@ -45,6 +48,26 @@ void NewRun::RecordEvent(const G4Event* evt)
 	current += *eventCurrent;
 	eventSecondaryCurrent = (G4THitsMap<G4double>*)(HCE->GetHC(secondaryCurrentID));
 	secondaryCurrent += *eventSecondaryCurrent;
+//	for(int i=0;i<eventSecondaryCurrent->entries();i++)G4cout<<*(*eventSecondaryCurrent)[i]<<G4endl;
+/*
+	eventSecondary = (G4THitsMap<G4double>*)(HCE->GetHC(secondaryID));
+	secondary += *eventSecondary;
+
+  BeamAnalysisManager* man = BeamAnalysisManager::Instance();
+
+	G4int key;
+	G4int n=0;
+	std::map<G4int,G4double*>::iterator itr = eventSecondary->GetMap()->begin();
+	for(;itr!=eventSecondary->GetMap()->end();itr++)
+	{
+		key = (itr->first);
+		G4double* pVal = (*eventSecondary)[key];
+		if(pVal){
+			man->FillH1(2,*pVal);
+			n++;
+		}
+	}
+*/
 }
 
 G4double NewRun::GetTotalSurfCurrent(G4int id)

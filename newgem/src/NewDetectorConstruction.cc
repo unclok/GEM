@@ -33,6 +33,7 @@
 #include "G4PSFlatSurfaceCurrent.hh"
 #include "G4PSPassageCellCurrent.hh"
 #include "G4PSNofSecondary.hh"
+#include "PSEofSecondary.hh"
 #include "NewEnergyDetector.hh"
 #include "G4VPrimitiveScorer.hh"
 #include "G4VSDFilter.hh"
@@ -188,6 +189,10 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4PSNofSecondary* secondaryscorerCurrent = new G4PSNofSecondary("SecondaryCurrent");
 	secondaryscorerCurrent->SetFilter(electronFilter);
 	hodoscope3->RegisterPrimitive(secondaryscorerCurrent);
+	PSEofSecondary* secondaryscorerEnergy = new PSEofSecondary("SecondaryInitEnergy");
+	secondaryscorerEnergy->Weighted(false);
+	secondaryscorerEnergy->SetFilter(electronFilter);
+	hodoscope3->RegisterPrimitive(secondaryscorerEnergy);
 
 	// Make an Electric Field
 	SetEfield(fefielddirection, fefield);

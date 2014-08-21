@@ -32,6 +32,7 @@
 #include "G4Event.hh"
 #include "A01DriftChamberHit.hh"
 #include "globals.hh"
+#include "G4THitsMap.hh"
 
 #ifndef BeamEventAction_h
 #define BeamEventAction_h 1
@@ -53,6 +54,9 @@ class BeamEventAction : public G4UserEventAction
 	A01DriftChamberHitsCollection* eventDrift2; 
 	G4int sliceID;
 	A01DriftChamberHitsCollection* eventDrift3; 
+
+	G4int secondaryID;
+	G4THitsMap<G4double>* eventSecondary;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

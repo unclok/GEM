@@ -36,6 +36,7 @@ void NewRunAction::BeginOfRunAction(const G4Run* aRun)
 	// Create histograms
 	analysisManager->CreateH1("h1d1","Particle amount at z=10cm", 3, 1, 3);
 	analysisManager->CreateH1("h1d2","Particle amount at z=50cm", 3, 1, 3);
+	analysisManager->CreateH1("h1d3","Secondary e- Energy distribution", 1000, 0, 0.003*MeV);
 
 	analysisManager->CreateH2("h1","2D Energy deposit distribution at z=-5cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
 	analysisManager->CreateH2("h2","2D Energy deposit distribution at z=5cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);

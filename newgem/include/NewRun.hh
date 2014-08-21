@@ -41,6 +41,10 @@ private:
 	G4THitsMap<G4double>* eventCurrent;
 	G4THitsMap<G4double>* eventSecondaryCurrent;
 
+	G4int secondaryID;
+	G4THitsMap<G4double> secondary;
+	G4THitsMap<G4double>* eventSecondary;
+
 public:
 	G4double GetTotalSurfCurrent(G4int);
 	G4double GetElectronSurfCurrent(G4int);

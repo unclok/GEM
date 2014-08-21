@@ -95,6 +95,14 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VPhysicalVolume* dc_physical2;
 	G4LogicalVolume* slice;
 	G4VPhysicalVolume* slice_physical;
+	G4VSolid* GEM_solid;
+	G4LogicalVolume* GEM_logical;
+	G4VPhysicalVolume* GEM_physical;
+	G4VSolid* efield_solid;
+	G4LogicalVolume* argon_logical;
+	G4VPhysicalVolume* efield1_physical;
+	G4VPhysicalVolume* efield2_physical;
+	G4VPhysicalVolume* efield3_physical;
 
 	// Box
 	G4VSolid* argon_solid;
@@ -118,6 +126,17 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	slice = new G4LogicalVolume(hit_solid,argonGas,"driftchamber2",0,0,0);
 	slice_physical = new G4PVPlacement(G4Transform3D(G4RotationMatrix(-M_PI/2.*rad,M_PI/2.*rad,M_PI/2.*rad),G4ThreeVector(0.,0.,0.*cm)),slice,"driftchamber1_physical",argon_logical,false,0);
+
+	// GEM
+	GEM_solid = new G4Box("gem_box",5.*cm,5.*cm,3.075*mm);
+	GEM_logical = new G4LogicalVolume(GEM_solid,argonGas,"gem_logical",0,0,0);
+	GEM_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,3.*cm),GEM_logical,"gem_physical",argon_logical,false,0);
+
+	efield_solid = new G4Box("hit_counter",5.*cm,5.*cm,25*um);
+	efield_logical = new G4LogicalVolume(efield_solid,argonGas,"efield_logical",0,0,0);
+	efield1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-0.075*mm),efield_logical,"efield1_physical",GEM_logical,false,0);
+	efield2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,1.025*mm),efield_logical,"efield2_physical",GEM_logical,false,0);
+	efield3_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,3.05*mm),efield_logical,"efield3_physical",GEM_logical,false,0);
 
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
@@ -299,7 +318,7 @@ void NewDetectorConstruction::SetEfield(G4ThreeVector fdirection, G4double field
 		pChordFinder->SetIntegrationDriver(pIntgrDriver);
 		fieldMgr->SetChordFinder(pChordFinder);
 
-		argon_logical->SetFieldManager(fieldMgr,true);
+		efield_logical->SetFieldManager(fieldMgr,true);
 	
 //		fieldIsInitialized = true;
 //	}

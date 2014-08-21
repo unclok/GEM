@@ -54,7 +54,7 @@ private:
 	G4Material* galactic;
 	G4Material* copper;
 
-	G4LogicalVolume* argon_logical;
+	G4LogicalVolume* efield_logical;
 
 	G4VisAttributes* worldVisAtt;
 	G4VisAttributes* argonVisAtt;

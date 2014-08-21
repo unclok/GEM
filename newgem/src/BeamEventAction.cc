@@ -45,6 +45,7 @@ BeamEventAction::BeamEventAction()
 	driftID1 = SDM->GetCollectionID("drift1/driftChamberColl");
 	driftID2 = SDM->GetCollectionID("drift2/driftChamberColl");
 	sliceID = SDM->GetCollectionID("slice/driftChamberColl");
+//	secondaryID = SDM->GetCollectionID("hodoscope3/SecondaryInitEnergy");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -111,6 +112,16 @@ void BeamEventAction::EndOfEventAction(const G4Event* evt)
 			man->FillH2(4,sliceHit->GetLocalPos().x(),sliceHit->GetLocalPos().y(),sliceHit->GetEnergy());
 //		man->FillNtuple(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
 	} 
+/*
+	eventSecondary = (G4THitsMap<G4double>*)(HCE->GetHC(secondaryID));
+//	std::map<G4int,G4double*>::iterator itr = eventSecondary->GetMap()->begin();
+	G4cout<<eventSecondary->entries()<<G4endl;
+	for(int i=0;i<eventSecondary->entries();i++)
+	{
+		G4double* pVal = (*eventSecondary)[i];
+		man->FillH1(2,*pVal);
+	}
+*/
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
