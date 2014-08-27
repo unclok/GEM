@@ -33,7 +33,8 @@
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 90. 0.
+/vis/viewer/set/viewpointThetaPhi 45. 45.
+#/vis/viewer/set/viewpointThetaPhi 90. 0.
 #
 # Specify zoom value:
 /vis/viewer/zoom 16.0
@@ -80,7 +81,7 @@
 #/vis/viewer/flush
 #
 /vis/scene/endOfEventAction accumulate -1
-#/gun/particle gamma
+/gun/particle alpha
 #/gun/momentum 0. 0. 1. eV
 #/gun/position 0. 0. -8. um
 #/mydet/energy 1. eV
@@ -90,9 +91,15 @@
 /process/em/pixe true 
 /process/em/fluo true 
 
-/vis/ogl/set/displayListLimit 100000000000
+#/vis/ogl/set/displayListLimit 100000000000
 /vis/ogl/set/printMode pixmap
 
+/vis/ogl/set/printFilename vacuumhole2000field45deg
+/mydet/setfilename vacuumhole2000field45deg
+/mydet/setgunrandom true
+/gun/particle e-
+/mydet/setefield 2000
+/mydet/setefielddirection 0 0 -1
 /gun/energy 10. eV
 /run/beamOn 100
 /vis/ogl/printEPS
@@ -108,3 +115,16 @@
 /gun/energy 100. keV
 /run/beamOn 100
 /vis/ogl/printEPS
+#/gun/energy 5.6 MeV
+#/mydet/setefield 350
+#/run/beamOn 100
+#/vis/ogl/printEPS
+#/mydet/setefield 400
+#/run/beamOn 100
+#/vis/ogl/printEPS
+#/mydet/setefield 450
+#/run/beamOn 100
+#/vis/ogl/printEPS
+#/mydet/setefield 500
+#/run/beamOn 100
+#/vis/ogl/printEPS
