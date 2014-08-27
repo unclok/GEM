@@ -5,7 +5,6 @@
 #include "NewDetectorConstruction.hh"
 #include "NewPrimaryGeneratorAction.hh"
 #include "NewRunAction.hh"
-#include "NewPhysicsList.hh"
 #include "BeamEventAction.hh"
 
 #ifdef G4VIS_USE
@@ -28,9 +27,9 @@ int main(int argc, char** argv)
 #endif
 
 	runManager->SetUserInitialization(new NewDetectorConstruction);
-//	G4PhysListFactory factory;
-//	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
-	runManager->SetUserInitialization(new NewPhysicsList);
+	G4PhysListFactory factory;
+	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
+	runManager->SetUserInitialization(physlist);
 
 	// initialize Geant4 kernel
 	runManager->Initialize();
