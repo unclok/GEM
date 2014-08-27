@@ -102,22 +102,22 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VPhysicalVolume* argon_physical;
 
 	argon_solid = new G4Box("argon_solid",5.*cm,5.*cm,5.*cm);
-	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
-	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
+	//argon_logical = new G4LogicalVolume(argon_solid,air,"argon_logical",fieldMgr,0,0);
+	argon_logical = new G4LogicalVolume(argon_solid,air,"argon_logical",0,0,0);
 	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
 
 	hit_solid = new G4Box("hit_counter",5.*cm,5.*cm,0.1*cm);
-	hit_counter1 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter1",0,0,0);
+	hit_counter1 = new G4LogicalVolume(hit_solid,air,"hit_counter1",0,0,0);
 	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.9*cm),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
-	hit_counter2 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter2",0,0,0);
+	hit_counter2 = new G4LogicalVolume(hit_solid,air,"hit_counter2",0,0,0);
 	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.9*cm),hit_counter2,"hit_counter2_physical",argon_logical,false,0);
 
-	driftchamber1 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber1",0,0,0);
+	driftchamber1 = new G4LogicalVolume(hit_solid,air,"driftchamber1",0,0,0);
 	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.7*cm),driftchamber1,"driftchamber1_physical",argon_logical,false,0);
-	driftchamber2 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber2",0,0,0);
+	driftchamber2 = new G4LogicalVolume(hit_solid,air,"driftchamber2",0,0,0);
 	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.7*cm),driftchamber2,"driftchamber1_physical",argon_logical,false,0);
 
-	slice = new G4LogicalVolume(hit_solid,argonGas,"driftchamber2",0,0,0);
+	slice = new G4LogicalVolume(hit_solid,air,"driftchamber2",0,0,0);
 	slice_physical = new G4PVPlacement(G4Transform3D(G4RotationMatrix(-M_PI/2.*rad,M_PI/2.*rad,M_PI/2.*rad),G4ThreeVector(0.,0.,0.*cm)),slice,"driftchamber1_physical",argon_logical,false,0);
 
 	// multifunctional detectors

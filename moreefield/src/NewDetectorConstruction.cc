@@ -115,12 +115,12 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	hit_solid = new G4Box("hit_counter",5.*cm,5.*cm,0.1*cm);
 	hit_counter1 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter1",0,0,0);
-	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.9*cm),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
+	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.5*cm),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
 	hit_counter2 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter2",0,0,0);
 	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.9*cm),hit_counter2,"hit_counter2_physical",argon_logical,false,0);
 
 	driftchamber1 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber1",0,0,0);
-	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.7*cm),driftchamber1,"driftchamber1_physical",argon_logical,false,0);
+	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.3*cm),driftchamber1,"driftchamber1_physical",argon_logical,false,0);
 	driftchamber2 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber2",0,0,0);
 	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.7*cm),driftchamber2,"driftchamber1_physical",argon_logical,false,0);
 
@@ -130,13 +130,13 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	// GEM
 	GEM_solid = new G4Box("gem_box",5.*cm,5.*cm,3.075*mm);
 	GEM_logical = new G4LogicalVolume(GEM_solid,argonGas,"gem_logical",0,0,0);
-	GEM_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,3.*cm),GEM_logical,"gem_physical",argon_logical,false,0);
+	GEM_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-3.*cm),GEM_logical,"gem_physical",argon_logical,false,0);
 
 	efield_solid = new G4Box("hit_counter",5.*cm,5.*cm,25*um);
 	efield_logical = new G4LogicalVolume(efield_solid,argonGas,"efield_logical",0,0,0);
-	efield1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-0.075*mm),efield_logical,"efield1_physical",GEM_logical,false,0);
-	efield2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,1.025*mm),efield_logical,"efield2_physical",GEM_logical,false,0);
-	efield3_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,3.05*mm),efield_logical,"efield3_physical",GEM_logical,false,0);
+	efield1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.075*mm),efield_logical,"efield1_physical",GEM_logical,false,0);
+	efield2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-1.025*mm),efield_logical,"efield2_physical",GEM_logical,false,0);
+	efield3_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-3.05*mm),efield_logical,"efield3_physical",GEM_logical,false,0);
 
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
@@ -174,11 +174,11 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	SDman->AddNewDetector(slicehit);
 	slice->SetSensitiveDetector(slicehit);
 
-	G4PSFlatSurfaceCurrent* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",1);
+	G4PSFlatSurfaceCurrent* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",0);
 	totalSurfCurrent1->Weighted(false);
 	totalSurfCurrent1->DivideByArea(false);
 	hodoscope1->RegisterPrimitive(totalSurfCurrent1);
-	G4PSFlatSurfaceCurrent* electronSurfCurrent1 = new G4PSFlatSurfaceCurrent("ElectronSurfCurrent1",1);
+	G4PSFlatSurfaceCurrent* electronSurfCurrent1 = new G4PSFlatSurfaceCurrent("ElectronSurfCurrent1",0);
 	electronSurfCurrent1->Weighted(false);
 	electronSurfCurrent1->DivideByArea(false);
 	G4SDParticleFilter* electronFilter = new G4SDParticleFilter("electronFilter");
