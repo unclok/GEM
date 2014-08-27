@@ -3,17 +3,20 @@
 #include "G4Step.hh"
 #include "G4Run.hh"
 #include "NewRun.hh"
+#include "NewRunActionMessenger.hh"
 #include "BeamAnalysisManager.hh"
 #include "G4UserRunAction.hh"
 #include <cmath>
 
 NewRunAction::NewRunAction() : G4UserRunAction(), nRun(0)
 {
+	messenger = new NewRunActionMessenger(this);
 }
 
 NewRunAction::~NewRunAction()
 {
 	delete BeamAnalysisManager::Instance();
+	delete messenger;
 }
 
 G4Run* NewRunAction::GenerateRun()
@@ -29,18 +32,18 @@ void NewRunAction::BeginOfRunAction(const G4Run* aRun)
 	// Open an output file
 	char num[5];
 	sprintf(num,"%d",nRun);
-	G4String name = "proton" + G4String(num) + ".root";
-	G4cout<<name<<","<<nRun<<G4endl;
-	analysisManager->OpenFile(name);
+	G4String fname = name + G4String(num) + ".root";
+	G4cout<<fname<<","<<nRun<<G4endl;
+	analysisManager->OpenFile(fname);
 
 	// Create histograms
-	analysisManager->CreateH1("h1d1","Particle amount at z=10cm", 3, 1, 3);
-	analysisManager->CreateH1("h1d2","Particle amount at z=50cm", 3, 1, 3);
+	analysisManager->CreateH1("h1d1","Particle amount at z=-35um", 3, 1, 3);
+	analysisManager->CreateH1("h1d2","Particle amount at z=35um", 3, 1, 3);
 
-	analysisManager->CreateH2("h1","2D Energy deposit distribution at z=10cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
-	analysisManager->CreateH2("h2","2D Energy deposit distribution at z=50cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
-	analysisManager->CreateH2("h3","2D position distribution at z=10cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
-	analysisManager->CreateH2("h4","2D position distribution at z=50cm", 100, -5*cm, 5*cm, 100, -5*cm, 5*cm);
+	analysisManager->CreateH2("h1","2D Energy deposit distribution at z=-25um", 100, -50*um, 50*um, 100, -50*um, 50*um);
+	analysisManager->CreateH2("h2","2D Energy deposit distribution at z=25um", 100, -50*um, 50*um, 100, -50*um, 50*um);
+	analysisManager->CreateH2("h3","2D position distribution at z=-25um", 100, -50*um, 50*um, 100, -50*um, 50*um);
+	analysisManager->CreateH2("h4","2D position distribution at z=25um", 100, -50*um, 50*um, 100, -50*um, 50*um);
 }
 
 void NewRunAction::EndOfRunAction(const G4Run* aRun)
@@ -68,4 +71,8 @@ void NewRunAction::EndOfRunAction(const G4Run* aRun)
       	
 	man->Write();
 	man->CloseFile();
+}
+
+void NewRunAction::SetFileName(G4String val){
+	name = val;
 }

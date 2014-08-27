@@ -3,16 +3,19 @@
 #include "G4Step.hh"
 #include "G4Run.hh"
 #include "NewRun.hh"
+#include "NewRunActionMessenger.hh"
 #include "BeamAnalysisManager.hh"
 #include <cmath>
 
 NewRunAction::NewRunAction() : G4UserRunAction(),nRun(0)
 {
+	messenger = new NewRunActionMessenger(this);
 }
 
 NewRunAction::~NewRunAction()
 {
 	delete BeamAnalysisManager::Instance();
+	delete messenger;
 }
 
 G4Run* NewRunAction::GenerateRun()
@@ -66,4 +69,8 @@ void NewRunAction::EndOfRunAction(const G4Run* aRun)
 	G4cout<<"nRun:"<<nRun<<G4endl;
 	man->CloseFile();
 	G4cout<<"nRun:"<<nRun<<G4endl;
+}
+
+void NewRunAction::SetFileName(G4String val){
+	name = val;
 }

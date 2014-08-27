@@ -41,7 +41,7 @@
 #include "A01DriftChamber.hh"
 
 NewDetectorConstruction::NewDetectorConstruction()
-:fefield(100.),fefielddirection(1.,0.,0.)
+:fefield(100.),fefielddirection(0.,0.,1.)
 {
 	messenger = new NewDetectorConstMessenger(this);
 	fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
@@ -72,15 +72,39 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	// geometries
 	// experimental hall (world volume)
 
-	G4VSolid* worldSolid = new G4Box("worldBox",50.*cm,50.*cm,50.*cm);
-	G4LogicalVolume* worldLogical = new G4LogicalVolume(worldSolid,air,"worldLogical",0,0,0);
+	G4VSolid* worldSolid = new G4Box("worldBox",50.*um,50.*um,1000.*um);
+	G4LogicalVolume* worldLogical = new G4LogicalVolume(worldSolid,galactic,"worldLogical",0,0,0);
 	G4VPhysicalVolume* worldPhysical = new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0,0,0);
 
 	// GEM Mother volume
-	G4VSolid* GEMSolid = new G4Box("GEMBox",5.*cm,5.*cm,5.*cm);
-	G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,air,"GEMLogical",0,0,0);
+	G4VSolid* GEMSolid = new G4Box("GEMBox",50.*um,50.*um,1000.*um);
+	G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",0,0,0);
 
 	new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,"GEMPhysical",worldLogical,0,0);
+
+	// Box
+	G4VSolid* argon_solid;
+	G4VPhysicalVolume* argon_physical;
+
+	G4VSolid* copper_hole;
+	G4VSolid* copper_box;
+	G4VSolid* copper_solid;
+	G4LogicalVolume* copper_logical;
+	G4VPhysicalVolume* copper1_physical;
+	G4VPhysicalVolume* copper2_physical;
+
+	argon_solid = new G4Box("argon_solid",50.*um,50.*um,25.*um);
+	//argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",fieldMgr,0,0);
+	argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",0,0,0);
+	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
+
+	copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
+	copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
+	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
+	//copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
+	copper_logical = new G4LogicalVolume(copper_solid,copper,"copper_logical",0,0,0);
+	copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-22.5*um),copper_logical,"copper_physical",argon_logical,false,0);
+	copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,22.5*um),copper_logical,"copper_physical",argon_logical,false,0);
 
 	// Hodoscope declaration
 	G4VSolid* hit_solid;
@@ -88,30 +112,22 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VPhysicalVolume* hc_physical1;
 	G4LogicalVolume* hit_counter2;
 	G4VPhysicalVolume* hc_physical2;
-	G4LogicalVolume* driftchamber1;
+
+	G4LogicalVolume* dc_logical1;
 	G4VPhysicalVolume* dc_physical1;
-	G4LogicalVolume* driftchamber2;
+	G4LogicalVolume* dc_logical2;
 	G4VPhysicalVolume* dc_physical2;
 
-	// Box
-	G4VSolid* argon_solid;
-	G4VPhysicalVolume* argon_physical;
+	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
+	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
+	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-25.1*um),hit_counter1,"dc1_physical",GEMLogical,false,0);
+	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
+	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,25.1*um),hit_counter2,"dc2_physical",GEMLogical,false,0);
 
-	argon_solid = new G4Box("argon_solid",5.*cm,5.*cm,5.*cm);
-	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
-	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
-	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
-
-	hit_solid = new G4Box("hit_counter",5.*cm,5.*cm,0.1*cm);
-	hit_counter1 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter1",0,0,0);
-	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.9*cm),hit_counter1,"hit_counter1_physical",argon_logical,false,0);
-	hit_counter2 = new G4LogicalVolume(hit_solid,argonGas,"hit_counter2",0,0,0);
-	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.9*cm),hit_counter2,"hit_counter2_physical",argon_logical,false,0);
-
-	driftchamber1 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber1",0,0,0);
-	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-4.7*cm),driftchamber1,"driftchamber1_physical",argon_logical,false,0);
-	driftchamber2 = new G4LogicalVolume(hit_solid,argonGas,"driftchamber2",0,0,0);
-	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,4.7*cm),driftchamber2,"driftchamber1_physical",argon_logical,false,0);
+	dc_logical1 = new G4LogicalVolume(hit_solid,galactic,"dc1",0,0,0);
+	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-25.3*um),dc_logical1,"dc1_physical",GEMLogical,false,0);
+	dc_logical2 = new G4LogicalVolume(hit_solid,galactic,"dc2",0,0,0);
+	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,25.3*um),dc_logical2,"dc2_physical",GEMLogical,false,0);
 
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
@@ -138,10 +154,10 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	drift1 = new A01DriftChamber(SDname="/drift1");
 	SDman->AddNewDetector(drift1);
-	driftchamber1->SetSensitiveDetector(drift1);
+	dc_logical1->SetSensitiveDetector(drift1);
 	drift2 = new A01DriftChamber(SDname="/drift2");
 	SDman->AddNewDetector(drift2);
-	driftchamber2->SetSensitiveDetector(drift2);
+	dc_logical2->SetSensitiveDetector(drift2);
 
 	G4PSFlatSurfaceCurrent* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",1);
 	totalSurfCurrent1->Weighted(false);

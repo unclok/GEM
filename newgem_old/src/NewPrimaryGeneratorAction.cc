@@ -4,18 +4,21 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 
-NewPrimaryGeneratorAction::NewPrimaryGeneratorAction()
+NewPrimaryGeneratorAction::NewPrimaryGeneratorAction() : gunrandom(false)
 {
+	messenger = new NewPrimaryGenMessenger(this);
+	rand1 = new TRandom3;
+	rand2 = new TRandom3;
 	G4int n_particle = 1;
-	energy = 5.6*MeV;
-	direction = G4ThreeVector(0.,1.,0.);
+	energy = 5.6*eV;
+	direction = G4ThreeVector(0.,0.,1.);
 	particleGun = new G4ParticleGun(n_particle);
 
 	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 	G4String particleName;
 	G4ParticleDefinition* particle
-				= particleTable->FindParticle(particleName="alpha");
-	particleGun->SetParticlePosition(G4ThreeVector(0.,0.,0.*um));
+				= particleTable->FindParticle(particleName="e-");
+	particleGun->SetParticlePosition(G4ThreeVector(0.,0.,-50.*um));
 	particleGun->SetParticleDefinition(particle);
 	particleGun->SetParticleEnergy(energy);
 	particleGun->SetParticleMomentumDirection(direction);
@@ -23,10 +26,18 @@ NewPrimaryGeneratorAction::NewPrimaryGeneratorAction()
 
 NewPrimaryGeneratorAction::~NewPrimaryGeneratorAction()
 {
+	delete messenger;
 	delete particleGun;
 }
 
 void NewPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-	particleGun->GeneratePrimaryVertex(anEvent);
+	if(gunrandom==false)particleGun->GeneratePrimaryVertex(anEvent);
+
+	else if(gunrandom==true){
+		particleGun->SetParticleMomentumDirection(G4ThreeVector(1-2*rand1->Rndm(),1-2*rand2->Rndm(),1));
+		particleGun->GeneratePrimaryVertex(anEvent);
+	}
+
+	else G4cout<<"GunRandom is wrong!"<<G4endl;
 }
