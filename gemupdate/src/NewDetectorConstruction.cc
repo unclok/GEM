@@ -3,6 +3,7 @@
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
 #include "NewElectricField.hh"
+#include "GEMElectricField.hh"
 
 #include "G4Material.hh"
 #include "G4Element.hh"
@@ -19,6 +20,7 @@
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4PVReplica.hh"
+#include "G4AssemblyVolume.hh"
 
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
@@ -46,27 +48,34 @@ NewDetectorConstruction::NewDetectorConstruction()
 :fefield(-100.),fefielddirection(0.,0.,1.)
 {
 	messenger = new NewDetectorConstMessenger(this);
-	fieldMgr1 = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+	fieldMgr1 = new G4FieldManager();
 	fieldMgr2 = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-	fieldMgr3 = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+	//fieldMgr3 = G4TransportationManager::GetTransportationManager()->GetFieldManager();
 	electricField = new NewElectricField(G4ThreeVector(fefield*kilovolt/cm*fefielddirection.x()/fefielddirection.r(),fefield*kilovolt/cm*fefielddirection.y()/fefielddirection.r(),fefield*kilovolt/cm*fefielddirection.z()/fefielddirection.r()));
-	pEquation = new G4EqMagElectricField(electricField);
-	pStepper = new G4ClassicalRK4(pEquation, 8);
-	pIntgrDriver = new G4MagInt_Driver(1.*um,pStepper,pStepper->GetNumberOfVariables());
-	pChordFinder = new G4ChordFinder(pIntgrDriver);
+	gemField = new GEMElectricField();
 }
 
 NewDetectorConstruction::~NewDetectorConstruction()
 {
 	DestroyMaterials();
 
-//	delete pEquation; 
-//	delete pStepper;
-//	delete pIntgrDriver;
-//	delete pChordFinder;
+	delete pEquation1; 
+	delete pStepper1;
+	delete pIntgrDriver1;
+	delete pChordFinder1;
+	delete pEquation2; 
+	delete pStepper2;
+	delete pIntgrDriver2;
+	delete pChordFinder2;
+	delete pEquation3; 
+	delete pStepper3;
+	delete pIntgrDriver3;
+	delete pChordFinder3;
 	delete messenger;
 	delete worldVisAtt;
 	delete argonVisAtt;
+	delete electricField;
+	delete gemField;
 }
 
 G4VPhysicalVolume* NewDetectorConstruction::Construct()
@@ -75,21 +84,25 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	// geometries
 	// experimental hall (world volume)
+	G4double xlength = 50.*um;
+	G4double ylength = 50.*um;
+	G4double argon_thic = 60.*um;
 
-	G4VSolid* worldSolid = new G4Box("worldBox",50.*um,50.*um,60.*um);
-	worldLogical = new G4LogicalVolume(worldSolid,galactic,"worldLogical",0,0,0);
+	G4VSolid* worldSolid = new G4Box("worldBox",xlength,ylength,argon_thic);
+//	G4VSolid* worldSolid = new G4Box("worldBox",4050.*um,2500.*um,4060.*um);
+	worldLogical = new G4LogicalVolume(worldSolid,argonGas,"worldLogical",0,0,0);
 	G4VPhysicalVolume* worldPhysical = new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0,0,0);
 
 	// GEM Mother volume
-	G4VSolid* GEMSolid = new G4Box("GEMBox",50.*um,50.*um,30.*um);
+	G4VSolid* GEMSolid = new G4Box("GEMBox",xlength,ylength,argon_thic);
 	G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",0,0,0);
-//	G4VSolid* GEMRepSolid1 = new G4Box("GEMRepBox1",4000.*um,50.*um,30.*um);
-//	G4VSolid* GEMRepSolid2 = new G4Box("GEMRepBox2",4050.*um,50.*um,30.*um);
-//	G4LogicalVolume* GEMRepLogical1[25];
-//	G4LogicalVolume* GEMRepLogical2[25];
-//	G4PVReplica *repgem[50];
-	G4PVPlacement *GEMPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,"GEMPhysical",worldLogical,0,0);
-/*
+	//G4PVPlacement *GEMPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,"GEMPhysical",worldLogical,0,0);
+/*	G4VSolid* GEMRepSolid1 = new G4Box("GEMRepBox1",4000.*um,50.*um,30.*um);
+	G4VSolid* GEMRepSolid2 = new G4Box("GEMRepBox2",4050.*um,50.*um,30.*um);
+	G4LogicalVolume* GEMRepLogical1[25];
+	G4LogicalVolume* GEMRepLogical2[25];
+	G4PVReplica *repgem[50];
+
 	G4PVPlacement *GEMPhysical[50];
 	for(G4int i=0;i<50;i++){
 		if(i%2==0){
@@ -105,12 +118,17 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	}
 */
 	// GEM Drifit volume
-	G4VSolid* Drift1_Solid = new G4Box("Drift1_solid",50.*um,50.*um,15.*um);
-	G4VSolid* Drift2_Solid = new G4Box("Drift2_solid",50.*um,50.*um,15.*um);
+	G4double Drift_thic = 15.*um;
+	G4VSolid* Drift1_Solid = new G4Box("Drift1_solid",xlength,ylength,Drift_thic);
+	G4VSolid* Drift2_Solid = new G4Box("Drift2_solid",xlength,ylength,Drift_thic);
+//	G4VSolid* Drift1_Solid = new G4Box("Drift1_solid",4050.*um,2500.*um,2000.*um);
+//	G4VSolid* Drift2_Solid = new G4Box("Drift2_solid",4050.*um,2500.*um,1000.*um);
 	Drift1_logical = new G4LogicalVolume(Drift1_Solid,argonGas,"Drift1_logical",0,0,0);
 	Drift2_logical = new G4LogicalVolume(Drift2_Solid,argonGas,"Drift2_logical",0,0,0);
-	G4VPhysicalVolume* Drift1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-45.*um),Drift1_logical,"Drift1_physical",worldLogical,0,0);
-	G4VPhysicalVolume* Drift2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,45.*um),Drift2_logical,"Drift2_physical",worldLogical,0,0);
+//	G4VPhysicalVolume* Drift1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-2060.*um),Drift1_logical,"Drift1_physical",worldLogical,0,0);
+//	G4VPhysicalVolume* Drift2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,1060.*um),Drift2_logical,"Drift2_physical",worldLogical,0,0);
+	//G4VPhysicalVolume* Drift1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-45.*um),Drift1_logical,"Drift1_physical",worldLogical,0,0);
+	//G4VPhysicalVolume* Drift2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,45.*um),Drift2_logical,"Drift2_physical",worldLogical,0,0);
 
 	// Box
 	G4VSolid* argon_solid;
@@ -130,26 +148,81 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4LogicalVolume* kapton_logical;
 	G4VPhysicalVolume* kapton_physical;
 
-	argon_solid = new G4Box("argon_solid",50.*um,50.*um,30.*um);
-	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
-	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
-	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
+	G4double outdia = 35.*um;
+	G4double middia = 15.*um;
+	G4double kapton_thic = 12.5*um;
+	G4double copper_thic = 2.5*um;
 
-	copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
-	copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
-	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
-	//copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
+	argon_solid = new G4Box("argon_solid",xlength,ylength,argon_thic);
+	argon_logical = new G4LogicalVolume(argon_solid,Kapton,"argon_logical",0,0,0);
+	//argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
+
+	//G4VPhysicalVolume* Drift1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-(Drift_thic+copper_thic*2+kapton_thic*2)),Drift1_logical,"Drift1_physical",argon_logical,0,0);
+	//G4VPhysicalVolume* Drift2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,Drift_thic+copper_thic*2+kapton_thic*2),Drift2_logical,"Drift2_physical",argon_logical,0,0);
+
+	copper_box = new G4Box("copper_box",xlength,ylength,copper_thic);
+	copper_hole = new G4Tubs("copper_hole",0.*um,outdia,copper_thic,0,360.*deg);
+	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.*um,0.*um));
 	copper_logical = new G4LogicalVolume(copper_solid,copper,"copper_logical",0,0,0);
-	copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
-	copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
+	//G4LogicalVolume* copper2_logical = new G4LogicalVolume(copper_box,copper,"copper2_logical",0,0,0);
+	//copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-(kapton_thic*2+copper_thic)),copper_logical,"copper1_physical",argon_logical,false,0);
+	//copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,(kapton_thic*2+copper_thic)),copper_logical,"copper2_physical",argon_logical,false,0);
+	G4LogicalVolume* copper_graphic = new G4LogicalVolume(copper_hole,argonGas,"copper_graphic",0,0,0);
+	G4LogicalVolume* copper2_graphic = new G4LogicalVolume(copper_hole,argonGas,"copper_graphic",0,0,0);
+	//G4VPhysicalVolume* coppergr1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0),copper_graphic,"coppergr_physical",copper_logical,false,0);
+	//G4VPhysicalVolume* coppergr2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0),copper2_graphic,"coppergr2_physical",copper2_logical,false,0);
 
-	kapton_box = new G4Box("kapton_box",50.*um,50.*um,25.*um);
-	kapton_hole1 = new G4Cons("kapton_hole1",0.*um,35.*um,0.*um,20.*um,12.5*um,0.,360.*deg);
-	kapton_hole2 = new G4Cons("kapton_hole2",0.*um,20.*um,0.*um,35.*um,12.5*um,0.,360.*deg);
-	kapton_hole = new G4UnionSolid("kapton_hole",kapton_hole1,kapton_hole2,0,G4ThreeVector(0.*um,0.*um,25.*um));
-	kapton_solid = new G4SubtractionSolid("kapton_solid",kapton_box,kapton_hole,0,G4ThreeVector(0.,0.,-12.5*um));
-	kapton_logical = new G4LogicalVolume(kapton_solid,Kapton,"kapton_logical",0,0,0);
-	kapton_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),kapton_logical,"kapton_physical",argon_logical,false,0);
+
+	kapton_box = new G4Box("kapton_box",xlength,ylength,kapton_thic);
+	//G4VSolid* kapton_mid = new G4Tubs("kapton_mid",0.*um,middia,0.1*um,0,360.*deg);
+	kapton_hole1 = new G4Cons("kapton_hole1",0*um,outdia,0*um,middia,kapton_thic,0.,360.*deg);
+	kapton_hole2 = new G4Cons("kapton_hole2",0*um,middia,0*um,outdia,kapton_thic,0.,360.*deg);
+	kapton_hole = new G4UnionSolid("kapton_hole",kapton_hole1,kapton_hole2,0,G4ThreeVector(0,0,kapton_thic*2));
+	//G4VSolid*  kapton_half = new G4UnionSolid("kapton_half",kapton_hole,kapton_mid,0,G4ThreeVector(0.*um,0.*um,kapton_thic));
+	//kapton_hole = new G4SubtractionSolid("kapton_hole",kapton_box,kapton_hole2,0,G4ThreeVector(0.*um,0.*um,6.25*um));
+	//kapton_solid = new G4SubtractionSolid("kapton_solid",kapton_hole,kapton_hole1,0,G4ThreeVector(0.,0.,-6.25*um));
+	//kapton_solid = new G4SubtractionSolid("kapton_solid",kapton_box,kapton_half,0,G4ThreeVector(0.,0.,-kapton_thic));
+	kapton_logical = new G4LogicalVolume(kapton_hole,argonGas,"kapton_logical",0,0,0);
+	//kapton_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-kapton_thic),kapton_logical,"kapton_physical",argon_logical,false,0);
+	//G4LogicalVolume* kapton_graphic = new G4LogicalVolume(kapton_half,argonGas,"kapton_logical",0,0,0);
+	//G4VPhysicalVolume* kaptongr_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-12.5*um),kapton_graphic,"kapton_physical",argon_logical,false,0);
+
+	//Use G4AssemblyVolume
+	/*
+	G4Transform3D Tr;
+	G4AssemblyVolume *gemargon = new G4AssemblyVolume();
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,-(kapton_thic*2+copper_thic)));
+	gemargon->AddPlacedVolume(copper_box,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,0));
+	gemargon->AddPlacedVolume(kapton_box,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,(kapton_thic*2+copper_thic)));
+	gemargon->AddPlacedVolume(copper_box,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,0));
+	gemargon->MakeImprint(argon_logical,Tr);
+	
+	G4LogicalVolume *kapton_halflog = new G4LogicalVolume(kapton_hole,argonGas,"kapton_halflog",0,0,0);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,-kapton_thic));
+	gemargon->AddPlacedVolume(kapton_halflog,Tr);
+	G4LogicalVolume *copper_holelog = new G4LogicalVolume(copper_hole,argonGas,"copper_holelog",0,0,0);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,-(kapton_thic*2+copper_thic)));
+	gemargon->AddPlacedVolume(copper_holelog,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,(kapton_thic*2+copper_thic)));
+	gemargon->AddPlacedVolume(copper_holelog,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,-(argon_thic-Drift_thic)));
+	gemargon->AddPlacedVolume(Drift1_logical,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,argon_thic-Drift_thic));
+	gemargon->AddPlacedVolume(Drift2_logical,Tr);
+	Tr = G4Transform3D(G4RotationMatrix(),G4ThreeVector(0,0,0));
+	gemargon->MakeImprint(argon_logical,Tr);
+	*/
+
+	G4VSolid* all1 = new G4UnionSolid("all1",Drift1_Solid,copper_hole,0,G4ThreeVector(0*um,0*um,Drift_thic+copper_thic));
+	G4VSolid* all2 = new G4UnionSolid("all2",all1,kapton_hole,0,G4ThreeVector(0*um,0*um,Drift_thic+copper_thic*2+kapton_thic));
+	G4VSolid* all3 = new G4UnionSolid("all3",all2,copper_hole,0,G4ThreeVector(0*um,0*um,Drift_thic+copper_thic*2+kapton_thic*4+copper_thic));
+	G4VSolid* all4 = new G4UnionSolid("all4",all3,Drift2_Solid,0,G4ThreeVector(0*um,0*um,Drift_thic+copper_thic*2+kapton_thic*4+copper_thic*2+Drift_thic));
+
+	gem = new G4LogicalVolume(all4,argonGas,"gem_logical",0,0,0);
+	G4VPhysicalVolume* gemphys = new G4PVPlacement(0,G4ThreeVector(0*um,0*um,-Drift_thic-copper_thic*2-kapton_thic*2),gem,"gem_physical",worldLogical,false,0);
 
 	// Hodoscope declaration
 	G4VSolid* hit_solid;
@@ -163,16 +236,21 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4LogicalVolume* dc_logical2;
 	G4VPhysicalVolume* dc_physical2;
 
-	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
+	hit_solid = new G4Box("hit_counter",xlength,ylength,0.1*um);
+//	hit_solid = new G4Box("hit_counter",4050.*um,2500.*um,0.1*um);
 	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
 	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-14.7*um),hit_counter1,"dc1_physical",Drift1_logical,false,0);
+//	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-999.7*um),hit_counter1,"dc1_physical",Drift1_logical,false,0);
 	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
 	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,14.9*um),hit_counter2,"dc2_physical",Drift2_logical,false,0);
+//	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,499.9*um),hit_counter2,"dc2_physical",Drift2_logical,false,0);
 
 	dc_logical1 = new G4LogicalVolume(hit_solid,galactic,"dc1",0,0,0);
 	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-14.5*um),dc_logical1,"dc1_physical",Drift1_logical,false,0);
+//	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-999.5*um),dc_logical1,"dc1_physical",Drift1_logical,false,0);
 	dc_logical2 = new G4LogicalVolume(hit_solid,galactic,"dc2",0,0,0);
 	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,14.7*um),dc_logical2,"dc2_physical",Drift2_logical,false,0);
+//	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,499.7*um),dc_logical2,"dc2_physical",Drift2_logical,false,0);
 
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
@@ -195,7 +273,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	hodoscope3 = new G4MultiFunctionalDetector(SDname="/hodoscope3");
 	SDman->AddNewDetector(hodoscope3);
-	argon_logical->SetSensitiveDetector(hodoscope3);
+	kapton_logical->SetSensitiveDetector(hodoscope3);
 
 	drift1 = new A01DriftChamber(SDname="/drift1");
 	SDman->AddNewDetector(drift1);
@@ -239,29 +317,37 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	hodoscope3->RegisterPrimitive(secondaryscorerCurrent);
 
 	// Make an Electric Field
-	//SetEfield(argon_logical, fieldMgr2, fefielddirection, fefield);
-	//SetEfield(Drift2_logical, fieldMgr3, G4ThreeVector(0,0,-1), 3000*fefield*6/400);
+	//SetEfield(argon_logical, fieldMgr2, pStepper2, pEquation2, pIntgrDriver2, pChordFinder2, G4ThreeVector(0,0,-1), 50);
+	SetGEMfield(gem, fieldMgr1, pStepper2, pEquation2, pIntgrDriver2, pChordFinder2);
+	//SetEfield(Drift2_logical, fieldMgr2, pStepper3, pEquation3, pIntgrDriver3, pChordFinder3, G4ThreeVector(0,0,1), -1000);
 	//SetEfield(hit_counter2, fieldMgr3, G4ThreeVector(0,0,-1), 3000*fefield*6/400);
 	//SetEfield(dc_logical2, fieldMgr3, G4ThreeVector(0,0,-1), 3000*fefield*6/400);
-	SetEfield(Drift1_logical, fieldMgr1, G4ThreeVector(0,0,-1), 1000);
+	//SetEfield(Drift1_logical, fieldMgr2, pStepper1, pEquation1, pIntgrDriver1, pChordFinder1, G4ThreeVector(0,0,1), 4);
 	//SetEfield(hit_counter1, fieldMgr1, G4ThreeVector(0,0,-1), 1000);
 	//SetEfield(dc_logical1, fieldMgr1, G4ThreeVector(0,0,-1), 1000);
-	//if(Drift1_logical->GetFieldManager()->DoesFieldChangeEnergy())G4cout<<"dc 1 has a field"<<G4endl;
-	//if(Drift2_logical->GetFieldManager()->DoesFieldChangeEnergy())G4cout<<"dc 2 has a field"<<G4endl;
+	//if(worldLogical->GetFieldManager()->DoesFieldChangeEnergy())G4cout<<"dc 1 has a field"<<G4endl;
+	//if(copper_graphic->GetFieldManager()->DoesFieldChangeEnergy())G4cout<<"dc 2 has a field"<<G4endl;
 
 
 	// visualization attributes
-	worldVisAtt = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+	worldVisAtt = new G4VisAttributes(G4Colour(1.0,0.0,1.0));
 	worldVisAtt->SetVisibility(true);
 	worldLogical->SetVisAttributes(worldVisAtt);
-	argonVisAtt = new G4VisAttributes(G4Colour(2.0,1.0,3.0));
+	argonVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,1.0));
 	argon_logical->SetVisAttributes(argonVisAtt);
 	kapton_logical->SetVisAttributes(argonVisAtt);
 	copper_logical->SetVisAttributes(argonVisAtt);
+	//copper2_logical->SetVisAttributes(argonVisAtt);
 	hit_counter1->SetVisAttributes(argonVisAtt);
 	hit_counter2->SetVisAttributes(argonVisAtt);
 	dc_logical1->SetVisAttributes(argonVisAtt);
 	dc_logical2->SetVisAttributes(argonVisAtt);
+	gem->SetVisAttributes(argonVisAtt);
+	//kapton_graphic->SetVisAttributes(argonVisAtt);
+	//copper_graphic->SetVisAttributes(argonVisAtt);
+	//copper2_graphic->SetVisAttributes(argonVisAtt);
+	Drift1_logical->SetVisAttributes(argonVisAtt);
+	Drift2_logical->SetVisAttributes(argonVisAtt);
 
 	// return the world physical volume
 	G4cout << G4endl << "The geometrical tree defined are : " << G4endl << G4endl;
@@ -287,11 +373,13 @@ void NewDetectorConstruction::ConstructMaterials()
 	// Argon gas
 	a = 39.95*g/mole;
 	density = 1.782e-03*g/cm3;
+//	pressure = 0.680*atmosphere;
 	pressure = 1*atmosphere;
-	temperature = 273*kelvin;
+//	temperature = 273*kelvin;
+	temperature = 300*kelvin;
 
-	//argonGas = new G4Material(name="ArgonGas", z=18., a, density, kStateGas, temperature, pressure);
-	argonGas = man->FindOrBuildMaterial("G4_Ar");
+	argonGas = new G4Material(name="ArgonGas", z=18., a, density, kStateGas, temperature, pressure);
+	//argonGas = man->FindOrBuildMaterial("G4_Ar");
 
 	// vacuum
 	density = universe_mean_density; // from PhysicalConstants.h
@@ -365,13 +453,17 @@ void NewDetectorConstruction::DumpGeometricalTree(G4VPhysicalVolume* aVolume,G4i
   { DumpGeometricalTree(aVolume->GetLogicalVolume()->GetDaughter(i),depth+1); }
 }
 
-void NewDetectorConstruction::SetEfield(G4LogicalVolume* glogical, G4FieldManager* fieldMgr, G4ThreeVector fdirection, G4double field)
+void NewDetectorConstruction::SetEfield(G4LogicalVolume* glogical, G4FieldManager* fieldMgr, G4MagIntegratorStepper* pStepper, G4EqMagElectricField* pEquation, G4MagInt_Driver* pIntgrDriver, G4ChordFinder* pChordFinder, G4ThreeVector fdirection, G4double field)
 {
 	// Local Electric Field
 //	static G4bool fieldIsInitialized = false;
 
 //	if(!fieldIsInitialized)
 //	{
+		pEquation = new G4EqMagElectricField(electricField);
+		pStepper = new G4ClassicalRK4(pEquation, 8);
+		pIntgrDriver = new G4MagInt_Driver(0.1*um,pStepper,pStepper->GetNumberOfVariables());
+		pChordFinder = new G4ChordFinder(pIntgrDriver);
 		electricField->SetFieldValue(G4ThreeVector(field*kilovolt/cm*fdirection.x()/fdirection.r(),field*kilovolt/cm*fdirection.y()/fdirection.r(),field*kilovolt/cm*fdirection.z()/fdirection.r()));
 		G4cout<<field*kilovolt/cm*fdirection.x()/fdirection.r()<<","<<field*kilovolt/cm*fdirection.y()/fdirection.r()<<","<<field*kilovolt/cm*fdirection.z()/fdirection.r()<<","<<fdirection<<G4endl;
 		//electricField->SetFieldValue(G4ThreeVector(0.,1000*kilovolt/cm,0.));
@@ -384,7 +476,7 @@ void NewDetectorConstruction::SetEfield(G4LogicalVolume* glogical, G4FieldManage
 		fieldMgr->SetChordFinder(pChordFinder);
 		fieldMgr->SetFieldChangesEnergy(true);
 
-		glogical->SetFieldManager(fieldMgr,true);
+//		glogical->SetFieldManager(fieldMgr,true);
 
 		G4cout<<fieldMgr->GetMaximumEpsilonStep()<<G4endl;
 	
@@ -392,4 +484,34 @@ void NewDetectorConstruction::SetEfield(G4LogicalVolume* glogical, G4FieldManage
 //	}
 
 	
+}
+
+void NewDetectorConstruction::SetGEMfield(G4LogicalVolume* glogical, G4FieldManager* fieldMgr, G4MagIntegratorStepper* pStepper, G4EqMagElectricField* pEquation, G4MagInt_Driver* pIntgrDriver, G4ChordFinder* pChordFinder)
+{
+	// Local Electric Field
+//	static G4bool fieldIsInitialized = false;
+
+//	if(!fieldIsInitialized)
+//	{
+//		electricField->SetFieldValue(G4ThreeVector(0,0,500*kilovolt/cm));
+		pEquation = new G4EqMagElectricField(gemField);
+		pStepper = new G4ClassicalRK4(pEquation, 8);
+		pIntgrDriver = new G4MagInt_Driver(1*um,pStepper,pStepper->GetNumberOfVariables());
+		pChordFinder = new G4ChordFinder(pIntgrDriver);
+		//electricField->SetFieldValue(G4ThreeVector(0.,1000*kilovolt/cm,0.));
+		pEquation->SetFieldObj(gemField);
+		pStepper->SetEquationOfMotion(pEquation);
+		fieldMgr->SetDetectorField(gemField);
+
+		pIntgrDriver->RenewStepperAndAdjust(pStepper);
+		pChordFinder->SetIntegrationDriver(pIntgrDriver);
+		fieldMgr->SetChordFinder(pChordFinder);
+		fieldMgr->SetFieldChangesEnergy(true);
+
+		//glogical->SetFieldManager(fieldMgr,true);
+
+		G4cout<<"Max epsilon : "<<fieldMgr->GetMaximumEpsilonStep()<<G4endl;
+	
+//		fieldIsInitialized = true;
+//	}
 }

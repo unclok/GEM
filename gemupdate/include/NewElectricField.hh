@@ -11,10 +11,11 @@ public:
 	virtual ~NewElectricField();
 
 	void SetFieldValue(const G4ThreeVector& newFieldValue);
-	void GetFieldValue(const G4double[4],G4double *fieldBandE) const;
+	void GetFieldValue(const G4double position[4], G4double *fieldBandE) const;
 
 private:
 	G4double fFieldComponents[6];
+	G4double fpositionz;
 };
 
 #endif

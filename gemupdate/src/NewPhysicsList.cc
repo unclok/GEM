@@ -5,7 +5,7 @@
 
 NewPhysicsList::NewPhysicsList() : G4VModularPhysicsList()
 {
-	G4VModularPhysicsList* phys = factory.GetReferencePhysList("FTFP_BERT_PEN");
+	G4VModularPhysicsList* phys = factory.GetReferencePhysList("LHEP_PEN");
 
 	for(G4int i=0;;++i){
 		G4VPhysicsConstructor* elem = const_cast<G4VPhysicsConstructor*>(phys->GetPhysics(i));
