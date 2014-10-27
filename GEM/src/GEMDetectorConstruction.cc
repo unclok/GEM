@@ -28,6 +28,7 @@
 //
 
 #include "GEMDetectorConstruction.hh"
+#include "GEMDetectorConstMessenger.hh"
 
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
@@ -83,7 +84,9 @@ argonGas(0), scintillator(0), CsI(0), copper(0), Kapton(0), galactic(0),arco2Gas
    worldVisAtt(0), electricVisAtt(0),argonVisAtt(0),
 hodoscopeVisAtt(0), 
 kaptonVisAtt(0), copperVisAtt(0)//,
+,fEUfield(0,0,-10*kilovolt/cm)
 {
+  messenger = new GEMDetectorConstMessenger(this);
   electricField = new GEMElectricField();
 //  globalfieldMgr = GetGlobalFieldManager(); 
   fieldMgr = new G4FieldManager();
@@ -91,6 +94,7 @@ kaptonVisAtt(0), copperVisAtt(0)//,
 
 GEMDetectorConstruction::~GEMDetectorConstruction()
 {
+  delete messenger;
   delete electricField;
 //  delete globalfieldMgr;
 //  delete fieldMgr;
@@ -161,7 +165,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   if(!fieldIsInitialized)
   {
 //	electricField = new GEMElectricField();
-	electricField = new G4UniformElectricField(G4ThreeVector(0.,0.,-10*kilovolt/m));
+	electricField = new G4UniformElectricField(fEUfield);
   	pEquation = new G4EqMagElectricField(electricField);
   	pStepper = new G4ClassicalRK4(pEquation, 8);
       fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
@@ -215,7 +219,7 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
   G4VSolid* GEMSolid
     = new G4Box("GEMBox",50.*um,50.*um,1000.*um);
   G4LogicalVolume* GEMLogical
-    = new G4LogicalVolume(GEMSolid,arco2Gas,"GEMLogical",fieldMgr,0,0);
+    = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",fieldMgr,0,0);
 	GEMLogical->SetFieldManager(fieldMgr, true);
 	G4cout << "Field Exist : " << fieldMgr->DoesFieldExist() << endl;
 
@@ -245,16 +249,21 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 //  argon2_solid = new G4UnionSolid("argon2_solid",gem_hole_surf,gem_hole_surf,0,G4ThreeVector(0.*um,0.*um,55.*um));
 //  argon2_solid = new G4Tubs("gem_hole_surf",0.*um,35.*um,2.5*um,0.,360.*deg);
 
-  G4VSolid* hit_counter_solid = new G4Box("hit_counter1",50.*um,50.*um,0.1*um);
-//  G4VSolid* hit_counter_solid = new G4Tubs("hit_counter1",0.*um,35.*um,2.5*um,0.,360.*deg);
-  hit_counter1 = new G4LogicalVolume(hit_counter_solid, arco2Gas, "hit_counter1", 0, 0, 0);
-  hc_physical1 = new G4PVPlacement(0, G4ThreeVector(0.,0.,-30.25*um), hit_counter1,
-					"hit_counter1_physical", GEMLogical, false, 0);
+  copper1_solid =  new G4Box("copper_surf",50.*um,50.*um,30.*um);
+  copper1_logical = new G4LogicalVolume(copper1_solid, galactic, "copper1_logical", 0, 0, 0);
+  copper1_physical = new G4PVPlacement(0, G4ThreeVector(0.,0.,0.*um), copper1_logical,
+                                         "copper1_physical", GEMLogical, false, 0);
 
-  hit_counter2 = new G4LogicalVolume(hit_counter_solid, arco2Gas, "hit_counter2", 0, 0, 0);
+  G4VSolid* hit_counter_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
+//  G4VSolid* hit_counter_solid = new G4Tubs("hit_counter1",0.*um,35.*um,2.5*um,0.,360.*deg);
+  hit_counter1 = new G4LogicalVolume(hit_counter_solid, galactic, "hit_counter1", 0, 0, 0);
+  hc_physical1 = new G4PVPlacement(0, G4ThreeVector(0.,0.,-29.9*um), hit_counter1,
+					"hit_counter1_physical", copper1_logical, false, 0);
+
+  hit_counter2 = new G4LogicalVolume(hit_counter_solid, galactic, "hit_counter2", 0, 0, 0);
 //  hc_physical2 = new G4PVPlacement(0, G4ThreeVector(0.,0.,49.95*um), hit_counter2,
-  hc_physical2 = new G4PVPlacement(0, G4ThreeVector(0.,0.,31.25*um), hit_counter2,
-					"hit_counter2_physical", GEMLogical, false, 0);
+  hc_physical2 = new G4PVPlacement(0, G4ThreeVector(0.,0.,29.9*um), hit_counter2,
+					"hit_counter2_physical", copper1_logical, false, 0);
 /*
   kapton_solid = new G4Box("kapton_box",50.*um,50.*um,25.*um);
   kapton_logical = new G4LogicalVolume(kapton_solid, Kapton, "kapton_logical", 0, 0, 0);
@@ -277,47 +286,47 @@ G4VPhysicalVolume* GEMDetectorConstruction::Construct()
 
 
   hodoscope1 = new G4MultiFunctionalDetector(SDname="/hodoscope1");
-//  hodoscope1 = new GEMEmCalorimeter(SDname="/EMcalorimeter");
   SDman->AddNewDetector(hodoscope1);
   hit_counter1->SetSensitiveDetector(hodoscope1);
-//  GEMLogical->SetSensitiveDetector(hodoscope1);
 
   hodoscope3 = new G4MultiFunctionalDetector(SDname="/hodoscope3");
   SDman->AddNewDetector(hodoscope3);
-  GEMLogical->SetSensitiveDetector(hodoscope3);
+  copper1_logical->SetSensitiveDetector(hodoscope3);
 
   hodoscope2 = new G4MultiFunctionalDetector(SDname="/hodoscope2");
   SDman->AddNewDetector(hodoscope2);
   hit_counter2->SetSensitiveDetector(hodoscope2);
 
-  G4VPrimitiveScorer* totalSurfFlux1 = new G4PSFlatSurfaceFlux("TotalSurfFlux1",1);
-  hodoscope1->RegisterPrimitive(totalSurfFlux1); 
-  G4VPrimitiveScorer* electronSurfFlux1 = new G4PSFlatSurfaceFlux("ElectronSurfFlux1",1);
+  G4VPrimitiveScorer* totalSurfCurrent1 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent1",1);
+  hodoscope1->RegisterPrimitive(totalSurfCurrent1); 
+  G4VPrimitiveScorer* electronSurfCurrent1 = new G4PSFlatSurfaceCurrent("ElectronSurfCurrent1",1);
   G4SDParticleFilter* electronFilter = new G4SDParticleFilter("electronFilter");
   electronFilter->add("e-");
-  electronSurfFlux1->SetFilter(electronFilter);
-  hodoscope1->RegisterPrimitive(electronSurfFlux1);
+  electronFilter->show();
+  electronSurfCurrent1->SetFilter(electronFilter);
+  hodoscope1->RegisterPrimitive(electronSurfCurrent1);
   G4VPrimitiveScorer* totalDose1 = new G4PSDoseDeposit("TotalDose1",1);
   hodoscope1->RegisterPrimitive(totalDose1);
-  G4PSNofSecondary* secondaryscorerCurrent1 = new G4PSNofSecondary("SecondaryCurrent1");
-  hodoscope1->RegisterPrimitive(secondaryscorerCurrent1);
   G4VPrimitiveScorer* energyscorer1 = new G4PSEnergyDeposit("Energy1");
   hodoscope1->RegisterPrimitive(energyscorer1);
 
-  G4VPrimitiveScorer* totalSurfFlux2 = new G4PSFlatSurfaceFlux("TotalSurfFlux2",1);
-  hodoscope2->RegisterPrimitive(totalSurfFlux2); 
-  G4VPrimitiveScorer* electronSurfFlux2 = new G4PSFlatSurfaceFlux("ElectronSurfFlux2",1);
-  electronSurfFlux2->SetFilter(electronFilter);
-  hodoscope2->RegisterPrimitive(electronSurfFlux2);
+  G4VPrimitiveScorer* totalSurfCurrent2 = new G4PSFlatSurfaceCurrent("TotalSurfCurrent2",1);
+  hodoscope2->RegisterPrimitive(totalSurfCurrent2); 
+  G4VPrimitiveScorer* electronSurfCurrent2 = new G4PSFlatSurfaceCurrent("ElectronSurfCurrent2",1);
+  electronSurfCurrent2->SetFilter(electronFilter);
+  hodoscope2->RegisterPrimitive(electronSurfCurrent2);
   G4VPrimitiveScorer* totalDose2 = new G4PSDoseDeposit("TotalDose2",1);
   hodoscope2->RegisterPrimitive(totalDose2);
-  G4PSNofSecondary* secondaryscorerCurrent2 = new G4PSNofSecondary("SecondaryCurrent2");
-  hodoscope2->RegisterPrimitive(secondaryscorerCurrent2);
+  //G4PSNofSecondary* secondaryscorerCurrent2 = new G4PSNofSecondary("SecondaryCurrent2");
+  //hodoscope2->RegisterPrimitive(secondaryscorerCurrent2);
   G4VPrimitiveScorer* energyscorer2 = new G4PSEnergyDeposit("Energy2");
   hodoscope2->RegisterPrimitive(energyscorer2);
 
   G4PSPassageCellCurrent* scorerCurrent = new G4PSPassageCellCurrent("Current");
   hodoscope3->RegisterPrimitive(scorerCurrent);
+  G4PSNofSecondary* secondaryscorerCurrent1 = new G4PSNofSecondary("SecondaryCurrent1");
+  secondaryscorerCurrent1->SetFilter(electronFilter);
+  hodoscope3->RegisterPrimitive(secondaryscorerCurrent1);
 
   // visualization attributes ------------------------------------------------
   // visualization attributes ------------------------------------------------
