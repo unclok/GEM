@@ -5,7 +5,7 @@
 
 NewPhysicsList::NewPhysicsList() : G4VModularPhysicsList()
 {
-	G4VModularPhysicsList* phys = factory.GetReferencePhysList("FTFP_BERT_PEN");
+	G4VModularPhysicsList* phys = factory.GetReferencePhysList("LHEP_PEN");
 
 	for(G4int i=0;;++i){
 		G4VPhysicsConstructor* elem = const_cast<G4VPhysicsConstructor*>(phys->GetPhysics(i));
@@ -26,10 +26,10 @@ NewPhysicsList::~NewPhysicsList()
 
 void NewPhysicsList::SetCuts()
 {
-	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(1*eV,G4ProductionCutsTable::GetProductionCutsTable()->GetHighEdgeEnergy());
-//	SetCutValue(1*nm,"gamma");
-//	SetCutValue(1*nm,"e-");
-//	SetCutValue(1*nm,"e+");
+	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(25*eV,51*eV);//G4ProductionCutsTable::GetProductionCutsTable()->GetHighEdgeEnergy());
+//	SetCutValue(0.1*nm,"gamma");
+//	SetCutValue(0.1*nm,"e-");
+//	SetCutValue(0.1*nm,"e+");
 //	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV,"e-");
 //	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV,"e+");
 //	G4ProductionCuts::PhysicsTableUpdated();

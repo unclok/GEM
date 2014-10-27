@@ -91,11 +91,13 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VSolid* worldSolid = new G4Box("worldBox",xlength,ylength,argon_thic);
 //	G4VSolid* worldSolid = new G4Box("worldBox",4050.*um,2500.*um,4060.*um);
 	worldLogical = new G4LogicalVolume(worldSolid,argonGas,"worldLogical",0,0,0);
-	G4VPhysicalVolume* worldPhysical = new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0,0,0);
+	fParser.Read("gem.gdml");
+	G4VPhysicalVolume* worldPhysical = fParser.GetWorldVolume();
+//	G4VPhysicalVolume* worldPhysical = new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0,0,0);
 
 	// GEM Mother volume
 	G4VSolid* GEMSolid = new G4Box("GEMBox",xlength,ylength,argon_thic);
-	G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",0,0,0);
+	//G4LogicalVolume* GEMLogical = new G4LogicalVolume(GEMSolid,galactic,"GEMLogical",0,0,0);
 	//G4PVPlacement *GEMPhysical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),GEMLogical,"GEMPhysical",worldLogical,0,0);
 /*	G4VSolid* GEMRepSolid1 = new G4Box("GEMRepBox1",4000.*um,50.*um,30.*um);
 	G4VSolid* GEMRepSolid2 = new G4Box("GEMRepBox2",4050.*um,50.*um,30.*um);
@@ -118,7 +120,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	}
 */
 	// GEM Drifit volume
-	G4double Drift_thic = 15.*um;
+	G4double Drift_thic = 500.*um;
 	G4VSolid* Drift1_Solid = new G4Box("Drift1_solid",xlength,ylength,Drift_thic);
 	G4VSolid* Drift2_Solid = new G4Box("Drift2_solid",xlength,ylength,Drift_thic);
 //	G4VSolid* Drift1_Solid = new G4Box("Drift1_solid",4050.*um,2500.*um,2000.*um);
@@ -222,7 +224,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VSolid* all4 = new G4UnionSolid("all4",all3,Drift2_Solid,0,G4ThreeVector(0*um,0*um,Drift_thic+copper_thic*2+kapton_thic*4+copper_thic*2+Drift_thic));
 
 	gem = new G4LogicalVolume(all4,argonGas,"gem_logical",0,0,0);
-	G4VPhysicalVolume* gemphys = new G4PVPlacement(0,G4ThreeVector(0*um,0*um,-Drift_thic-copper_thic*2-kapton_thic*2),gem,"gem_physical",worldLogical,false,0);
+//	G4VPhysicalVolume* gemphys = new G4PVPlacement(0,G4ThreeVector(0*um,0*um,-Drift_thic-copper_thic*2-kapton_thic*2),gem,"gem_physical",worldLogical,false,0);
 
 	// Hodoscope declaration
 	G4VSolid* hit_solid;
@@ -239,17 +241,17 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	hit_solid = new G4Box("hit_counter",xlength,ylength,0.1*um);
 //	hit_solid = new G4Box("hit_counter",4050.*um,2500.*um,0.1*um);
 	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
-	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-14.7*um),hit_counter1,"dc1_physical",Drift1_logical,false,0);
+	//hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-14.7*um),hit_counter1,"dc1_physical",Drift1_logical,false,0);
 //	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-999.7*um),hit_counter1,"dc1_physical",Drift1_logical,false,0);
 	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
-	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,14.9*um),hit_counter2,"dc2_physical",Drift2_logical,false,0);
+	//hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,14.9*um),hit_counter2,"dc2_physical",Drift2_logical,false,0);
 //	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,499.9*um),hit_counter2,"dc2_physical",Drift2_logical,false,0);
 
 	dc_logical1 = new G4LogicalVolume(hit_solid,galactic,"dc1",0,0,0);
-	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-14.5*um),dc_logical1,"dc1_physical",Drift1_logical,false,0);
+	//dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-14.5*um),dc_logical1,"dc1_physical",Drift1_logical,false,0);
 //	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-999.5*um),dc_logical1,"dc1_physical",Drift1_logical,false,0);
 	dc_logical2 = new G4LogicalVolume(hit_solid,galactic,"dc2",0,0,0);
-	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,14.7*um),dc_logical2,"dc2_physical",Drift2_logical,false,0);
+	//dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,14.7*um),dc_logical2,"dc2_physical",Drift2_logical,false,0);
 //	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,499.7*um),dc_logical2,"dc2_physical",Drift2_logical,false,0);
 
 	// multifunctional detectors
@@ -333,6 +335,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	worldVisAtt = new G4VisAttributes(G4Colour(1.0,0.0,1.0));
 	worldVisAtt->SetVisibility(true);
 	worldLogical->SetVisAttributes(worldVisAtt);
+	worldPhysical->GetLogicalVolume()->SetVisAttributes(worldVisAtt);
 	argonVisAtt = new G4VisAttributes(G4Colour(0.0,1.0,1.0));
 	argon_logical->SetVisAttributes(argonVisAtt);
 	kapton_logical->SetVisAttributes(argonVisAtt);

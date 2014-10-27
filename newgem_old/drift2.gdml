@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define/>
+
+  <materials>
+    <element Z="7" name="Nitrogen03AC3B78">
+      <atom unit="g/mole" value="14.01"/>
+    </element>
+    <element Z="8" name="Oxygen03AC43C8">
+      <atom unit="g/mole" value="16"/>
+    </element>
+    <material name="Air0650FF88" state="gas">
+      <T unit="K" value="0"/>
+      <P unit="pascal" value="0"/>
+      <D unit="g/cm3" value="0.00129"/>
+      <fraction n="0.7" ref="Nitrogen03AC3B78"/>
+      <fraction n="0.3" ref="Oxygen03AC43C8"/>
+    </material>
+  </materials>
+
+  <solids>
+    <box lunit="mm" name="world066F25A0" x="2000" y="2000" z="2000"/>
+  </solids>
+
+  <structure>
+    <volume name="World06456B40">
+      <materialref ref="Air0650FF88"/>
+      <solidref ref="world066F25A0"/>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="World06456B40"/>
+  </setup>
+
+</gdml>

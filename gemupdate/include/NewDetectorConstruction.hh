@@ -14,6 +14,7 @@
 #include "G4ChordFinder.hh"
 #include "G4ClassicalRK4.hh"
 #include "G4ThreeVector.hh"
+#include "G4GDMLParser.hh"
 
 class NewDetectorConstMessenger;
 class G4VPhysicalVolume;
@@ -91,6 +92,7 @@ private:
 
 	G4ThreeVector fefielddirection;
 	G4double fefield;
+	G4GDMLParser fParser;
 };
 
 #endif

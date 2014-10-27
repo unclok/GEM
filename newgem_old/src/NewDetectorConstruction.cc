@@ -93,7 +93,7 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VPhysicalVolume* copper1_physical;
 	G4VPhysicalVolume* copper2_physical;
 
-	argon_solid = new G4Box("argon_solid",50.*um,50.*um,25.*um);
+	argon_solid = new G4Box("argon_solid",50.*um,50.*um,60.2*um);
 	//argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",fieldMgr,0,0);
 	argon_logical = new G4LogicalVolume(argon_solid,argonGas,"argon_logical",0,0,0);
 	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
@@ -103,8 +103,8 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
 	//copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
 	copper_logical = new G4LogicalVolume(copper_solid,copper,"copper_logical",0,0,0);
-	copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-22.5*um),copper_logical,"copper_physical",argon_logical,false,0);
-	copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,22.5*um),copper_logical,"copper_physical",argon_logical,false,0);
+	//copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-22.5*um),copper_logical,"copper_physical",argon_logical,false,0);
+	//copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,22.5*um),copper_logical,"copper_physical",argon_logical,false,0);
 
 	// Hodoscope declaration
 	G4VSolid* hit_solid;
@@ -118,16 +118,16 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4LogicalVolume* dc_logical2;
 	G4VPhysicalVolume* dc_physical2;
 
-	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
+	hit_solid = new G4Box("hit_counter",100.*um,100.*um,0.1*um);
 	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
-	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-25.1*um),hit_counter1,"dc1_physical",GEMLogical,false,0);
+	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-60.1*um),hit_counter1,"dc1_physical",argon_logical,false,0);
 	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
-	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,25.1*um),hit_counter2,"dc2_physical",GEMLogical,false,0);
+	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,60.1*um),hit_counter2,"dc2_physical",argon_logical,false,0);
 
 	dc_logical1 = new G4LogicalVolume(hit_solid,galactic,"dc1",0,0,0);
-	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-25.3*um),dc_logical1,"dc1_physical",GEMLogical,false,0);
+	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-60.3*um),dc_logical1,"dc1_physical",GEMLogical,false,0);
 	dc_logical2 = new G4LogicalVolume(hit_solid,galactic,"dc2",0,0,0);
-	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,25.3*um),dc_logical2,"dc2_physical",GEMLogical,false,0);
+	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,60.3*um),dc_logical2,"dc2_physical",GEMLogical,false,0);
 
 	// multifunctional detectors
 	G4MultiFunctionalDetector* hodoscope1;
@@ -229,7 +229,7 @@ void NewDetectorConstruction::ConstructMaterials()
 	a = 39.95*g/mole;
 	density = 1.782e-03*g/cm3;
 	pressure = 1*atmosphere;
-	temperature = 273*kelvin;
+	temperature = 293.15*kelvin;
 
 	argonGas = new G4Material(name="ArgonGas", z=18., a, density, kStateGas, temperature, pressure);
 
