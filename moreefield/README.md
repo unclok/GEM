@@ -1,0 +1,1 @@
+This simulation is for a circumstacne like 3 e-fields exist. It can change each e-field by simple control commands, /mydet/setefield, /mydet/setefielddirection. Also, it can check the direction and e-field by commands /mydet/getefield and /mydet/genefielddirection.
