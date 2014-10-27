@@ -1,4 +1,4 @@
-//
+
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -23,42 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: GEMPrimaryGeneratorMessenger.hh,v 1.4 2006-06-29 16:31:37 gunter Exp $
-// --------------------------------------------------------------
-//
-#ifndef GEMPrimaryGeneratorMessenger_h
-#define GEMPrimaryGeneratorMessenger_h 1
+// $Id$
+// 
+/// \file BeamEventAction.hh
+/// \brief Definition of the BeamEventAction class
 
-class GEMPrimaryGeneratorAction;
-class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWith3Vector;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithABool;
-
-#include "G4UImessenger.hh"
+#include "G4UserEventAction.hh"
+#include "G4Event.hh"
+#include "A01DriftChamberHit.hh"
 #include "globals.hh"
 
-class GEMPrimaryGeneratorMessenger: public G4UImessenger
+#ifndef BeamEventAction_h
+#define BeamEventAction_h 1
+
+class BeamEventAction : public G4UserEventAction
 {
   public:
-    GEMPrimaryGeneratorMessenger(GEMPrimaryGeneratorAction* mpga);
-    ~GEMPrimaryGeneratorMessenger();
+    BeamEventAction();
+    virtual ~BeamEventAction();
 
-  public:
-    void SetNewValue(G4UIcommand * command,G4String newValues);
-    G4String GetCurrentValue(G4UIcommand * command);
-
+    virtual void  BeginOfEventAction(const G4Event* event);
+    virtual void    EndOfEventAction(const G4Event* event);
+    
   private:
-    GEMPrimaryGeneratorAction * target;
-
-  private: //commands
-    G4UIcmdWithADoubleAndUnit*  energyCmd;
-    G4UIcmdWith3Vector*		directionCmd;
-    G4UIcmdWithABool*	getenergyCmd;
-    G4UIcmdWithABool*	getdirectionCmd;
-
+   
+	G4int driftID1;
+	A01DriftChamberHitsCollection* eventDrift1; 
+	G4int driftID2;
+	A01DriftChamberHitsCollection* eventDrift2; 
+	G4int sliceID;
+	A01DriftChamberHitsCollection* eventDrift3; 
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
 
-
+    

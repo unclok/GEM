@@ -23,42 +23,35 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: GEMPrimaryGeneratorMessenger.hh,v 1.4 2006-06-29 16:31:37 gunter Exp $
+/// \file analysis/A01/include/A01DriftChamber.hh
+/// \brief Definition of the A01DriftChamber class
+//
+// $Id$
 // --------------------------------------------------------------
 //
-#ifndef GEMPrimaryGeneratorMessenger_h
-#define GEMPrimaryGeneratorMessenger_h 1
+#ifndef A01DriftChamber_h
+#define A01DriftChamber_h 1
 
-class GEMPrimaryGeneratorAction;
-class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWith3Vector;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithABool;
+#include "G4VSensitiveDetector.hh"
+#include "A01DriftChamberHit.hh"
+class G4Step;
+class G4HCofThisEvent;
+class G4TouchableHistory;
 
-#include "G4UImessenger.hh"
-#include "globals.hh"
-
-class GEMPrimaryGeneratorMessenger: public G4UImessenger
+class A01DriftChamber : public G4VSensitiveDetector
 {
   public:
-    GEMPrimaryGeneratorMessenger(GEMPrimaryGeneratorAction* mpga);
-    ~GEMPrimaryGeneratorMessenger();
+      A01DriftChamber(G4String name);
+      virtual ~A01DriftChamber();
 
-  public:
-    void SetNewValue(G4UIcommand * command,G4String newValues);
-    G4String GetCurrentValue(G4UIcommand * command);
+      virtual void Initialize(G4HCofThisEvent*HCE);
+      virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
+      virtual void EndOfEvent(G4HCofThisEvent*HCE);
 
   private:
-    GEMPrimaryGeneratorAction * target;
-
-  private: //commands
-    G4UIcmdWithADoubleAndUnit*  energyCmd;
-    G4UIcmdWith3Vector*		directionCmd;
-    G4UIcmdWithABool*	getenergyCmd;
-    G4UIcmdWithABool*	getdirectionCmd;
-
+      A01DriftChamberHitsCollection * fHitsCollection;
+      G4int fHCID;
 };
 
 #endif
-
 

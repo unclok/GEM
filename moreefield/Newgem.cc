@@ -5,6 +5,8 @@
 #include "NewDetectorConstruction.hh"
 #include "NewPrimaryGeneratorAction.hh"
 #include "NewRunAction.hh"
+#include "BeamEventAction.hh"
+#include "NewPhysicsList.hh"
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
@@ -24,17 +26,25 @@ int main(int argc, char** argv)
 	G4VisManager* visManager = new G4VisExecutive;
 	visManager->Initialize();
 #endif
+	//choose the Random engine
+	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
+	//set random seed with system time
+	G4long seed = time(NULL);
+	CLHEP::HepRandom::setTheSeed(seed);
 
 	runManager->SetUserInitialization(new NewDetectorConstruction);
-	G4PhysListFactory factory;
-	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
-	runManager->SetUserInitialization(physlist);
+	//G4PhysListFactory factory;
+	//G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
+	runManager->SetUserInitialization(new NewPhysicsList);
 
 	// initialize Geant4 kernel
 	runManager->Initialize();
 
 	// mandatory user action class
 	runManager->SetUserAction(new NewPrimaryGeneratorAction);
+
+	// optianal user action classes
+	runManager->SetUserAction(new BeamEventAction);
 
 	// optianal user action classes
 	runManager->SetUserAction(new NewRunAction);

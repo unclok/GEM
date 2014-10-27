@@ -38,17 +38,17 @@
 #include "G4ThreeVector.hh"
 
 GEMElectricField::GEMElectricField()
-{
+:fEfield(40){
   messenger = new GEMElectricFieldMessenger(this);
 //  By = 1.0*tesla;
 	ifstream infile;
 	double temp[6];
 	double blank[3];
-	if(fEfield=10)infile.open("model/GEM_70_10_400V_extension.txt");
-	else if(fEfield=30)infile.open("model/GEM_70_30_400V_extension.txt");
-	else if(fEfield=50)infile.open("model/GEM_70_50_400V_extension.txt");
-	else if(fEfield=40)infile.open("model/GEM_70_40_400V_extension.txt");
-	else if(fEfield=70)infile.open("model/GEM_70_70_400V_extension.txt");
+	if(fEfield==10)infile.open("model/GEM_70_10_400V_extension.txt");
+	else if(fEfield==30)infile.open("model/GEM_70_30_400V_extension.txt");
+	else if(fEfield==50)infile.open("model/GEM_70_50_400V_extension.txt");
+	else if(fEfield==40)infile.open("model/GEM_70_40_400V_extension.txt");
+	else if(fEfield==70)infile.open("model/GEM_70_70_400V_extension.txt");
 	else{
 		G4cout<<"You can only use 10, 30, 40, 50, 70 for field"<<G4endl;
 		infile.open("model/GEM_70_40_400V_extension.txt");

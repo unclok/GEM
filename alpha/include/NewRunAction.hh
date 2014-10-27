@@ -1,5 +1,6 @@
 #include "G4UserRunAction.hh"
 #include "G4Run.hh"
+#include "G4THitsMap.hh"
 
 #ifndef NewRunAction_h
 #define NewRunAction_h 1
@@ -11,6 +12,7 @@ public:
 	virtual ~NewRunAction();
 
 private:
+	G4int nRun;
 
 public:
 	G4Run* GenerateRun();
