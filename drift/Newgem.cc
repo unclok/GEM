@@ -6,10 +6,7 @@
 #include "NewPrimaryGeneratorAction.hh"
 #include "NewRunAction.hh"
 #include "BeamEventAction.hh"
-<<<<<<< HEAD:newgem/Newgem.cc
-=======
 #include "NewPhysicsList.hh"
->>>>>>> remotes/mygem/master:drift/Newgem.cc
 
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"

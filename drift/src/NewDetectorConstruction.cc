@@ -69,30 +69,6 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 {
 	ConstructMaterials();
 
-<<<<<<< HEAD:newgem/src/NewDetectorConstruction.cc
-	// Make an Electric Field
-	// Local Electric Field
-	static G4bool fieldIsInitialized = false;
-
-	if(!fieldIsInitialized)
-	{
-		electricField = new G4UniformElectricField(G4ThreeVector(0., 0., -100*kilovolt/cm));
-		pEquation = new G4EqMagElectricField(electricField);
-		pStepper = new G4ClassicalRK4(pEquation, 8);
-		fieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-		fieldMgr->SetDetectorField(electricField);
-
-		G4double minEps = 1.*um;
-
-		pIntgrDriver = new G4MagInt_Driver(minEps,pStepper,pStepper->GetNumberOfVariables());
-		pChordFinder = new G4ChordFinder(pIntgrDriver);
-		fieldMgr->SetChordFinder(pChordFinder);
-
-		fieldIsInitialized = true;
-	}
-
-=======
->>>>>>> remotes/mygem/master:drift/src/NewDetectorConstruction.cc
 	// geometries
 	// experimental hall (world volume)
 
@@ -110,59 +86,6 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	G4VSolid* argon_solid;
 	G4VPhysicalVolume* argon_physical;
 
-<<<<<<< HEAD:newgem/src/NewDetectorConstruction.cc
-	G4VSolid* copper_hole;
-	G4VSolid* copper_box;
-	G4VSolid* copper_solid;
-	G4LogicalVolume* copper_logical;
-	G4LogicalVolume* coppertub_logical;
-	G4VPhysicalVolume* copper1_physical;
-	G4VPhysicalVolume* copper2_physical;
-	G4VPhysicalVolume* copper1tub_physical;
-	G4VPhysicalVolume* copper2tub_physical;
-
-	argon_solid = new G4Box("argon_solid",50.*um,50.*um,30.*um);
-	argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",fieldMgr,0,0);
-	//argon_logical = new G4LogicalVolume(argon_solid,galactic,"argon_logical",0,0,0);
-	argon_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,0.*um),argon_logical,"argon_physical",GEMLogical,false,0);
-
-	copper_box = new G4Box("copper_box",50.*um,50.*um,2.5*um);
-	copper_hole = new G4Tubs("copper_hole",0.*um,35.*um,2.5*um,0.,360.*deg);
-	copper_solid = new G4SubtractionSolid("copper_solid",copper_box,copper_hole,0,G4ThreeVector(0.,0.,0.*um));
-	//copper_solid = new G4Box("copper_solid",50.*um,50.*um,2.5*um);
-	copper_logical = new G4LogicalVolume(copper_solid,copper,"copper_logical",0,0,0);
-	coppertub_logical = new G4LogicalVolume(copper_hole,argonGas,"copper_logical",0,0,0);
-	copper1_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
-	copper2_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,27.5*um),copper_logical,"copper_physical",argon_logical,false,0);
-	copper1tub_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,-27.5*um),coppertub_logical,"coppertub_physical",argon_logical,false,0);
-	copper2tub_physical = new G4PVPlacement(0,G4ThreeVector(0.,0.,27.5*um),coppertub_logical,"coppertub_physical",argon_logical,false,0);
-
-	// Hodoscope declaration
-	G4VSolid* hit_solid;
-	G4LogicalVolume* hit_counter1;
-	G4VPhysicalVolume* hc_physical1;
-	G4LogicalVolume* hit_counter2;
-	G4VPhysicalVolume* hc_physical2;
-
-	G4LogicalVolume* dc_logical1;
-	G4VPhysicalVolume* dc_physical1;
-	G4LogicalVolume* dc_logical2;
-	G4VPhysicalVolume* dc_physical2;
-
-	hit_solid = new G4Box("hit_counter",50.*um,50.*um,0.1*um);
-	hit_counter1 = new G4LogicalVolume(hit_solid,galactic,"hit_counter1",0,0,0);
-	hc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-24.7*um),hit_counter1,"dc1_physical",argon_logical,false,0);
-	hit_counter2 = new G4LogicalVolume(hit_solid,galactic,"hit_counter2",0,0,0);
-	hc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,24.7*um),hit_counter2,"dc2_physical",argon_logical,false,0);
-
-	dc_logical1 = new G4LogicalVolume(hit_solid,galactic,"dc1",0,0,0);
-	dc_physical1 = new G4PVPlacement(0,G4ThreeVector(0.,0.,-24.9*um),dc_logical1,"dc1_physical",argon_logical,false,0);
-	dc_logical2 = new G4LogicalVolume(hit_solid,galactic,"dc2",0,0,0);
-	dc_physical2 = new G4PVPlacement(0,G4ThreeVector(0.,0.,24.9*um),dc_logical2,"dc2_physical",argon_logical,false,0);
-/*
-	// GEM Detector Geometry
-=======
->>>>>>> remotes/mygem/master:drift/src/NewDetectorConstruction.cc
 	G4VSolid* copper_hole;
 	G4VSolid* copper_box;
 	G4VSolid* copper_solid;
@@ -213,11 +136,6 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	G4VSensitiveDetector* drift1;
 	G4VSensitiveDetector* drift2;
-<<<<<<< HEAD:newgem/src/NewDetectorConstruction.cc
-
-=======
-	
->>>>>>> remotes/mygem/master:drift/src/NewDetectorConstruction.cc
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	G4String SDname;
 
