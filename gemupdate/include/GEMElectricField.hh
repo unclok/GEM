@@ -42,8 +42,8 @@ class GEMElectricFieldMessenger;
 class GEMElectricField : public G4ElectricField
 {
   // Storage space for the table
-	double GEMPosition[3][41][41][801];
-	double GEMElec[3][41][41][801];
+	double GEMPosition[3][101][101][2001];
+	double GEMElec[3][101][101][2001];
 
   // The dimensions of the table
   int nx,ny,nz; 
