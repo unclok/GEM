@@ -41,7 +41,7 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/vis.mac" DESTINATION ./vis.mac)
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ./model/GEM_70_70_400V_extension.txt)
 if(EXISTS gem_70_30.txt)
 else()
-  message("Downloading fieldmpa file gem_70_30.txt")
+  message(STATUS "Downloading fieldmpa file gem_70_30.txt")
   file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/gem_70_30.txt ./gem_70_30.txt)
 endif()
 
