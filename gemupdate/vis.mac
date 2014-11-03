@@ -99,6 +99,7 @@
 /gun/particle e-
 /vis/filtering/trajectories/create/particleFilter e-
 /vis/filtering/trajectories/e-/add e-
+/mydet/setefield -50
 /mydet/setefielddirection 0 0 1
 /mydet/setgunrandom false
 /gun/direction 0 0 1
