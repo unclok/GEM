@@ -27,9 +27,9 @@ NewPhysicsList::~NewPhysicsList()
 void NewPhysicsList::SetCuts()
 {
 	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(1*eV,G4ProductionCutsTable::GetProductionCutsTable()->GetHighEdgeEnergy());
-//	SetCutValue(1*nm,"gamma");
-//	SetCutValue(1*nm,"e-");
-//	SetCutValue(1*nm,"e+");
+	SetCutValue(0.1*um,"gamma");
+	SetCutValue(0.1*um,"e-");
+	SetCutValue(0.1*um,"e+");
 //	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV,"e-");
 //	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV,"e+");
 //	G4ProductionCuts::PhysicsTableUpdated();

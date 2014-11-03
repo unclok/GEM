@@ -33,4 +33,9 @@ void NewElectricField::GetFieldValue (const G4double[4],
    fieldBandE[3]= fFieldComponents[3] ;
    fieldBandE[4]= fFieldComponents[4] ;
    fieldBandE[5]= fFieldComponents[5] ;
+/*
+	G4cout<<"efieldx : "<<fieldBandE[3]<<G4endl;
+	G4cout<<"efieldy : "<<fieldBandE[4]<<G4endl;
+	G4cout<<"efieldz : "<<fieldBandE[5]<<G4endl;
+*/
 }

@@ -35,7 +35,7 @@ void NewPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	if(gunrandom==false)particleGun->GeneratePrimaryVertex(anEvent);
 
 	else if(gunrandom==true){
-		particleGun->SetParticleMomentumDirection(G4ThreeVector(1-2*rand1->Rndm(),1-2*rand1->Rndm(),1));
+		particleGun->SetParticleMomentumDirection(G4ThreeVector(1-2*rand1->Rndm(),1-2*rand1->Rndm(),11-2*rand1->Rndm()));
 		particleGun->GeneratePrimaryVertex(anEvent);
 	}
 

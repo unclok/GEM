@@ -93,21 +93,21 @@
 #/vis/ogl/set/displayListLimit 100000000000
 /vis/ogl/set/printMode pixmap
 
-/vis/ogl/set/printFilename vacuumhole2000field45deg
-#/mydet/setfilename vacuumhole2000field45deg
+/vis/ogl/set/printFilename pureargonpen0.1mm1ev
+/mydet/setfilename pureargonpen0.1mm1ev
 /mydet/setgunrandom true
-/gun/particle e-
+/gun/particle gamma
 /vis/filtering/trajectories/create/particleFilter e-
 /vis/filtering/trajectories/e-/add e-
-/mydet/setefielddirection 0 0 1
-/mydet/setgunrandom false
-/gun/direction 0 0 1
+#/mydet/setefielddirection 0 0 1
+#/mydet/setgunrandom false
+#/gun/direction 0 0 1
 #/gun/energy 10. eV
 #/run/beamOn 100
 #/vis/ogl/printEPS
-/gun/position 0 0 -55 um
-/gun/energy 1. eV
-/run/beamOn 1
+/gun/position 0 0 -4000 um
+/gun/energy 6. keV
+/run/beamOn 1000
 /vis/ogl/printEPS
 #/gun/energy 1. keV
 #/run/beamOn 100

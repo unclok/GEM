@@ -26,10 +26,10 @@ NewPhysicsList::~NewPhysicsList()
 
 void NewPhysicsList::SetCuts()
 {
-	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(25*eV,51*eV);//G4ProductionCutsTable::GetProductionCutsTable()->GetHighEdgeEnergy());
-//	SetCutValue(0.1*nm,"gamma");
-//	SetCutValue(0.1*nm,"e-");
-//	SetCutValue(0.1*nm,"e+");
+	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(1*eV,G4ProductionCutsTable::GetProductionCutsTable()->GetHighEdgeEnergy());
+	SetCutValue(0.1*mm,"gamma");
+	SetCutValue(0.1*mm,"e-");
+	SetCutValue(0.1*mm,"e+");
 //	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV,"e-");
 //	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(10*eV,"e+");
 //	G4ProductionCuts::PhysicsTableUpdated();
