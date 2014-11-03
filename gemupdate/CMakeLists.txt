@@ -27,6 +27,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${
 
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/vis.mac" DESTINATION ./vis.mac)
 
 #INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
 #${CMAKE_CURRENT_SOURCE_DIR}/../model
@@ -38,7 +39,11 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ./model/GEM_70_40_400V_extension.txt)
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ./model/GEM_70_50_400V_extension.txt)
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ./model/GEM_70_70_400V_extension.txt)
-file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/gem_70_30.txt ./gem_70_30.txt)
+if(EXISTS gem_70_30.txt)
+else()
+  message("Downloading fieldmpa file gem_70_30.txt")
+  file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/gem_70_30.txt ./gem_70_30.txt)
+endif()
 
 #INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
 #${CMAKE_CURRENT_SOURCE_DIR}/../model
@@ -55,7 +60,10 @@ file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/gem_70_30.txt ./g
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
 add_executable(Newgem Newgem.cc ${sources} ${headers})
-file(INSTALL ./gem_70_30.txt "${CMAKE_INSTALL_PREFIX})
+if(EXISTS gem_70_30.txt)
+else()
+  file(INSTALL ./gem_70_30.txt "${CMAKE_INSTALL_PREFIX}")
+endif()
 #target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
 target_link_libraries(Newgem ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 

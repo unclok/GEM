@@ -27,6 +27,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${Geant4_INCLUDE_DIR} ${
 
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/vis.mac" ./vis.mac)
 
 #INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
 #${CMAKE_CURRENT_SOURCE_DIR}/../model
@@ -54,6 +55,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
 add_executable(Newgem Newgem.cc ${sources} ${headers})
+file(INSTALL ./gem_70_30.txt "${CMAKE_INSTALL_PREFIX}")
 #target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
 target_link_libraries(Newgem ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
