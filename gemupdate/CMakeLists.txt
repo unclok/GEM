@@ -38,6 +38,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_40_400V_extension.txt ./model/GEM_70_40_400V_extension.txt)
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_50_400V_extension.txt ./model/GEM_70_50_400V_extension.txt)
 #file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_extension.txt ./model/GEM_70_70_400V_extension.txt)
+file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/gem_70_30.txt ./gem_70_30.txt)
 
 #INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E copy_directory 
 #${CMAKE_CURRENT_SOURCE_DIR}/../model
@@ -53,7 +54,8 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
-add_executable(Newgem EXCLUDE_FROM_ALL Newgem.cc ${sources})
+add_executable(Newgem Newgem.cc ${sources} ${headers})
+file(INSTALL ./gem_70_30.txt "${CMAKE_INSTALL_PREFIX})
 #target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
 target_link_libraries(Newgem ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 

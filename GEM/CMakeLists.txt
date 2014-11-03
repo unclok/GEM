@@ -51,7 +51,7 @@ file(DOWNLOAD http://uosaf0002.sscc.uos.ac.kr/validation/kijin/GEM_70_70_400V_ex
 #find_library(ASSIMP_LIBRARY assimp PATHS $ENV{ASSIMP_PATH}/lib)
 file(GLOB sources ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
-add_executable(GEMapp EXCLUDE_FROM_ALL GEMapp.cc ${sources})
+add_executable(GEMapp GEMapp.cc ${sources} ${headers})
 #target_link_libraries(GEMapp ${Geant4_LIBRARIES} ${cadmesh_LIBRARIES} )
 target_link_libraries(GEMapp ${Geant4_LIBRARIES} )
 
