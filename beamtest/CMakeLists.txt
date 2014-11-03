@@ -14,7 +14,7 @@ endif()
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../CMake_config")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/opt/geant4/9.6p03/lib/Geant4-9.6.3/Modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${Geant4_DIR}/Modules")
 #set(Geant4_DIR /pnfs/opt/SLC5.9/geant4.9.5/lib64/Geant4-9.5.1)
 #find_package(cadmesh)
 

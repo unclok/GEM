@@ -136,7 +136,6 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 
 	G4VSensitiveDetector* drift1;
 	G4VSensitiveDetector* drift2;
-	
 	G4SDManager* SDman = G4SDManager::GetSDMpointer();
 	G4String SDname;
 
@@ -203,6 +202,8 @@ G4VPhysicalVolume* NewDetectorConstruction::Construct()
 	worldLogical->SetVisAttributes(worldVisAtt);
 	argonVisAtt = new G4VisAttributes(G4Colour(2.0,1.0,3.0));
 	argon_logical->SetVisAttributes(argonVisAtt);
+	copperVisAtt = new G4VisAttributes(G4Colour(3.0,3.0,3.0));
+	copper_logical->SetVisAttributes(copperVisAtt);
 
 	// return the world physical volume
 	G4cout << G4endl << "The geometrical tree defined are : " << G4endl << G4endl;

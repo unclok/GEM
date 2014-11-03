@@ -6,7 +6,7 @@
 #include <string>
 
 BeamRunAction::BeamRunAction()
- : G4UserRunAction(), nRun(0)
+ : G4UserRunAction(), nRun(0), name("Beam")
 {
 	// Create analysis manager
 	BeamAnalysisManager* analysisManager = BeamAnalysisManager::Instance();
@@ -43,7 +43,7 @@ void BeamRunAction::BeginOfRunAction(const G4Run* aRun)
 	// Open an output file
 	char num[5];
 	sprintf(num,"%d",nRun);
-	G4String name = "Beam" + G4String(num) + ".root";
+	name = G4String(num) + ".root";
 	G4cout<<name<<","<<nRun<<G4endl;
 	man->OpenFile(name);
 }
