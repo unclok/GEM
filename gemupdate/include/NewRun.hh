@@ -12,7 +12,7 @@ class NewRun : public G4Run
 public:
 	NewRun();
 	virtual ~NewRun();
-	virtual void RecordEvent(const G4Event*);
+	virtual void RecordEvent(const G4Event*, const G4Step*);
 
 private:
 	G4int nEvent;

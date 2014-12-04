@@ -58,7 +58,7 @@ G4bool NewEnergyDetector::ProcessHits(G4Step* aStep,G4TouchableHistory*)
 {
   G4double edep = aStep->GetTrack()->GetKineticEnergy();
   if ( edep == 0. ) return FALSE;
-  edep *= aStep->GetPreStepPoint()->GetKineticEnergy(); // (Particle KineticEnergy)
+  //edep *= aStep->GetPreStepPoint()->GetKineticEnergy(); // (Particle KineticEnergy)
   G4int index = GetIndex(aStep);
   EvtMap->add(index,edep);
   return TRUE;

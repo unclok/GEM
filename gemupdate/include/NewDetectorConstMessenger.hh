@@ -5,6 +5,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWith3Vector.hh"
 #include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAString.hh"
 #include "G4UImessenger.hh"
 #include "G4ios.hh"
 
@@ -24,10 +25,14 @@ public:
 
 private:
 	NewDetectorConstruction* target;
-	G4UIcmdWithADouble* 	eufieldCmd;
-	G4UIcmdWith3Vector* 	eufielddirectionCmd;
-	G4UIcmdWithABool* 	geteufieldCmd;
-	G4UIcmdWithABool* 	geteufielddirectionCmd;
+	G4UIcmdWithABool* 	efieldCmd;
+	G4UIcmdWith3Vector* 	efielddirectionCmd;
+	G4UIcmdWithABool* 	setgeometryCmd;
+	G4UIcmdWithAString*	setmaterialCmd;
+	G4UIcmdWithABool*	getmaterialCmd;
+	G4UIcmdWithABool* 	getgeometryCmd;
+	G4UIcmdWithABool* 	getefieldCmd;
+	G4UIcmdWithABool* 	getefielddirectionCmd;
 };
 
 #endif

@@ -47,6 +47,7 @@ class GEMElectricField : public G4ElectricField
 
   // The dimensions of the table
   int nx,ny,nz; 
+  int onx,ony,onz; 
   // The physical extent of the defined region
   double dx, dy, dz;
   double min[3];

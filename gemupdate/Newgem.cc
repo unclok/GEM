@@ -4,6 +4,7 @@
 
 #include "NewDetectorConstruction.hh"
 #include "NewPrimaryGeneratorAction.hh"
+#include "NewSteppingAction.hh"
 #include "NewRunAction.hh"
 #include "BeamEventAction.hh"
 #include "NewPhysicsList.hh"
@@ -34,23 +35,30 @@ int main(int argc, char** argv)
 	G4long seed = time(NULL);
 	CLHEP::HepRandom::setTheSeed(seed);
 
-	runManager->SetUserInitialization(new NewDetectorConstruction);
-	G4PhysListFactory factory;
-	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
-	runManager->SetUserInitialization(new NewPhysicsList);
+	NewDetectorConstruction* det;
+	runManager->SetUserInitialization(det = new NewDetectorConstruction);
+
+	//If you want to use a physics list using physics factory, use physlist and comment out ExN02PhysicsList.
+//	G4PhysListFactory factory;
+//	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT");
 //	runManager->SetUserInitialization(physlist);
+	runManager->SetUserInitialization(new ExN02PhysicsList);
 
 	// initialize Geant4 kernel
 	runManager->Initialize();
 
 	// mandatory user action class
-	runManager->SetUserAction(new NewPrimaryGeneratorAction);
+	NewPrimaryGeneratorAction* prim;
+	runManager->SetUserAction(prim = new NewPrimaryGeneratorAction);
 
 	// optianal user action classes
 	runManager->SetUserAction(new BeamEventAction);
 
 	// optianal user action classes
-	runManager->SetUserAction(new NewRunAction);
+	runManager->SetUserAction(new NewRunAction(det, prim));
+
+	// optianal user action classes
+	runManager->SetUserAction(new NewSteppingAction);
 
 	if(argc>1)
 	// execute an argument macro file if exist
@@ -64,6 +72,7 @@ int main(int argc, char** argv)
 	// start interactive session
 	{
 #ifdef G4UI_USE
+		//Use tcsh only
 		G4UIterminal* ui = new G4UIterminal(new G4UItcsh);
 		ui->SessionStart();
 		delete ui;

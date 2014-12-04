@@ -14,7 +14,9 @@
 #include "G4ChordFinder.hh"
 #include "G4ClassicalRK4.hh"
 #include "G4ThreeVector.hh"
-#include "G4GDMLParser.hh"
+#include "G4Material.hh"
+//#include "G4GDMLParser.hh"
+#include "G4Tet.hh"
 
 class NewDetectorConstMessenger;
 class G4VPhysicalVolume;
@@ -30,9 +32,6 @@ public:
 	virtual ~NewDetectorConstruction();
 	virtual G4VPhysicalVolume* Construct();
 
-	inline void SetUniformField(G4double val) { fefield=val;
-	//						SetEfield(argon_logical, fieldMgr2, fefielddirection, fefield);	 }
-}
 	inline void SetUniformFieldDirection(G4ThreeVector val) { fefielddirection=val;
 	//						SetEfield(argon_logical, fieldMgr2, fefielddirection, fefield); }
 }
@@ -41,15 +40,41 @@ public:
 	inline G4ThreeVector GetUniformFieldDirection() const { G4cout << fefielddirection << fefielddirection.r() << G4endl;
 							return fefielddirection; }
 
+	inline void SetGeometryStatus(G4bool val) { geometry_on=val; 
+							UpdateGeometry(); }
+
+	inline G4bool GetGeometryStatus() const { G4cout << geometry_on << G4endl; }
+
+	inline void SetworldMaterial(G4String val) { if(val=="Ar")worldLogical->UpdateMaterial(argonGas);
+						else if(val=="Vacuum")worldLogical->UpdateMaterial(galactic);
+	}
+
+	inline G4String GetworldMaterial() const { G4cout << worldLogical->GetMaterial()->GetName() <<G4endl;
+	return worldLogical->GetMaterial()->GetName();
+	 }
+
+	void UpdateGeometry();
+
 private:
 	void ConstructMaterials();
 	void DestroyMaterials();
 	void DumpGeometricalTree(G4VPhysicalVolume* aVolume,G4int depth=0);
 	void SetEfield(G4LogicalVolume* glogical, G4FieldManager* fieldMgr, G4MagIntegratorStepper* pStepper, G4EqMagElectricField* pEquation, G4MagInt_Driver* pIntgrDriver, G4ChordFinder* pChordFinder, G4ThreeVector fdirection, G4double field);
 	void SetGEMfield(G4LogicalVolume* glogical, G4FieldManager* fieldMgr, G4MagIntegratorStepper* pStepper, G4EqMagElectricField* pEquation, G4MagInt_Driver* pIntgrDriver, G4ChordFinder* pChordFinder);
+	void Readvector(G4String filename);
+	void Readposition(G4String filename,G4VSolid* sumtet,G4LogicalVolume* placedlog,G4Material* material,G4ThreeVector physplace);
 
 	NewDetectorConstMessenger* messenger;
 
+	G4ThreeVector* tetVector;
+	G4VSolid* polytet;
+	G4LogicalVolume* tetLog;
+	G4VPhysicalVolume* tetPhy;
+	G4VSolid* origintet;
+	G4VSolid* temp1tet;
+	G4VSolid* temp2tet;
+
+	G4bool geometry_on;
 	NewElectricField* electricField;
 	GEMElectricField* gemField;
 	G4FieldManager* fieldMgr1;
@@ -92,7 +117,15 @@ private:
 
 	G4ThreeVector fefielddirection;
 	G4double fefield;
-	G4GDMLParser fParser;
+//	G4GDMLParser fParser;
+
+	G4double argon_thic;
+public:
+	inline void SetEField(G4bool val) { if(val){
+		fieldMgr2 = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+		SetGEMfield(worldLogical, fieldMgr2, pStepper2, pEquation2, pIntgrDriver2, pChordFinder2); }
+					else fieldMgr2=0; }
+	//						SetEfield(argon_logical, fieldMgr2, fefielddirection, fefield);	 }
 };
 
 #endif

@@ -3,6 +3,7 @@
 NewPrimaryGenMessenger::NewPrimaryGenMessenger(NewPrimaryGeneratorAction * mpga)
 :target(mpga)
 {
+	//set random shot of particles
   setgunrandomCmd = new G4UIcmdWithABool("/mydet/setgunrandom",this);
   setgunrandomCmd->SetGuidance("make gun direction random.");
   setgunrandomCmd->SetParameterName("true", false, true);

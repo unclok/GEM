@@ -3,11 +3,13 @@
 NewRunActionMessenger::NewRunActionMessenger(NewRunAction * mpga)
 :target(mpga)
 {
+  //set a root file name
   setnameCmd = new G4UIcmdWithAString("/mydet/setfilename",this);
   setnameCmd->SetGuidance("Set a name of the file.");
   setnameCmd->SetParameterName("name",false,true);
   setnameCmd->SetDefaultValue("Beam");
 
+  //check a root file name
   getnameCmd = new G4UIcmdWithABool("/mydet/getfilename",this);
   getnameCmd->SetGuidance("Get a name of the file.");
   getnameCmd->SetParameterName("name",false,true);

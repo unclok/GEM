@@ -3,7 +3,12 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Event.hh"
 #include "G4THitsMap.hh"
+#include "BeamAnalysisManager.hh"
+#include "CLHEP/Units/PhysicalConstants.h"
 
+using namespace CLHEP;
+
+//run action for sensitive detector. not used now
 NewRun::NewRun() : nEvent(0)
 {
 	G4SDManager* SDM = G4SDManager::GetSDMpointer();
@@ -21,9 +26,10 @@ NewRun::NewRun() : nEvent(0)
 
 NewRun::~NewRun()
 {
+	delete BeamAnalysisManager::Instance();
 }
 
-void NewRun::RecordEvent(const G4Event* evt)
+void NewRun::RecordEvent(const G4Event* evt, const G4Step* step)
 {
 	nEvent++;
 	G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
@@ -150,6 +156,7 @@ G4double NewRun::GetEnergyAverage(G4int id)
 	}
 
 	else if(id==2){
+	BeamAnalysisManager* man = BeamAnalysisManager::Instance();
 		G4int key;
 		G4int n=0;
 		G4double val=0;
@@ -160,6 +167,7 @@ G4double NewRun::GetEnergyAverage(G4int id)
 			G4double* pVal = (energy2)[key];
 			if(pVal){
 				val+=*pVal;
+				man->FillH1(3,*pVal/eV);
 				n++;
 			}
 		}

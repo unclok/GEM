@@ -23,9 +23,10 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: GEMElectricField.cc,v 1.7 2009-11-21 00:22:55 perl Exp $
+// $Id: GEMElectricField.cc,v 1.7 2013-11-21 00:22:55 perl Exp $
 // --------------------------------------------------------------
 //
+//modified from purging magnet example
 
 #include "GEMElectricField.hh"
 #include "GEMElectricFieldMessenger.hh"
@@ -36,6 +37,9 @@
 #include <iostream>
 #include "G4UserLimits.hh"
 #include "G4ThreeVector.hh"
+#include "CLHEP/Units/PhysicalConstants.h"
+
+using namespace CLHEP;
 
 GEMElectricField::GEMElectricField():fEfield(30)
 {
@@ -51,6 +55,7 @@ GEMElectricField::GEMElectricField():fEfield(30)
 	else if(fEfield=70)infile.open("model/GEM_70_70_400V_extension.txt");
 	else{
 		G4cout<<"You can only use 10, 30, 40, 50, 70 for field"<<G4endl;
+		//file open
 */		infile.open("gem_70_30.txt");
 //		infile.open("model/GEM_70_30_400V_extension.txt");
 //	}
@@ -58,28 +63,40 @@ GEMElectricField::GEMElectricField():fEfield(30)
 	if(!infile.is_open())G4cout << "file not found\n" << G4endl;
         string str="";
         for(int i=0;i<2;i++){
+		//remove table head
                 getline(infile, str);
         }
 
-	nx = 101;
-	ny = 101;
-	nz = 2001;
-        for(int i=0;i<nx;i++){
-		for(int j=0;j<ny;j++){
-			for(int k=0;k<nz;k++){
+	//original size of x, y, z
+	onx = 101;
+	ony = 101;
+	onz = 2001;
+	//nx = 101;
+	//ny = 101;
+	//nz = 121;
+	//int ck=0;
+        for(int i=0;i<onx;i++){
+		for(int j=0;j<ony;j++){
+			for(int k=0;k<onz;k++){
+				//read fieldmap
      	         	  getline(infile, str);
-     	         	  sscanf(str.c_str(),"%lf %lf %lf %lf %lf %lf %lf %lf %lf",&temp[0],&temp[1],&temp[2],&temp[3],&temp[4],&temp[5],&blank[0],&blank[1],&blank[2]);
 //				if(k>5 && k<35)
+//if(k<=(onz/2 + nz/2) && k>=(onz/2 - nz/2)){
 				for(int p=0;p<3;p++){
+					//insert loaded fieldmap to the fieldmap array
+     	         	  sscanf(str.c_str(),"%lf %lf %lf %lf %lf %lf %lf %lf %lf",&temp[0],&temp[1],&temp[2],&temp[3],&temp[4],&temp[5],&blank[0],&blank[1],&blank[2]);
 					GEMPosition[p][i][j][k]=temp[p]*um;
 					GEMElec[p][i][j][k]=temp[p+3]*volt/m;
 //					if(p==1)GEMElec[p][i][j][k]+10000*volt/m;
 					if(i==40 && j==40 && k==800)std::cout<<GEMPosition[p][i][j][k]<<"    "<<GEMElec[p][i][j][k]*m/volt<<std::endl;
+//				}
+//				ck++;
 				}
 //				std::cout<<k<<std::endl;
 			}
 		}
         }
+	//file close
         infile.close();
 
   min[0] = GEMPosition[0][0][0][0];
@@ -159,11 +176,11 @@ void GEMElectricField::GetFieldValue(const G4double point[4],G4double *Bfield) c
     double xfraction = (x - minx) / dx;
     double yfraction = (y - miny) / dy; 
     double zfraction = (z - minz) / dz;
-
+/*
 	G4cout << "xfraction : " << xfraction << endl;
 	G4cout << "yfraction : " << yfraction << endl;
 	G4cout << "zfraction : " << zfraction << endl;
-
+*/
     if (invertX) { xfraction = 1 - xfraction;}
     if (invertY) { yfraction = 1 - yfraction;}
     if (invertZ) { zfraction = 1 - zfraction;}
@@ -227,7 +244,7 @@ void GEMElectricField::GetFieldValue(const G4double point[4],G4double *Bfield) c
       GEMElec[2][xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
       GEMElec[2][xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
       GEMElec[2][xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal; 
-
+/*
 	G4cout << "x : " << x << endl;
 	G4cout << "y : " << y << endl;
 	G4cout << "z : " << z << endl;
@@ -246,7 +263,7 @@ void GEMElectricField::GetFieldValue(const G4double point[4],G4double *Bfield) c
 	G4cout << "Bfield[3] : " << Bfield[3] << endl;
 	G4cout << "Bfield[4] : " << Bfield[4] << endl;
 	G4cout << "Bfield[5] : " << Bfield[5] << endl;
-
+*/
 //	G4cout << "-----------------------Acceptable!!---------------------" << endl;
   } else {
 	Bfield[0] = 0.0;
@@ -256,7 +273,7 @@ void GEMElectricField::GetFieldValue(const G4double point[4],G4double *Bfield) c
     Bfield[4] = 0.0;
     Bfield[5] = 0.0;
   }
-	G4cout << "-------------------------GetFieldValue Check---------------------" << endl;
+/*	G4cout << "-------------------------GetFieldValue Check---------------------" << endl;
 	G4cout << "x : " << x << endl;
 	G4cout << "y : " << y << endl;
 	G4cout << "z : " << z << endl;
@@ -272,6 +289,6 @@ void GEMElectricField::GetFieldValue(const G4double point[4],G4double *Bfield) c
 	G4cout << "Dx : " << Bfield[3] << endl;
 	G4cout << "Dy : " << Bfield[4] << endl;
 	G4cout << "Dz : " << Bfield[5] << endl;
-
+*/
 }
 

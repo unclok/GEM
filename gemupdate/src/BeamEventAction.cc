@@ -35,6 +35,9 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
+#include "CLHEP/Units/PhysicalConstants.h"
+
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -42,8 +45,10 @@ BeamEventAction::BeamEventAction()
  : G4UserEventAction()
 {
 	G4SDManager* SDM = G4SDManager::GetSDMpointer();
+	//load sensitive detector using id
 	driftID1 = SDM->GetCollectionID("drift1/driftChamberColl");
 	driftID2 = SDM->GetCollectionID("drift2/driftChamberColl");
+	energyID2 = SDM->GetCollectionID("hodoscope2/Energy2");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -97,8 +102,20 @@ void BeamEventAction::EndOfEventAction(const G4Event* evt)
 			man->FillH2(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
 			man->FillH2(3,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y());
 			man->FillH1(1,driftHit2->GetParticleID());
+			man->FillH1(3,driftHit2->GetEnergy()/eV);
 //		man->FillNtuple(1,driftHit2->GetLocalPos().x(),driftHit2->GetLocalPos().y(),driftHit2->GetEnergy());
 	} 
+/*
+	eventEnergy2 = (G4THitsMap<G4double>*)(HCE->GetHC(energyID2));
+	std::map<G4int,G4double*>::iterator itr = eventEnergy2->GetMap()->begin();
+	G4int key;
+	for(;itr!=eventEnergy2->GetMap()->end();itr++)
+	{
+			key = (itr->first);
+			G4double* pVal = (*eventEnergy2)[key];
+			if(pVal)man->FillH1(3,*pVal);
+	}
+*/
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

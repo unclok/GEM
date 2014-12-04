@@ -20,6 +20,8 @@ public:
 
 	virtual void GeneratePrimaries(G4Event*);
 	void SetGunRandom(bool b){	gunrandom=b;	}
+	G4double GetGunEnergy();
+	G4ParticleGun* GetParticleGun(){ return particleGun; };
 
 private:
 	G4ParticleGun* particleGun;
