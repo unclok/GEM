@@ -46,6 +46,7 @@ using namespace CLHEP;
 
 ExN02PhysicsList::ExN02PhysicsList():  G4VUserPhysicsList()
 {
+  //define range cut value
   defaultCutValue = 5*um;
    SetVerboseLevel(1);
 }
@@ -387,7 +388,9 @@ void ExN02PhysicsList::SetCuts()
   //G4VUserPhysicsList::SetCutsWithDefault method sets 
   //the default cut value for all particle types 
   //
+  //use defined cut value
   SetCutsWithDefault();
+	//define energy range cut
 	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(0.8*eV,G4ProductionCutsTable::GetProductionCutsTable()->GetHighEdgeEnergy());
      
   if (verboseLevel>0) DumpCutValuesTable();
