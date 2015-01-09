@@ -14,6 +14,8 @@
 
 #ifdef G4UI_USE
 #include "G4UIExecutive.hh"
+#include "G4UIterminal.hh"
+#include "G4UItcsh.hh"
 #endif
 
 int main(int argc, char** argv)
@@ -35,7 +37,7 @@ int main(int argc, char** argv)
 	runManager->SetUserInitialization(new NewDetectorConstruction);
 //	G4PhysListFactory factory;
 //	G4VModularPhysicsList* physlist = factory.GetReferencePhysList("FTFP_BERT_PEN");
-	runManager->SetUserInitialization(new NewPhysicsList);
+	runManager->SetUserInitialization(new ExN02PhysicsList);
 
 	// initialize Geant4 kernel
 	runManager->Initialize();
@@ -61,7 +63,8 @@ int main(int argc, char** argv)
 	// start interactive session
 	{
 #ifdef G4UI_USE
-		G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+//		G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+		G4UIterminal* ui = new G4UIterminal(new G4UItcsh);
 		ui->SessionStart();
 		delete ui;
 #endif

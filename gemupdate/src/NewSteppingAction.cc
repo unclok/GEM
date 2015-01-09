@@ -126,17 +126,19 @@ void NewSteppingAction::UserSteppingAction(const G4Step* step)
 //	G4cout<<"gamma : "<<step->GetPostStepPoint()->GetMomentum().gamma()<<G4endl;
 //	G4cout<<(step->GetDeltaEnergy()/step->GetStepLength())<<G4endl;
 
-	G4double zpos = step->GetPostStepPoint()->GetPosition().z();
+	//G4double zpos = step->GetPostStepPoint()->GetPosition().z();
+	G4double zpos = step->GetTrack()->GetPosition().z();
 //	G4cout<<"zpos : "<<zpos<<G4endl;
 	//fill energy of electron between 50~55um
 	if(zpos<55*um && zpos>50*um && step->GetTrack()->GetDefinition()->GetParticleName()=="e-"){
-		man->FillH1(3,step->GetPreStepPoint()->GetKineticEnergy()/eV);
 //		G4cout<<"filling"<<G4endl;
 	}
 	//fill z position of electron after 55um
-	if(zpos>55*um && step->GetTrack()->GetDefinition()->GetParticleName()=="e-"){
+	if(zpos>55*um && step->GetTrack()->GetDefinition()->GetParticleName()=="e-" && step->GetSecondary()->size()==0){
 		man->FillH1(1,step->GetTrack()->GetDefinition()->GetParticleName());
+		man->FillH1(3,step->GetTrack()->GetKineticEnergy()/eV);
 		man->FillH1(4,zpos);
+		man->FillH2(12,step->GetTrack()->GetTrackID(),step->GetTrack()->GetParentID());
 	}
 
 //	G4RunManager::GetRunManager()->AbortEvent();

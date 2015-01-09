@@ -49,7 +49,7 @@
 using namespace CLHEP;
 
 NewDetectorConstruction::NewDetectorConstruction()
-:fefield(-100.),fefielddirection(0.,0.,1.),geometry_on(false)
+:fefield(-100.),fefielddirection(0.,0.,1.),geometry_on(true)
 {
 	messenger = new NewDetectorConstMessenger(this);
 	//fieldMgr1 = new G4FieldManager();

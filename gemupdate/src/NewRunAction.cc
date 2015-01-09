@@ -80,6 +80,7 @@ void NewRunAction::BeginOfRunAction(const G4Run* aRun)
 	analysisManager->CreateH2("h10","colision for degree ionIoni", 1000, 0, 180, 1000, 0, 1e-15);
 	analysisManager->CreateH2("h11","dedx", 1000, 0, 0.05, 1000, 0, 1e20);
 	analysisManager->CreateH2("h12","2D position distribution at z=2000um", 100, -4050*um, 4050*um, 100, -2500*um, 2500*um);
+	analysisManager->CreateH2("trackid","Track id and Parent id in z > 55 um", 1000, 0, 1000, 1000, 0, 1000);
 }
 
 void NewRunAction::EndOfRunAction(const G4Run* aRun)
